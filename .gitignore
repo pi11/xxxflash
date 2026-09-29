@@ -36,3 +36,10 @@ media/
 !.env.example
 archive/data/
 /*.sql
+
+# Ruffle build is fetched by scripts/fetch_ruffle.sh (pinned in VERSION)
+static/vendor/ruffle/*
+!static/vendor/ruffle/VERSION
+*.egg-info/
+.pytest_cache/
+.ruff_cache/

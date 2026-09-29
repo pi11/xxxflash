@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page_content">
+  <div class="drevo" align="center">
+    <div align="center">
+      <a href="/best2/" class="top_link red">Новый топ игр</a>
+      | <a href="/best/">Лучшие порно игры</a>
+      | <a href="/popular/">Популярные порно игры</a>
+    </div>
+  </div>
+
+  {% include "flash-best.html" %}
+
+  {% if first_page %}
+  <div class="cmen top" style="text-align:center; float:left;">
+    <b>Топ пользователей:</b>
+    <ul>
+      {% for p in top_profiles if p.score > 0 %}
+      <li>
+        <a href="#">
+          {{ p.username }} <img src="{{ static('images/star.png') }}" width="14" alt="" />
+          <b>{{ p.score }}</b>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <h2>Новые секс игры:</h2>
+  {% endif %}
+  {% include "flash-list.html" %}
+
+  {% if first_page %}
+  <div id="comments_list">
+    {% for comment in comments %}
+    {% include "comment-item.html" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if not random_page %}
+  <div class="pages">
+    {% include "paginator.html" %}
+  </div>
+  {% endif %}
+
+  <div class="left_menu">
+  </div>
+  {% include "flash-random.html" %}
+</div>
+{% endblock %}

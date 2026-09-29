@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %} Порно и секс игры на FlashSexRU.com | Бесплатные эротические игры онлайн.{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Самая большая коллекция эротических флеш игр, эротических flash игр. " />
+  <link rel="stylesheet" href="{{ static('css/style.css') }}" type="text/css" media="screen" />
+  <link href="{{ vendor('site.css') }}" type="text/css" rel="stylesheet" />
+  <script src="{{ vendor('jquery.min.js') }}"></script>
+  <script src="{{ vendor('site.js') }}"></script>
+  <link href="{{ static('images/favicon.ico') }}" rel="shortcut icon" />
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div id="container">
+    {% block header %}
+    <div id="header">
+      <div id="logo"><a href="/"><img src="{{ static('images/logo.gif') }}" alt="" /></a></div>
+      <div id="slogo">{% block title2 %}Эротические и порно игры{% endblock %}</div>
+      <div id="panel">
+        <div id="spanel">
+          <div id="search_form">
+            <form action="/search/" method="get">
+              <input type="text" name="q" class="t" placeholder="Введите текст для поиска" />
+              <input type="submit" value="Найти" />
+            </form>
+          </div>
+          <div id="user_panel">
+            {% include "user/panel.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <div id="maintop"></div>
+    <div id="main">
+      <div id="main2">
+        {% include "menu.html" %}
+        <div id="mainint">
+          <div class="cb">
+            <div class="cb_top"></div>
+            <div class="cb_cen">
+              {% block info %}{% endblock %}
+              {% block content %}{% endblock %}
+            </div>
+            <div class="cb_bot"></div>
+          </div>
+
+          <div class="cb">
+            <div class="cb_top"></div>
+            <div class="cb_cen">
+              <div class="ban3">
+                <div id="info">
+                  {% block info_bottom %}{% endblock %}
+                </div>
+              </div>
+            </div>
+            <div class="cb_bot"></div>
+          </div>
+        </div>
+        <div id="footer">
+          <p> <a href="/">Домой</a></p>
+          <p>&copy; 2006 - {{ now().year }} flashsexru.com, Контакты: email/jid: webii@webii.ru</p>
+        </div>
+      </div>
+    </div>
+    <div id="mainbot"></div>
+  </div>
+  {% include "counters.html" %}
+</body>
+</html>

@@ -1,0 +1,2 @@
+# Recompute theme game counts daily (legacy update_games_count cron).
+15 4 * * * www-data cd /srv/xxxflash && set -a && . ./.env.xxxflash && .venv/bin/python -m app update-counts

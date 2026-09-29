@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block info %}
+{% if first_page %}
+<div class="cmen top">
+<b>Топ пользователей:</b>
+  <ul>
+    {% for p in top_profiles %}
+    <li><a href="#">{{ p.username }} <img src="{{ static('images/star.png') }}" width="14" alt="" /> <b>{{ p.score }}</b></a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="cmen">
+  <ul>
+    <li><a href="/best2/" id="c3">Новый топ!</a></li>
+    <li><a href="/best/" id="c1">Лучшие игры</a></li>
+    <li><a href="/popular/" id="c2">Популярные игры</a></li>
+  </ul>
+</div>
+
+{% include "flash-best.html" %}
+<br />
+<h3>Новые игры:</h3>
+<br />
+{% include "flash-list.html" %}
+
+{% if not random_page %}
+<div class="pages">
+  {% include "pages.html" %}
+</div>
+{% endif %}
+
+{% if first_page %}
+<div id="comments_list" style="width:100%; float:left;">
+  <h3>Последние комментарии:</h3>
+  {% for comment in comments %}
+  {% include "comment-item.html" %}
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block info_bottom %}
+  <p><b>Внимание!</b> На сайте находятся материалы запрещенные для просмотра лицам младше 18 лет. Если Вам менее 18 лет - немедленно покиньте этот сайт. <br /> У нас есть мультфильмы тематики Хентай и аниме (манга) онлайн.<br /> Лушие бесплатные хентай игры интернета на нашем сайте он-лайн!</p>
+
+  <p><b>Обновился раздел новых игр! Около 3000 новых игр.</b><br />
+    Добро пожаловать на сайт эротических флэш игр он-лайн!<br />
+    На нашем сайте более <b>4000!</b> бесплатных игр, в самых различных жанрах и направлениях с эротическим содержанием online!
+    У нас самая большая коллекция порно игр в рунете! Вы никогда не просмотрите их все! =)</p>
+{% endblock %}

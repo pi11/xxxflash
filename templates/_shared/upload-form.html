@@ -1,0 +1,47 @@
+{# Legacy upload-flash.html form body (identical in both sets). #}
+<div class="upload_form">
+  {% if done %}
+  <div class="upload-done">
+    Игра «{{ done.name }}» загружена и отправлена на модерацию. Спасибо!
+  </div>
+  {% endif %}
+  <div class="error">
+    {% if errors %}
+    <h2>Ошибка заполнения формы</h2>
+    {% endif %}
+  </div>
+
+  <form action="/upload/" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <p><label for="id_name">Название:</label>
+      <input id="id_name" type="text" name="name" maxlength="150" value="{{ values.name }}" required />
+    </p>
+    <div class="error form-error">{{ errors.name }}</div>
+
+    <br />
+    Описание:
+    <textarea id="id_description" name="description" cols="40" rows="10" maxlength="2000" required>{{ values.description }}</textarea>
+    <div class="error form-error">{{ errors.description }}</div>
+    <br /><br />
+
+    <p><label for="id_flashfile">Флеш-игра (swf): </label>
+      <input id="id_flashfile" type="file" name="flashfile" accept=".swf,application/x-shockwave-flash" required />
+    </p>
+    <div class="error form-error">{{ errors.flashfile }}</div>
+    <br />
+    <p><label for="id_thumbfile">Скриншот (jpg,png): </label>
+      <input id="id_thumbfile" type="file" name="thumbfile" accept="image/*" required />
+    </p>
+    <div class="error form-error">{{ errors.thumbfile }}</div>
+    <br />
+    Выберите темы:
+    <select id="id_theme" name="theme" multiple size="8">
+      {% for t in all_themes %}
+      <option value="{{ t.id }}"{% if t.id in values.themes %} selected{% endif %}>{{ t.name }}</option>
+      {% endfor %}
+    </select>
+    <div class="error form-error">{{ errors.theme }}</div>
+    <br /><br />
+    <input type="submit" value="Загрузить" />
+  </form>
+</div>

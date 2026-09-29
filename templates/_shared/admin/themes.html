@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block title %}Themes{% endblock %}
+{% block content %}
+<h1>Themes</h1>
+<table>
+  <tr><th>ID</th><th>Name</th><th>Slug</th><th>Order</th><th>Active</th><th>Games</th><th></th></tr>
+  {% for t in all_themes %}
+  <tr>
+    <td>{{ t.id }}</td>
+    <td><input form="t{{ t.id }}" type="text" name="name" value="{{ t.name }}" /></td>
+    <td><input form="t{{ t.id }}" type="text" name="slug" value="{{ t.slug }}" /></td>
+    <td><input form="t{{ t.id }}" type="text" name="sort_order" value="{{ t.sort_order }}" size="4" /></td>
+    <td><input form="t{{ t.id }}" type="checkbox" name="active"{% if t.active %} checked{% endif %} /></td>
+    <td>{{ t.game_count }}</td>
+    <td>
+      <form id="t{{ t.id }}" method="post" action="{{ prefix }}/themes/{{ t.id }}/" class="inline-action">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <button>Save</button> <button name="delete" value="1" onclick="return confirm('Delete theme?');">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<h2>Add theme</h2>
+{% if error %}<p class="form-error">{{ error }}</p>{% endif %}
+<form method="post" class="row">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <input type="text" name="name" placeholder="name" />
+  <input type="text" name="slug" placeholder="slug" />
+  <input type="text" name="sort_order" placeholder="order" size="4" />
+  <button>Add</button>
+</form>
+{% endblock %}

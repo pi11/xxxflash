@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}Эротические игры, флэш игры, порно игры, бесплатные, без регистрации, без смсы.{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="{{ static('css/style.css') }}" type="text/css" rel="stylesheet" />
+  <link href="{{ vendor('site.css') }}" type="text/css" rel="stylesheet" />
+  <meta name="Description" content="Эротические игры, порно игры, флэш игры, флеш игры, flash игры" />
+  <meta name="Keywords" content="Эротические игры, порно игры, флэш игры, флеш игры, flash игры" />
+  {% block index_headers %}{% endblock %}
+  <link href="{{ static('images/favicon.png') }}" rel="shortcut icon" />
+  <script src="{{ vendor('jquery.min.js') }}"></script>
+  <script src="{{ vendor('site.js') }}"></script>
+  {% block add_headers %}{% endblock %}
+</head>
+<body>
+  {% block after_body %}{% endblock %}
+  <div class="root">
+  {% block header %}
+    <div class="top_container">
+      <div class="top_text w100">
+        <div class="left">
+          <a href="/">Порно и эротические флэш игры.</a> | <a href="/upload/">Загрузить игру</a>
+        </div>
+        <div id="search_form">
+          <form action="/search/" method="get">
+            <input type="text" name="q" class="t" placeholder="Введите текст" />
+            <input type="submit" value="Найти" />
+          </form>
+        </div>
+      </div>
+      <span class="small left w100">
+        Обновления каждый день. Добавь в закладки и приходи за новыми эротическими играми!
+        <p>Нажмите Ctrl+D, чтобы добавить сайт в избранное.</p>
+      </span>
+    </div>
+  {% endblock %}
+  {% block user_panel %}
+    <div id="user_panel">
+      {% include "user/panel.html" %}
+    </div>
+  {% endblock %}
+  {% block navigation %}
+    <div class="side_col">
+      {% include "menu.html" %}
+    </div>
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+
+  {% block footer %}
+    <div class="footer">
+      <div id="left_footer">
+        &copy; 2009-{{ now().year }} WebII Lab
+      </div>
+      <div id="rigth_footer">
+        Внимание данный сайт предназначен только для взрослых.
+        Входя на сайт Вы подтверждаете, что вам 18 лет и более.
+        Если Вам нет 18 лет, покиньте наш сайт по <a rel="nofollow" href="https://ya.ru/">этой</a> ссылке. <br />
+        Email: webii@protonmail.ch
+      </div>
+    </div>
+  {% endblock %}
+  </div>
+  {% include "counters.html" %}
+</body>
+</html>

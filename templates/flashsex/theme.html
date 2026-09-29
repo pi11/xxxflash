@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Эротические флэш игры: {{ theme.name }}{% endblock %}
+{% block title2 %}{{ theme.name }}{% endblock %}
+{% block content %}
+  <h1>Тема: {{ theme.name }} </h1>
+  <div class="cmen">
+    <ul>
+      <li><a href="/best2/" id="c1">Лучшие порно игры</a></li>
+      <li><a href="/popular/" id="c2">Популярные порно игры</a></li>
+    </ul>
+  </div>
+  <br />
+  {% include "flash-list.html" %}
+  <div class="pages">
+    {% include "pages.html" %}
+  </div>
+{% endblock %}

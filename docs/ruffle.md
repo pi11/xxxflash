@@ -21,25 +21,25 @@ More than 90% of the catalog is AS1/AS2, so Ruffle should run most games. Run `p
 
 ## Integration
 
-1. **Vendor** a pinned self-hosted build, for example `ruffle-nightly-YYYY_MM_DD-web-selfhosted.zip`, into `static/ruffle/<version>/`. The files are `ruffle.js` plus `*.wasm` and chunk files.
-   Record the version in `static/ruffle/VERSION`. Update it deliberately, never from a CDN at runtime.
+1. **Vendor** a pinned self-hosted build into `static/vendor/ruffle/` (served at `/vendor/ruffle/`). The release tag is pinned in `static/vendor/ruffle/VERSION` (currently `nightly-2026-09-29`), and `scripts/fetch_ruffle.sh` downloads it. The ~30 MB build itself is git-ignored. The files are `ruffle.js` plus `*.wasm` and chunk files.
+   To upgrade, edit `VERSION` and rerun the script; never load Ruffle from a CDN at runtime. The actual markup lives in `templates/_shared/player.html`, and the snippet below is illustrative.
 2. The game page renders a container instead of `<object>`:
 
    ```html
    <div id="game" class="game-player"
-        data-swf="{{ media_url(g.swf_path) }}"
+        data-swf="{{ media(g.swf_path) }}"
         data-width="{{ g.width or 700 }}" data-height="{{ g.height or 700 }}"></div>
    <script>window.RufflePlayer = window.RufflePlayer || {};
      window.RufflePlayer.config = {
-       publicPath: "{{ static_url('ruffle/' ~ ruffle_version ~ '/') }}",
+       publicPath: "/vendor/ruffle/",
        autoplay: "on", unmuteOverlay: "visible", splashScreen: false,
        letterbox: "on", warnOnUnsupportedContent: true,
        contextMenu: "rightClickOnly", allowScriptAccess: false,
-       base: "{{ settings.MEDIA_URL }}",     // media root: loader games request "parts/<name>"
+       base: "{{ settings.media_url }}",     // media root: loader games request "parts/<name>"
        openUrlMode: "confirm", allowNetworking: "internal"
      };</script>
-   <script src="{{ static_url('ruffle/' ~ ruffle_version ~ '/ruffle.js') }}"></script>
-   <script src="{{ static_url('_shared/player.js') }}"></script>
+   <script src="{{ vendor('ruffle/ruffle.js') }}"></script>
+   <script src="{{ vendor('player.js') }}"></script>
    ```
 
    `player.js` calls `RufflePlayer.newest().createPlayer()`, sets its size, and appends it to the container. The size follows the SWF aspect ratio: width is capped at the container width (700px on desktop) and scales down on mobile.

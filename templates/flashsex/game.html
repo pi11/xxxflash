@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %} Эротическая флэш игра: {{ g.name }}{% endblock %}
+{% block title2 %}Оцени порно игру!{% endblock %}
+
+{% block content %}
+<h1>Название: {{ g.name }}    {% if user.is_staff %}<a href="/{{ settings.admin_prefix }}/games/{{ g.id }}/">Edit</a>{% endif %}</h1>
+<div class="cmen">
+  <ul>
+    <li><a href="/">Порно игры</a></li>
+  </ul>
+</div>
+
+<div class="gameb_thumb" id="game-d">
+  {% include "player.html" %}
+</div>
+<div class="inser">
+  <p>{{ g.description }}</p>
+</div>
+
+<div class="options">
+  <div align="right">Загрузил: {{ g.user.username }}</div>
+  <div align="right">Оценка флэш игры:  <span style="font-size:18px; font-weight:bold;"> <span id="mark1">{{ mark|default(0) }}</span> <a href="#" onclick="return vote('up', {{ g.id }}, '#mark1');">+</a> / <a href="#" onclick="return vote('down', {{ g.id }}, '#mark1');">-</a> </span> </div>
+  <div align="right">Просмотров: {{ views }}</div>
+</div>
+
+<div align="left">
+  Смотри также: <br />
+  {% for t in gt %}
+  <a href="/theme/{{ t.slug }}/">{{ t.name }}</a> |
+  {% endfor %}
+</div>
+
+<h3>Комментарии</h3>
+
+<div class="insercom" style="padding-bottom:15px;">
+</div>
+
+{% include "comments.html" %}
+
+<div align="left" class="break">Добавить комментарий:</div>
+<div style="width:49%; float:left;">
+    <div align="left" class="break">
+      {% if user.is_authenticated %}
+      <form action="/add-comment" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <textarea name="text" cols="40" rows="10" maxlength="1000" required></textarea>
+        <input type="hidden" name="flash_id" value="{{ g.id }}" />
+        <span class="off honeypot"><input type="text" name="email" value="" size="10" tabindex="-1" autocomplete="off" /></span>
+        <br />
+        <input type="submit" value=" Добавить " />
+      </form>
+      {% else %}
+      <a href="/login/">Войдите</a>, чтобы оставить комментарий.
+      {% endif %}
+    </div>
+</div>
+
+{% include "flash-random.html" %}
+{% endblock %}

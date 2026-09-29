@@ -1,0 +1,19 @@
+<div id="comments_list">
+
+  {% for comment in comments.object_list %}
+  {% include "comment-item.html" %}
+  {% endfor %}
+
+  <div id="comments-pages-{{ comments.number }}">
+    <div class="page_buttons">
+      {% if comments.has_next %}
+      <a class="pointer" onclick="$('#comments-pages-{{ comments.number }}').hide(); $('#comments-more-{{ comments.next_page_number }}').load('/get_comments/{{ g.id }}/{{ comments.next_page_number }}/');">Загрузить еще коментариев &gt;&gt;&gt; </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if comments.has_next %}
+<div id="comments-more-{{ comments.next_page_number }}">
+</div>
+{% endif %}

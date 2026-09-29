@@ -1,0 +1,24 @@
+{% for g in flashes.object_list %}
+   <div class="gameblock">
+    <!-- GAME START -->
+         <div class="game">
+          <div class="game_thumb"><a target="_blank" href="/game/{{ g.id }}/"><img width="300" height="300" src="{{ thumb(g) }}" alt="{{ g.name }}" /></a></div>
+          <div class="game_des">
+          <a href="/game/{{ g.id }}/" target="_blank"><strong>{{ g.name }}</strong></a><br />
+          <p>{{ g.description|truncatewords(20) }}</p>
+          <div class="game_rate">
+            Рейтинг:&nbsp;<span id="mark-{{ g.id }}">{{ g.rate }}</span>
+            <a class="mark" onclick="vote('up', {{ g.id }});">&nbsp;+&nbsp;</a> <a class="mark" onclick="vote('down', {{ g.id }});">&nbsp;-&nbsp;</a>
+            <div>
+              Просмотров:&nbsp;<b>{{ g.views }}</b><br />
+              Размер: <b>{{ g.filesize|filesizeformat }}</b>
+            </div>
+            {% if user.is_staff %}<a href="/{{ settings.admin_prefix }}/games/{{ g.id }}/">Edit</a>{% endif %}
+          </div>
+          </div>
+        </div>
+       <!-- GAME END -->
+   </div>
+{% else %}
+   <div class="gameblock">Игр не найдено.</div>
+{% endfor %}

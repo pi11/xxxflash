@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %} Эротическая флэш игра: {{ g.name }}{% endblock %}
+
+{% block content %}
+  <div id="flashes">
+    <div class="drevo" align="center"><a href="/" title="">Эротические игры</a> &gt; <a href="/game/{{ g.id }}/" title="{{ g.name }}">{{ g.name }}</a></div>
+    <div class="acenter">
+      <div class="game_title">{{ g.name }}</div>{% if user.is_staff %}<a href="/{{ settings.admin_prefix }}/games/{{ g.id }}/"> Edit </a>{% endif %}
+
+      <div id="game">
+        {% include "player.html" %}
+      </div>
+
+      <div class="">
+        <div align="left" class="desc">{{ g.description }}</div>
+      </div>
+
+      <div class="options">
+        <div align="right">Загрузил: {{ g.user.username }}</div>
+        <div align="right">Оценка флэш игры:  <span style="font-size:18px; font-weight:bold;"> <span id="mark1">{{ mark|default(0) }}</span> <a class="mark" onclick="return vote('up', {{ g.id }}, '#mark1');">+</a> / <a class="mark" onclick="return vote('down', {{ g.id }}, '#mark1');">-</a> </span> </div>
+        <div align="right">Просмотров: {{ views }}</div>
+      </div>
+
+      <div style="float:left;display:block;">
+          Смотри также: <br />
+          {% for t in gt %}
+              <a href="/theme/{{ t.slug }}/">{{ t.name }}</a> |
+          {% endfor %}
+      </div>
+
+      <div class="break">
+        {% include "comments.html" %}
+      </div>
+      <div class="break">
+        <div style="width:49%; float:left;">
+          <div align="left" class="break">Добавить комментарий:</div>
+          <div align="left" class="break">
+            {% if user.is_authenticated %}
+            <form action="/add-comment" method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+              <textarea name="text" cols="40" rows="10" maxlength="1000" required></textarea>
+              <input type="hidden" name="flash_id" value="{{ g.id }}" />
+              <span class="off honeypot"><input type="text" name="email" value="" size="10" tabindex="-1" autocomplete="off" /></span>
+              <br />
+              <input type="submit" value=" Добавить " />
+            </form>
+            {% else %}
+            <a href="/login/">Войдите</a>, чтобы оставить комментарий.
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% include "flash-random.html" %}
+    </div>
+
+  </div>
+{% endblock %}

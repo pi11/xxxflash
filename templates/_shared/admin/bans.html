@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% block title %}Bans{% endblock %}
+{% block content %}
+<h1>Banned IPs</h1>
+<form method="post" class="row">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <input type="text" name="ip" placeholder="IP address" /><button>Ban</button>
+</form>
+<table>
+  <tr><th>IP</th><th>Since</th><th></th></tr>
+  {% for b in bans %}
+  <tr><td>{{ b.ip }}</td><td>{{ b.created_at|date }}</td>
+    <td><form method="post" class="inline-action"><input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <button name="remove" value="{{ b.ip }}">Unban</button></form></td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

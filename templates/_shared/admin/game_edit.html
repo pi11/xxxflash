@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ g.name }}{% endblock %}
+{% block content %}
+<h1>#{{ g.id }} {{ g.name }}</h1>
+{% if saved %}<div class="msg">Saved.</div>{% endif %}
+<p>
+  Uploaded by {{ g.user.username }} · {{ g.swf_path }} · {{ (g.filesize / 1024)|round|int }} KB ·
+  <span class="pill {{ g.compat }}">{{ g.compat }}</span>
+  {% if g.swf_version %}SWF v{{ g.swf_version }}, {{ g.width }}×{{ g.height }}{% endif %}
+  {% if g.active %}· <a href="/game/{{ g.id }}/">view on site</a>{% endif %}
+</p>
+<form method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <p>Name<br /><input type="text" name="name" value="{{ g.name }}" size="60" maxlength="150" /> <span class="form-error">{{ errors.name }}</span></p>
+  <p>Description<br /><textarea name="description" rows="5">{{ g.description }}</textarea></p>
+  <p>Themes<br />
+    <select name="theme" multiple size="10">
+      {% for t in all_themes %}<option value="{{ t.id }}"{% if t.id in game_theme_ids %} selected{% endif %}>{{ t.name }}</option>{% endfor %}
+    </select>
+  </p>
+  <p>Published <input type="text" name="published_at" value="{{ g.published_at.isoformat() }}" size="12" /> <span class="form-error">{{ errors.published_at }}</span>
+     <label><input type="checkbox" name="active"{% if g.active %} checked{% endif %} /> active</label></p>
+  <p>Thumbnail {% if g.thumb_path %}<img src="{{ media(g.thumb_path) }}" width="120" alt="" />{% endif %}
+     <input type="file" name="thumbfile" accept="image/*" /> <span class="form-error">{{ errors.thumbfile }}</span></p>
+  <p><button>Save</button></p>
+</form>
+<form method="post" action="{{ prefix }}/games/{{ g.id }}/delete" onsubmit="return confirm('Delete game #{{ g.id }}?');">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <button>Delete game</button>
+</form>
+<h2>Preview</h2>
+{% set max_width = 800 %}
+{% include "player.html" %}
+{% endblock %}

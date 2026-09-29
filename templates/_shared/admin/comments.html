@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% block title %}Comments{% endblock %}
+{% block content %}
+<h1>Comments</h1>
+<form method="get" class="row"><input type="text" name="q" value="{{ q }}" placeholder="text or exact IP" /><button>Search</button></form>
+{% set query = "q=" ~ q|urlencode ~ "&" %}
+{% set pager = comments %}
+{% include "admin/pager.html" %}
+<table>
+  <tr><th>ID</th><th>Date</th><th>User</th><th>IP</th><th>Game</th><th>Text</th><th></th></tr>
+  {% for comment in comments.object_list %}
+  <tr>
+    <td>{{ comment.id }}</td>
+    <td>{{ comment.created_at|date }}</td>
+    <td>{{ comment.user.username }} ({{ comment.user.score }})</td>
+    <td>{{ comment.ip or "" }}</td>
+    <td><a href="/game/{{ comment.game_id }}/">{{ comment.game.name }}</a></td>
+    <td>{{ comment.text }}</td>
+    <td>{% include "staff_comment_actions.html" %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% include "admin/pager.html" %}
+{% endblock %}

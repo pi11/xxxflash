@@ -1,0 +1,24 @@
+{# Legacy user/login.html body (identical in both sets). #}
+{% if user.is_authenticated %}
+  Добро пожаловать {{ user.username }}!
+{% else %}
+  {% if sended %}
+  <p>На ваш адрес электронной почты выслана ссылка для входа. Пройдите по ссылке в письме, чтобы войти на сайт.</p>
+  {% else %}
+  <div id="login_form_div">
+    <p>Введите адрес вашей электронной почты:</p>
+    {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
+    <form id="login_form" action="/login/" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <p><input type="email" name="email" value="{{ email }}" maxlength="254" required /> <input id="id_login" type="submit" value=" Войти / Зарегистрироваться " /></p>
+    </form>
+  </div>
+  <p class="indent">
+    Вход и регистрация на нашем сайте ничем не отличаются. Для того, чтобы войти (или зарегистрироваться) введите адрес вашей электронной почты.
+    Мы пришлём ссылку для входа на сайт. Каждый раз, когда вам нужно будет войти, мы будем присылать письмо с одноразовой ссылкой для входа.
+  </p>
+  <p class="indent">
+    Таким способом, вам не нужно будет запоминать/хранить пароль от нашего сайта, беспокоится что его украдут и т.д. вам достаточно не потерять доступ к электронной почте.
+  </p>
+  {% endif %}
+{% endif %}

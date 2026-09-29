@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block title %}Games{% endblock %}
+{% block content %}
+<h1>Games</h1>
+<p class="filters">
+  {% for s in ["pending", "active", "all", "ok", "as3", "missing", "broken", "unknown"] %}
+  <a href="?status={{ s }}" class="{{ 'on' if s == current }}">{{ s }}</a>
+  {% endfor %}
+</p>
+<form method="get" class="row">
+  <input type="hidden" name="status" value="{{ current }}" />
+  <input type="text" name="q" value="{{ q }}" placeholder="name, path or id" />
+  <button>Search</button>
+</form>
+{% set query = "status=" ~ current ~ "&q=" ~ q|urlencode ~ "&" %}
+{% set pager = games %}
+{% include "admin/pager.html" %}
+<table>
+  <tr><th>ID</th><th></th><th>Name</th><th>Compat</th><th>Rate</th><th>Views</th><th>Published</th><th>Active</th><th></th></tr>
+  {% for g in games.object_list %}
+  <tr>
+    <td>{{ g.id }}</td>
+    <td>{% if g.thumb_path %}<img src="{{ media(g.thumb_path) }}" width="50" alt="" />{% endif %}</td>
+    <td><a href="{{ prefix }}/games/{{ g.id }}/">{{ g.name }}</a><br /><small>{{ g.swf_path }}</small></td>
+    <td><span class="pill {{ g.compat }}">{{ g.compat }}</span> {% if g.swf_version %}v{{ g.swf_version }}{% endif %}</td>
+    <td>{{ g.rate }}</td>
+    <td>{{ g.views }}</td>
+    <td>{{ g.published_at|date }}</td>
+    <td>{{ "yes" if g.active else "no" }}</td>
+    <td>
+      {% if not g.active %}
+      <form method="post" action="{{ prefix }}/games/{{ g.id }}/approve" class="inline-action">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <button>Approve</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% include "admin/pager.html" %}
+{% endblock %}

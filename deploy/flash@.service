@@ -1,0 +1,15 @@
+# systemd template unit: one instance per site, e.g.
+#   systemctl enable --now flash@xxxflash   (reads /srv/xxxflash/.env.xxxflash)
+[Unit]
+Description=Flash games site %i (Sanic)
+After=network.target postgresql.service
+
+[Service]
+User=www-data
+WorkingDirectory=/srv/xxxflash
+EnvironmentFile=/srv/xxxflash/.env.%i
+ExecStart=/srv/xxxflash/.venv/bin/python -m app serve --host 127.0.0.1 --port ${PORT} --workers 2
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

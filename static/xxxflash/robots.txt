@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /mark/
+Disallow: /login/
+Disallow: /auth/
+Disallow: /upload/

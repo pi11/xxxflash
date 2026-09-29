@@ -4,7 +4,7 @@
 
 | Concern | Choice |
 |---|---|
-| Runtime | Python 3.12+, managed with `uv` |
+| Runtime | Python 3.12+ (dev: 3.14) in a project `.venv`, `pip install -e ".[dev]"` |
 | Web | Sanic 25.x |
 | ORM | **Tortoise ORM** on the **asyncpg** backend (`asyncpg://…`) |
 | Migrations | **Tortoise ORM built-in migrations** (tortoise-orm ≥ 1.0): `tortoise makemigrations` / `tortoise migrate` / `tortoise downgrade`. Configured through `[tool.tortoise] tortoise_orm = "app.config.TORTOISE_ORM"` in `pyproject.toml`. Migration files live in `app/migrations/`, set by `apps.models.migrations = "app.migrations"`. Postgres-specific SQL goes in `RunSQL` operations |
@@ -78,10 +78,18 @@ app/
     mail.py          Resend client: magic link, moderation notice
     paging.py        Paginator + page range (port of get_page_range)
   templating.py      Jinja env for SITE; globals (url_for, static, media, csrf_token, user, settings)
-scripts/copy_legacy.py   legacy public.* → app.* (also exposed as `python -m app copy-legacy`)
+  copy_legacy.py     legacy public.* → app.* (`python -m app copy-legacy`)
+  audit.py           `python -m app audit-swf`
+  maintenance.py     `python -m app update-counts`
+  queries.py         visible_games / random / best / search SQL
+  web.py             session cookie, CSRF, client IP, auth decorators
+scripts/fetch_ruffle.sh  downloads the pinned Ruffle build
 app/migrations/          tortoise built-in migrations (0001_initial.py, 0002_search.py with RunSQL …)
 templates/xxxflash/  templates/flashsex/
-static/xxxflash/  static/flashsex/  static/ruffle/<version>/  static/_shared/player.js
+static/xxxflash/  static/flashsex/     served at /static/ (legacy CSS uses absolute /static/images/…)
+static/vendor/                         served at /vendor/: jquery.min.js, site.js, site.css, player.js,
+                                       ruffle/ (VERSION committed, build fetched by the script)
+deploy/                                nginx, systemd and cron examples
 tests/
 ```
 

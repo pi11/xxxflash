@@ -1,0 +1,37 @@
+# One server block per site; each proxies to its own app process (see flash@.service).
+# Paths assume the repo lives in /srv/xxxflash and MEDIA_ROOT=/srv/media/xxxflash.
+upstream flash_xxxflash { server 127.0.0.1:8001; }
+
+server {
+    listen 80;
+    server_name _;                      # set the real host name
+    client_max_body_size 25m;           # MAX_UPLOAD_MB + form overhead
+
+    # Ruffle needs WebAssembly; Metrika is the only third-party script.
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://mc.yandex.ru; img-src 'self' data: blob: https://mc.yandex.ru; media-src 'self' blob:; connect-src 'self' https://mc.yandex.ru; style-src 'self' 'unsafe-inline'" always;
+
+    location /static/ { alias /srv/xxxflash/static/xxxflash/; expires 7d; }
+    location /vendor/ { alias /srv/xxxflash/static/vendor/; expires 30d; }
+
+    # Extensionless SWFs requested by loader games as "parts/<name>".
+    location /media/parts/ {
+        alias /srv/media/xxxflash/parts/;
+        default_type application/x-shockwave-flash;
+        expires 30d;
+    }
+    location /media/ {
+        alias /srv/media/xxxflash/;
+        types { application/x-shockwave-flash swf; image/jpeg jpg jpeg; image/png png; image/gif gif; }
+        expires 30d;
+    }
+
+    location / {
+        proxy_pass http://flash_xxxflash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# nginx's mime.types must map wasm (it does in recent versions):
+#   application/wasm wasm;

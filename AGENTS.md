@@ -25,21 +25,24 @@ Sanic · Tortoise ORM (asyncpg backend) · Tortoise built-in migrations (`tortoi
 - Dev DB: `postgres://flashxxx:123123@localhost:5432/flashxxx`
   - `public`: the legacy Django dump (read-only)
   - `app`: the new Tortoise schema (`DB_SCHEMA`)
+  - `ext`: `pg_trgm` (kept out of `public`); `search_path` is `app, ext`
   - `test_<rand>`: created and dropped by each pytest session
 - The role cannot create databases, only schemas.
 
 ## Commands
 
 ```bash
-uv sync
-cp .env.example .env                      # then fill RESEND_API_KEY etc.
-uv run python -m app migrate             # CREATE SCHEMA app + tortoise migrate
-uv run tortoise makemigrations            # after changing app/models.py
-uv run python -m app copy-legacy --truncate
-uv run python -m app audit-swf
-uv run python -m app serve --dev          # http://localhost:8000
-uv run pytest
-uv run ruff check . && uv run ruff format .
+python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+./scripts/fetch_ruffle.sh                     # pinned Ruffle build -> static/vendor/ruffle/
+cp .env.example .env                          # set SECRET_KEY; RESEND_API_KEY only in production
+.venv/bin/python -m app migrate               # schemas app+ext, pg_trgm, tortoise migrations
+.venv/bin/tortoise makemigrations             # after changing app/models.py
+.venv/bin/python -m app copy-legacy --truncate
+.venv/bin/python -m app audit-swf
+.venv/bin/python -m app serve --dev           # http://127.0.0.1:8000  (SITE=flashsex for the other set)
+.venv/bin/python -m app create-staff you@example.com
+.venv/bin/pytest
+.venv/bin/ruff check . && .venv/bin/ruff format .
 ```
 
 ## Conventions

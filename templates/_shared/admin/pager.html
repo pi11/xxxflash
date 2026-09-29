@@ -1,0 +1,8 @@
+{% if pager.num_pages > 1 %}
+<p>
+  Page {{ pager.number }} / {{ pager.num_pages }} ({{ pager.count }}):
+  {% for n in pager.page_range %}
+    {% if n == pager.number %}<b>{{ n }}</b>{% else %}<a href="?{{ query }}p={{ n }}">{{ n }}</a>{% endif %}
+  {% endfor %}
+</p>
+{% endif %}

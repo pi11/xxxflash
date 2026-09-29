@@ -1,0 +1,9 @@
+{# Staff-only comment actions (legacy [del] / [ban IP] links, now CSRF-protected POSTs). #}
+<form class="inline-action" action="/del-comment/{{ comment.id }}" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <button type="submit" class="linklike">[del]</button>
+</form> |
+<form class="inline-action" action="/ban/{{ comment.id }}/" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <button type="submit" class="linklike">[ban IP {{ comment.ip or "?" }}]</button>
+</form>:

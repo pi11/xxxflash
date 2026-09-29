@@ -13,14 +13,14 @@ Do not commit dumps or media.
 ## Tool: `python -m app copy-legacy`
 
 ```bash
-uv run python -m app copy-legacy [--truncate] [--media PATH]
+.venv/bin/python -m app copy-legacy [--truncate] [--media PATH]
 ```
 
 - Reads legacy tables from `LEGACY_SCHEMA` (default `public`) and writes Tortoise models into `DB_SCHEMA` (default `app`), both in `DATABASE_URL`.
 - It requires an up-to-date schema: run `python -m app migrate` first (it creates the `app` schema and applies Tortoise migrations).
 - It is idempotent: `--truncate` clears the `app.*` tables, then reloads them.
 - It reads legacy rows **by column name** (`SELECT col AS …`), because column order differs between the flashxxx and flashsex dumps.
-- It inserts in batches with `bulk_create` (1000 rows). Votes (~232k rows) use asyncpg `copy_records_to_table` for speed.
+- It writes every table with asyncpg `copy_records_to_table` in one transaction (about 2 s for the whole flashxxx DB). COPY bypasses Tortoise defaults, so every NOT NULL column must be supplied explicitly.
 - At the end it resets sequences, prints a row-count report (legacy vs. new), and recomputes `Theme.game_count`.
 
 Then run `python -m app audit-swf` to fill in `compat`, `width` and `height` from the SWF files.

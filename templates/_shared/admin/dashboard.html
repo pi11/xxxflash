@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<ul>
+  <li><a href="{{ prefix }}/games/?status=pending">Pending / inactive games: {{ counts.pending }}</a></li>
+  <li>Active games: {{ counts.active }}</li>
+  <li><a href="{{ prefix }}/games/?status=missing">Active with missing SWF: {{ counts.missing }}</a></li>
+  <li><a href="{{ prefix }}/games/?status=as3">Active AS3 games: {{ counts.as3 }}</a></li>
+  <li><a href="{{ prefix }}/comments/">Comments: {{ counts.comments }}</a></li>
+  <li><a href="{{ prefix }}/bans/">Banned IPs: {{ counts.bans }}</a></li>
+</ul>

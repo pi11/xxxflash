@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+{% block title %}Banned words{% endblock %}
+{% block content %}
+<h1>Banned words</h1>
+<p>Comments containing any of these (case-insensitive substring) are silently dropped.</p>
+<form method="post" class="row">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <input type="text" name="word" placeholder="word" /><button>Add</button>
+</form>
+<table>
+  <tr><th>Word</th><th>Added</th><th></th></tr>
+  {% for w in words %}
+  <tr><td>{{ w.word }}</td><td>{{ w.created_at|date }}</td>
+    <td><form method="post" class="inline-action"><input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <button name="remove" value="{{ w.word }}">Remove</button></form></td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

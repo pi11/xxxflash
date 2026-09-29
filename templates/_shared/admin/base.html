@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Admin{% endblock %} — {{ settings.site }}</title>
+  <link href="{{ vendor('site.css') }}" rel="stylesheet" />
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #f6f6f6; color: #222; }
+    header { background: #222; color: #fff; padding: 10px 16px; }
+    header a { color: #fff; margin-right: 14px; text-decoration: none; }
+    main { padding: 16px; max-width: 1200px; }
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { border-bottom: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 14px; }
+    th { background: #eee; }
+    .pill { display: inline-block; padding: 1px 6px; border-radius: 8px; background: #ddd; font-size: 12px; }
+    .pill.ok { background: #cfc; } .pill.as3 { background: #ffd; } .pill.missing, .pill.broken { background: #fcc; }
+    form.row > * { margin-right: 6px; }
+    .filters a { margin-right: 10px; }
+    .filters a.on { font-weight: bold; }
+    input[type=text], textarea, select { font: inherit; padding: 4px; }
+    textarea { width: 100%; }
+    .msg { background: #dfd; padding: 8px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="{{ prefix }}/">Dashboard</a>
+  <a href="{{ prefix }}/games/?status=pending">Moderation</a>
+  <a href="{{ prefix }}/games/?status=all">Games</a>
+  <a href="{{ prefix }}/themes/">Themes</a>
+  <a href="{{ prefix }}/comments/">Comments</a>
+  <a href="{{ prefix }}/bans/">Bans</a>
+  <a href="{{ prefix }}/words/">Banned words</a>
+  <a href="/" style="float:right">← site</a>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+</body>
+</html>
