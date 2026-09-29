@@ -8,9 +8,8 @@ See docs/data-migration.md.
 import datetime as dt
 from pathlib import Path
 
-import asyncpg
-
-from app.config import EXT_SCHEMA, Settings
+from app.config import Settings, search_path
+from app.db import connect
 from app.maintenance import UPDATE_THEME_COUNTS_SQL
 
 # Target tables in dependency order (children last); truncated in reverse.
@@ -62,12 +61,12 @@ class LegacyCopier:
         return path if path.is_file() else None
 
     async def run(self, truncate: bool = False) -> dict[str, tuple[int, int]]:
-        conn = await asyncpg.connect(
-            self.settings.database_url,
-            server_settings={"search_path": f'"{self.schema}", {EXT_SCHEMA}'},
-        )
+        conn = await connect(self.settings)
         try:
             async with conn.transaction():
+                # SET LOCAL instead of a startup parameter: works behind PgBouncer too
+                # (the whole copy is one transaction, pinned to one server connection).
+                await conn.execute(f"SET LOCAL search_path TO {search_path(self.schema)}")
                 await self._prepare(conn, truncate)
                 await self._users(conn)
                 await self._themes(conn)
@@ -80,7 +79,7 @@ class LegacyCopier:
                 await self._banned_words(conn)
                 await self._reset_sequences(conn)
                 await conn.execute(UPDATE_THEME_COUNTS_SQL)
-            return await self._report(conn)
+                return await self._report(conn)
         finally:
             await conn.close()
 

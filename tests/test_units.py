@@ -75,3 +75,18 @@ def test_parse_swf_rejects_garbage():
         parse_header(b"")
     with pytest.raises(SwfError):
         parse_header(b"CWS\x09\x00\x00\x00\x00not-zlib")
+
+
+def test_tortoise_config_pgbouncer_mode():
+    import dataclasses
+
+    from app.config import settings, tortoise_config
+
+    direct = tortoise_config(settings, "app")["connections"]["default"]["credentials"]
+    assert direct["schema"] == '"app", ext'
+    assert "statement_cache_size" not in direct
+
+    bouncer = dataclasses.replace(settings, db_pgbouncer=True)
+    creds = tortoise_config(bouncer, "app")["connections"]["default"]["credentials"]
+    assert "schema" not in creds  # PgBouncer rejects the search_path startup parameter
+    assert creds["statement_cache_size"] == 0

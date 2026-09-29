@@ -55,6 +55,25 @@ The dev DB `flashxxx` (user `flashxxx`, password `123123`, localhost) holds the 
 
 The flashsex site needs its own DB (or schema) with the legacy flashsex dump restored the same way. Then the same copy tool runs against it.
 
+### Behind PgBouncer (`DB_PGBOUNCER=1`)
+
+PgBouncer rejects the `search_path` startup parameter (`unsupported startup parameter:
+search_path`), and asyncpg's prepared-statement cache breaks under transaction pooling. With
+`DB_PGBOUNCER=1`:
+
+- The app and the Tortoise CLI send no startup parameters and use `statement_cache_size=0`.
+- `python -m app migrate` stores the search path as the role default:
+  `ALTER ROLE CURRENT_USER IN DATABASE <db> SET search_path = "app", ext, public`
+  (`public` stays last so anything else on this role still finds its tables).
+- The default applies to **new** server connections only. After the first `migrate`, run
+  `RECONNECT` on the PgBouncer admin console (or restart PgBouncer).
+- A guard checks `current_schema()` before migrating and at app start. It refuses to run
+  instead of creating tables in `public`.
+- The copy tool always uses `SET LOCAL search_path` inside its single transaction, so it works
+  either way.
+
+Alternatively, point `DATABASE_URL` straight at Postgres (port 5432) and leave the flag off.
+
 ## Package layout
 
 ```

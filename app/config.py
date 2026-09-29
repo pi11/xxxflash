@@ -13,6 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 EXT_SCHEMA = "ext"
 
 
+def _bool(value: str) -> bool:
+    return value.strip().lower() in ("1", "true", "yes", "on")
+
+
 def _list(value: str) -> list[str]:
     return [v.strip() for v in value.split(",") if v.strip()]
 
@@ -37,6 +41,9 @@ class Settings:
     trusted_proxies: list[str]
     hide_compat: list[str]
     debug: bool
+    # Behind PgBouncer: no startup parameters (search_path comes from the role default set by
+    # `python -m app migrate`) and no prepared-statement cache (breaks transaction pooling).
+    db_pgbouncer: bool = False
     comments_per_page: int = 20
     best_games_per_page: int = 20
     theme_games_per_page: int = 10
@@ -84,7 +91,8 @@ def load_settings(env_file: str | os.PathLike | None = None) -> Settings:
         max_upload_mb=int(env("MAX_UPLOAD_MB", "20")),
         trusted_proxies=_list(env("TRUSTED_PROXIES", "127.0.0.1")),
         hide_compat=_list(env("HIDE_COMPAT", "")),
-        debug=env("DEBUG", "0").lower() in ("1", "true", "yes"),
+        debug=_bool(env("DEBUG", "0")),
+        db_pgbouncer=_bool(env("DB_PGBOUNCER", "0")),
     )
 
 
@@ -99,18 +107,22 @@ def db_credentials(database_url: str) -> dict:
     }
 
 
+def search_path(schema: str) -> str:
+    return f'"{schema}", {EXT_SCHEMA}'
+
+
 def tortoise_config(settings: Settings, schema: str | None = None) -> dict:
     schema = schema or settings.db_schema
+    credentials = db_credentials(settings.database_url)
+    if settings.db_pgbouncer:
+        # PgBouncer rejects the search_path startup parameter; the role default provides it.
+        credentials["statement_cache_size"] = 0
+    else:
+        # asyncpg client turns this into the `search_path` startup parameter
+        credentials["schema"] = search_path(schema)
     return {
         "connections": {
-            "default": {
-                "engine": "tortoise.backends.asyncpg",
-                "credentials": {
-                    **db_credentials(settings.database_url),
-                    # asyncpg client turns this into `search_path`
-                    "schema": f"{schema}, {EXT_SCHEMA}",
-                },
-            }
+            "default": {"engine": "tortoise.backends.asyncpg", "credentials": credentials}
         },
         "apps": {
             "models": {

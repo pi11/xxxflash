@@ -67,7 +67,8 @@ async def test_copy_legacy(legacy_schema, media_root):
     (media_root / "th").mkdir(exist_ok=True)
     (media_root / "th" / "a.png").write_bytes(b"png")
 
-    cfg = dataclasses.replace(settings, legacy_schema=legacy_schema)
+    # db_pgbouncer: no startup parameters, search_path via SET LOCAL (prod runs behind PgBouncer)
+    cfg = dataclasses.replace(settings, legacy_schema=legacy_schema, db_pgbouncer=True)
     copier = LegacyCopier(cfg, media_root=media_root)
     copier.log = lambda *a: None
     report = await copier.run(truncate=True)
@@ -107,3 +108,11 @@ async def test_copy_legacy(legacy_schema, media_root):
     # running again without --truncate refuses to overwrite
     with pytest.raises(RuntimeError):
         await copier.run(truncate=False)
+
+
+async def test_check_search_path_guard(database):
+    from app.db import SearchPathError, check_search_path
+
+    await check_search_path(settings, database)  # ORM connection resolves the test schema
+    with pytest.raises(SearchPathError):
+        await check_search_path(settings, "app_elsewhere")

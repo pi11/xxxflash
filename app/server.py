@@ -33,6 +33,12 @@ def create_app(
     if init_orm:  # tests manage the ORM themselves
         register_tortoise(app, config=tortoise_config(settings))
 
+        @app.before_server_start
+        async def verify_schema(app):
+            from app.db import check_search_path
+
+            await check_search_path(settings)
+
     from app.views import admin, auth, catalog, game, upload
 
     app.blueprint(catalog.bp)
