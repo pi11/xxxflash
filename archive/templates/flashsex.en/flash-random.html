@@ -1,0 +1,13 @@
+{% load cache %}
+{% cache 1 flashsexrandom %}
+<div id="flashes_random" style="border:1px dashed gray; padding:8px; float:left; margin-top:20px; width:100%;">
+<h3>Random Erotic Games:</h3>
+  {% for g in random %}
+  <div style="width:102px; float:left; ">
+    <div style="float:left;">
+      <a title="{{ g.name }}" href="/game/{{ g.id }}/"><img alt="{{ g.name }}" src="{{ MEDIA_URL }}{% if g.thumbfile %}{{ g.thumbfile }}{% else %}images/noimage.jpg{% endif %}" border="0" width="100px" /></a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endcache %}

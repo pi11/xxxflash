@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} Поиск детских игр: {{ query }}{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center"><a href="/" title="">Детские игры</a> > Поиск {{ q }}</div>
+    <h1>Результат поиска по запросу {{ query }} </h1>
+    <br />
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+    {% include "banner-foot.html" %}
+  </div>
+{% endblock %}
+

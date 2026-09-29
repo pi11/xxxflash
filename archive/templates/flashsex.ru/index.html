@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block info %}
+<div class="cmen top">
+<b>Топ пользователей:</b>
+  <ul>
+    {% for p in top_profiles %}
+    <li><a href="#">{{ p.user.username }} <img src="{{ STATIC_URL }}images/star.png" width="14px" /> <b>{{ p.score }}</b></a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!--<div class="cmen top">
+  <script type="text/javascript">
+    teasernet_blockid = 183544;
+    teasernet_padid = 63967;
+  </script>
+  <script type="text/javascript" src="http://incielle.com/javascript/ZE0q04bAd2e"></script>
+</div>-->
+
+
+{% endblock %}
+{% block content %}
+<div class="cmen">
+  <ul>
+    <li><a href="{% url 'best2' %}" id="c3">Новый топ!</a></li>
+    <li><a href="{% url 'best' %}" id="c1">Лучшие игры</a></li>
+    <li><a href="{% url 'popular' %}" id="c2">Популярные игры</a></li>
+   
+
+  </ul>
+</div>
+
+{% include "flash-best.html" %}
+<br />
+<p><h3>Новые игры:</h3></p>
+<br />
+{% include "flash-list.html" %}
+
+<div class="pages">
+  {% include "pages.html" %}
+</div>
+
+  {% if first_page %}
+  <div id="comments_list" style="width:100%; float:left;">
+
+  <p><h3>Последние комментарии:</h3></p>
+    {% for comment in comments.object_list %}
+    {% include "comment-item.html" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+<div style="width:100%; float:left; padding-top:10px;">
+  <h3>Секс чат:</h3>
+    <div id="cboxdiv" style="text-align: center; line-height: 0">
+      <div><iframe frameborder="0" width="600" height="225" src="http://www3.cbox.ws/box/?boxid=3228495&amp;boxtag=5q01a7&amp;sec=main" marginheight="2" marginwidth="2" scrolling="auto" allowtransparency="yes" name="cboxmain" style="border:#EDDEDB 1px solid;" id="cboxmain"></iframe></div>
+      <div><iframe frameborder="0" width="600" height="75" src="http://www3.cbox.ws/box/?boxid=3228495&amp;boxtag=5q01a7&amp;sec=form" marginheight="2" marginwidth="2" scrolling="no" allowtransparency="yes" name="cboxform" style="border:#EDDEDB 1px solid;border-top:0px" id="cboxform"></iframe></div>
+    </div>
+    <!-- END CBOX -->
+</div>
+
+{% endblock %}
+
+
+{% block "info" %}
+		  <p><b>Внимание!</b> На сайте находятся материалы запрещенные для просмотра лицам младше 18 лет. Если Вам менее 18 лет - немедленно покиньте этот сайт. <br /> У нас есть мультфильмы тематики Хентай и аниме (манга) онлайн.<br /> Лушие бесплатные хентай игры интернета на нашем сайте он-лайн!</p>
+
+		  <p><b>Обновился раздел новых игр! Около 3000 новых игр.</b><br />
+		    Добро пожаловать на сайт эротических флэш игр он-лайн!<br />
+		    На нашем сайте более <b>4000!</b> бесплатных игр, в самых различных жанрах и направлениях с эротическим содержанием online!
+		    У нас самая большая коллекция порно игр в рунете! Вы никогда не просмотрите их все! =)</p>
+{% endblock %}
+

@@ -1,0 +1,7 @@
+{% if user.is_authenticated and user.username != 'Anonymous' %}
+Привет, 
+{{ user }} | Рейтинг: <b>{{ profile.score }}</b> | <a href="{% url 'logout' %}">Выход</a>  
+
+{% else %}
+<a href="{% url 'login' %}">Войти / Зарегистрироваться</a>
+{% endif %}

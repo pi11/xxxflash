@@ -1,0 +1,11 @@
+<span class="pages">
+  {% for page in pages %}
+    {% ifnotequal page page_id %}
+      <a class="pages_links" href="/theme/{{ t.url }}/{{ page }}/">{{ page }}</a>
+    {% endifnotequal %}
+    {% ifequal page page_id %}
+      <span class="c_page">{{ page }}</span>
+    {% endifequal %}
+  {% endfor %}
+</span>
+

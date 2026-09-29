@@ -1,0 +1,4 @@
+User-Agent: *
+Disallow: /mark/
+Disallow: /flashgames/
+Host: flashsexru.com

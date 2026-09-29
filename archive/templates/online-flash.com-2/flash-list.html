@@ -1,0 +1,14 @@
+  <ul class="blocks">
+    {% for g in flashes.object_list %}
+    <li>
+      <div>
+	<a title="{{ g.name }}" href="/game/{{ g.id }}/"><img alt="Флеш игра {{ g.name }}" src="{{ MEDIA_URL }}{{ g.thumbfile }}" border="0" width="169" /></a>
+      </div>
+      <div class="rate">рейтинг: <span class="mark-{{ g.id }}">{{ g.rate }}</span> </div>
+      <div class="ratex"><a style="cursor:pointer" onclick="vote('up', {{ g.id }})"><img src="{{ MEDIA_URL }}images/rup.gif" alt="" /></a> <a style="cursor:pointer;" onclick="vote('down', {{ g.id }});"><img src="{{ MEDIA_URL }}images/rdown.gif" alt="" /></a></div>
+      <div class="title">&nbsp;&nbsp;<a href="/game/{{ g.id }}/">{{ g.name }}</a></div>
+      <div class="des">{{ g.description|truncatewords:17 }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+

@@ -1,0 +1,10 @@
+<div align="center">
+  <div id="user_panel">
+    <!--<a href="/" title=""><img src="{{ STATIC_URL }}images/home.png" width="15px;" /> Эротические игры главная</a> |-->
+    {% if user.is_authenticated and user.username != 'Anonymous' %}
+    Hi, <a href="/profiles/{{ user }}/" class="user"><b>{{ user.username }}</b></a> | <a href="/profiles/edit/">Edit profile</a> | <a href="/accounts/logout/">Log Out</a> | {% if profile %}Rate: <b>{{ profile.score }}</b>{% endif %}
+    {% else %}
+    <a href="/accounts/login/">Login / Registration</a>
+    {% endif %}
+  </div>
+</div>

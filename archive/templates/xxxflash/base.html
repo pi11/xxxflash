@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{% block title %}Эротические игры, флэш игры, порно игры, бесплатные, без регистрации, без смсы.{% endblock %}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link href="{{ STATIC_URL }}css/style.css" type="text/css" rel="stylesheet" />
+	<meta name="Description" content="Эротические игры, порно игры, флэш игры, флеш игры, flash игры" />
+	<meta name="Keywords" content="Эротические игры, порно игры, флэш игры, флеш игры, flash игры" />
+	{% block index_headers %}{% endblock %}
+	<meta name='yandex-verification' content='6d7f8a4ee10a7b6e' />
+	<meta name="yandex-verification" content="c0a567e5bbb4242e" />
+	<meta name="google-site-verification" content="5LAdpI1o7tytK9kXGmRz1MNbilR7IN3UzPziRRKOoSY" />
+	<meta name="google-site-verification" content="J_OwWWLNyzBg000gCT_UNI02vAf4fBvQiStV9krtCgE" />
+  <link href="{{ STATIC_URL }}images/favicon.png" rel='shortcut icon'/>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://vkontakte.ru/js/api/share.js?10" charset="windows-1251"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/e.js"></script>
+
+
+  <script type="text/javascript">
+    VK.init({apiId: 3441024, onlyWidgets: true});
+
+    function vote(kind, id) {
+        $.getJSON("/mark/", { pk:id, vote: kind }, function(json){
+        $("#mark-"+id).text(json['success']);
+      });
+    }
+    $(document).ready(function() {
+      //$('#user_panel').load("{% url 'get_user_panel' %}");
+    });
+
+  </script>
+  {% block add_headers %}{% endblock %}
+
+</head>
+<body>
+  {% load banertag %}
+  {% get_baner base %}
+
+  {% block after_body %}
+  {% endblock %}
+  {% block header %}
+  <div class="root">
+    <div class="top_container">
+      <div class="top_text w100">
+        <div class="left">
+	  <a href="{% url 'index_page' %}">Порно и эротические флэш игры.</a> | <a href="{% url 'upload_game' %}">Загрузить игру</a> 
+        </div>
+        <div id="search_form">
+	  <form action="{% url 'search' %}" method="get">
+	    <input type="text" name="q" class="t" placeholder="Введите текст" />
+	    <input type="submit" value="Найти" />
+	  </form>
+        </div>
+      </div>
+      <span class="small left w100">
+        Обновления каждый день. Добавь в закладки и приходи за новыми эротическими играми!
+        <p><a href="javascript:void(0);" onclick="return bookmark(this);">Добавить в избранное</a></p>
+      </span>
+    </div>
+    {% endblock %}
+    {% block user_panel %}
+    <div id="user_panel">
+        {% include "user/panel.html" %}
+    </div>
+    {% endblock %}
+    {% block navigation %}
+    <div class="side_col">
+      {% include "menu.html" %}
+    </div>
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+    {% block footer %}
+    <div class="footer">
+      <div id="left_footer">
+        &copy; 2009-{% now "Y" %} WebII Lab
+      </div>
+      <div id="rigth_footer">
+        Внимание данный сайт предназначен только для взрослых.
+        Входя на сайт Вы подтверждаете, что вам 18 лет и более.
+        Если Вам нет 18 лет, покиньте наш сайт по <a rel="nofollow" href="http://ya.ru/">этой</a> ссылке. <br />
+        Email: webii@protonmail.ch
+      </div>
+    </div>
+    {% endblock %}
+  </div>
+  {% include "counters.html" %}
+</body>
+</html>
+

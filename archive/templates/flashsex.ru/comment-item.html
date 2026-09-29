@@ -1,0 +1,14 @@
+  <div class="comment" align="left">
+    <div class="comment_header">
+      <a name="{{ comment.id }}" href="{% url 'view_game' game_id=comment.flash.id %}">#{{ comment.id }}</a>
+      {% if user.is_staff %}
+      <a href="{% url 'del_comment' comment_id=comment.id %}">[del]</a> | <a href="{% url 'ban' comment_id=comment.id %}">[ban IP {{ comment.ip }}]</a>:
+      {% endif %}
+      {{ comment.publication_date }}
+      <a href="#" title="Рейтинг пользователя: {{ comment.user.get_profile.score }}">{{ comment.user }} ({{ comment.user.get_profile.score }}) </a> написал:
+    </div>
+    <div class="comment_text">
+      {% if comment.user.get_profile.avatar %}<div class="avatar"><a href="/profiles/{{ comment.user }}"><img width="40px" src="{{ MEDIA_URL }}{{ comment.user.get_profile.avatar }}"></img></a></div>{% endif %}
+      {{ comment.text }}
+    </div>
+  </div>

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %} Игра: {{ g.name }}. Скачать игру {{ g.name }} бесплатно. Описание игры {{ g.name }}.{% endblock %}
+{% block description %}Подробное описание игры {{ g.name }}.{% endblock %}
+{% block keywords %}скачать {{ g.name }}, мини игры, бесплатные игры, скачать игру, без регистрации, без смс{% endblock %}
+{% block content %}
+
+<script type="text/javascript">
+  $(function() {
+     $('#gallery a').lightBox({fixedNavigation:true});
+});
+</script>
+   	<style type="text/css">
+	/* jQuery lightBox plugin - Gallery style */
+	#gallery {
+		##background-color: white;
+		padding: 2px;
+		width: 480px;
+	}
+	#gallery ul { list-style: none; }
+	#gallery ul li { display: inline; }
+	#gallery ul img {
+		border: 3px solid white;
+		border-width: 3px 3px 10px;
+	}
+	#gallery ul a:hover img {
+		border: 3px solid gray;
+		border-width: 3px 3px 10px;
+		color: gray;
+	}
+	#gallery ul a:hover { color: #fff; }
+	</style>
+
+
+<script type="text/javascript" charset="UTF8">
+function save() {
+  $.getJSON("/save/", { pk:{{ g.id }} }, function(json){
+    $("#save").text(json['success']);
+  });
+}
+
+function vote(kind) {
+  $.getJSON("/mark/", { pk:{{ g.id }}, vote: kind }, function(json){
+    $("#mark1").text(json['success']);
+  });
+}
+function addClickHandlers() {
+  $("#upvote").click( function() { vote("up") });
+  $("#downvote").click( function() { vote("down") });
+}
+$(document).ready(addClickHandlers);
+</script>
+
+    <div class="drevo" align="center"><a href="/" title="">На главную</a> > <a href="/game/{{ g.id }}/" title="{{ g.name }}">Игра {{ g.name }}</a></div>
+    <div align="center">
+      <div style="font-size:18px; color: blue;">Игра {{ g.name }}</div>
+   
+      <div align="left"> 
+	<p>
+	<span style="font-size:18px; color: black;">Скриншоты из игры:</span> <!--<a style="font-size:18px; color: blue;" href="{{ MEDIA_URL }}download/{{ g.flashfile }}">{{ g.name }}</a>-->
+	</p>
+      </div>
+
+
+     <div id="gallery">
+	{% for s in screens %}
+ 	    <a href="{{ MEDIA_URL }}{{ s.image }}" class="lightbox"><img class="lightbox" src="{{ MEDIA_URL }}{{ s.image }}" width="210"></a>
+	{% endfor %}
+      </div>
+      <div align="center"> 
+	<p>
+	<b><a style="font-size:22px; color: red;" href="{{ MEDIA_URL }}{{ g.flashfile }}">Скачать игру</a></b>
+	</p>
+      </div>
+      <p align="left">
+	<b>Описание игры {{ g.name }}:</b>
+      <div align="left" style="border:dashed 1px gray;padding: 10px;" class="desc">{{ g.description }}</div>
+      </p>
+      <div align="left"> 
+	<p>
+	<b><a style="font-size:22px; color: red;" href="{{ MEDIA_URL }}/{{ g.flashfile }}">Скачать игру {{ g.name }}</a></b>
+	</p>
+      </div>
+      <p>
+      <div align="left">
+	Загрузил: <a href="#">{{ g.user }}</a><br />
+	Рейтинг:  <span style="font-size:18px; font:bold;"> <span id="mark1">{{ mark|default:0 }}</span> <a href="#" id="upvote">+</a> / <a href="#" id="downvote">-</a> </span> <br /> 
+	Просмотров: {{ g.views }}</div>
+
+      <div align="right">
+          Смотри также жанры: <br />
+          {% for t in gt %}
+              <a href="/theme/{{ t.url }}/">{{ t.name }}</a>
+          {% endfor %}
+      </div>
+
+      </p>
+
+
+    {% include "comments.html" %}
+	<form action="/add-comment" method="post">
+	  {{ form.text }}
+	  <input type="hidden" name="flash_id" value="{{ g.id }}">
+	  <span class="off"><input type="text" name="email" value="" size="1"></span>
+	  <br />
+	  <input type="submit" value=" Добавить ">
+	</form>
+      </div>
+{% endblock %}    
+

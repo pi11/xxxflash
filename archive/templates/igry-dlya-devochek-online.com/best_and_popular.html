@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Самые популярные игры для девочек!.{% endblock %}
+{% block content %}
+  <div class="page_content"
+    <div class="drevo" align="center"><a href="/" title="">Флэш игры для девочек</a> </div>
+    <br />
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+  </div>
+{% endblock %}    
+

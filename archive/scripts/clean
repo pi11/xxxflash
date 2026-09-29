@@ -1,0 +1,6 @@
+#!/bin/bash
+for file in $(find -name '*~') ; do rm -rf $file; done
+for file in $(find -name '#*#') ; do rm -rf $file; done
+for file in $(find -name '*.pyc') ; do rm -rf $file; done
+for file in $(find -name '*.pyo') ; do rm -rf $file; done
+

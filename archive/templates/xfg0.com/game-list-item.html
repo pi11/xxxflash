@@ -1,0 +1,26 @@
+<div class="row game-item">
+  <div class="thumb col-lg-6 col-md-7 col-sm-7">
+    <a title="{{ g.name }}" href="{% url 'view_game' game_id=g.id %}" target="_blank">
+      <img id="img-{{ g.pk }}" alt="{{ g.name }}" src="{{ g.get_thumb }}" style="width: 350px;" border="0" /></a>
+  </div>
+
+  <div class="col-lg-6 col-md-5 col-sm-5">
+    <a href="{% url 'view_game' game_id=g.id %}" class="title">{{ g.name }}</a>
+    <div class="">
+      {{ g.description|truncatewords:20 }}
+    </div>
+    <div style="padding-top:20px;">
+      Рейтинг флэш игры:&nbsp;<span id="mark-{{ g.id }}">{{ g.rate }}</span>
+      <a class="mark" onclick="vote('up', {{ g.id }});">&nbsp;+&nbsp;</a> <a class="mark" onclick="vote('down', {{ g.id }});">&nbsp;-&nbsp;</a>
+      <div>
+	Просмотров:&nbsp;<span style="font-weight: 700;">{{ g.views }}</span>
+      </div>
+      {{ g.comments }}
+    </div>
+  </div>
+  <div class="col-lg-6 col-md-5 col-sm-5 sub-screens">
+    {% for im in g.get_screenshots %}
+    <div style="width:60px; height:60px; overflow:hidden; float:left;"><img src="{{ im.get_thumb }}" style="with:60px; height:60px; padding:4px;" onmouseover="$('#img-{{ g.pk }}').attr('src', '{{ im.image.url }}');"/></div>
+    {% endfor %}
+  </div>
+</div>

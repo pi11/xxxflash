@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--<center><iframe src="http://rotator.gameboss.ru/engine2/?sizetype=544x300&advert=55829&url=" width="544" height="300" marginwidth="0" marginheight="0" scrolling="no" frameborder="0"></iframe></center><br>-->
+
+<div class="c1">
+  <h2>Лучшие флэш игры:</h2>
+  {% include "best-list.html" %}
+</div>
+
+<div class="c2">
+  <h2>Новые флэш игры:</h2>
+  {% include "flash-list.html" %}
+</div>
+    {% include "pages.html" %}
+{% endblock %}    
+

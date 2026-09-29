@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block index_headers %}
+  <meta name="verify-reformal" content="cc4e063b9b71f8a519d75268" />
+{% endblock %}
+{% block content %}
+<div class="page_content">
+  <div class="drevo" align="center">
+    <div align="center">
+      <a href="{% url 'best2' %}" class="top_link red">Новый топ игр</a> 
+      | <a href="{% url 'best' %}">Лучшие порно игры</a> 
+      | <a href="{% url 'popular' %}">Популярные порно игры</a>
+      
+    </div>
+  </div>
+
+{% include "flash-best.html" %}
+
+  {% if first_page %}
+  <div class="cmen top" style="text-align:center; float:left;">
+    <b>Топ пользователей:</b>
+    <ul>
+      {% for p in top_profiles %}
+      {% if p.score > 0 %}
+      <li>
+        <a href="#">
+          {{ p.user.username }} <img src="{{ STATIC_URL }}images/star.png" width="14px" /> 
+          <b>{{ p.score }}</b>
+        </a>
+      </li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+
+  <p><h2>Новые секс игры:</h2></p>
+  {% endif %}
+  {% include "flash-list.html" %}
+
+  {% if first_page %}
+  <div id="comments_list">
+    {% for comment in comments.object_list %}
+    {% include "comment-item.html" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="pages">
+    {% include "paginator.html" %}
+  </div>
+
+  <div class="left_menu">
+  </div>
+  {% include "banner-foot.html" %}
+  {% include "flash-random.html" %}
+</div>
+{% endblock %}
+

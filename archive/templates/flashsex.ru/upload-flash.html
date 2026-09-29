@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="upload_form">
+  <div class="error">
+    {% if errors %}
+    <h2>Ошибка заполнения формы</h2>
+    {% endif %}
+    <ul>
+      {% for e in errors %}
+      <li>{{ e }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <form action="." method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<p><label for="id_name">Название:</label>
+{{ form.name }}
+<div class="error">{{ form.name.errors }}</div>
+</p>
+
+<br />
+Описание:
+ {{ form.description }}
+<div class="error"> {{ form.description.errors }}</div>
+<br /><br />
+
+<p><label for="id_flashfile">Флеш-игра (swf): </label>
+{{ form.flashfile }}<div class="error">{{ form.flashfile.errors }}</div>
+</p>
+<br />
+<p><label for="id_thumbfile">Скриншот (jpg,png): </label>
+{{ form.thumbfile }}<div class="error">{{ form.thumbfile.errors }}</div>
+</p>
+<br />
+Выберите темы:
+ {{ form.theme }}
+<div class="error"> {{ form.theme.errors }}</div>
+<br /><br />
+<input type="submit" value= "Загрузить">
+</form>
+</div>
+{% endblock %}
+
+

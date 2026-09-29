@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %} Эротические флэш игры. Лучшие порно игры. Самые популярные.{% endblock %}
+{% block title2 %}{% if best %}Лучшие{% else %}Самые популярные{% endif %} порно игры{% endblock %}
+{% block content %}
+
+<div class="cb">
+  <div class="cb_top"></div>
+  <div class="cb_cen">
+     <h1>  Топ 50 {% if best %}лучших{% else %}самых популярных{% endif %} эротических игр</h1>
+    <div class="cmen">
+      <ul>
+        <li><a href="/best" id="c1">Лучшие порно игры</a></li>
+        <li><a href="/popular" id="c2">Популярные порно</a></li>
+        <!--<li><a href="#" id="c3">Новые порно игры</a></li>-->
+      </ul>
+    </div>
+
+    {% include "flash-list.html" %}
+  <div class="pages">
+    {% include "pages.html" %}
+  </div>
+{% endblock %}
+

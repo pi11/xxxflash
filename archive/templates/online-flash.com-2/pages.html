@@ -1,0 +1,19 @@
+<div class="paging">
+  <ul>
+     {% if flashes.has_previous %}
+             <li><a href="{{ base_url }}/page/{{ flashes.previous_page_number }}">&larr;</a> </li>
+        {% endif %}
+    {% for page in pages %}
+        {% ifnotequal page page_id %}
+       <li><a class="pages_links" href="{{ base_url }}/page/{{ page }}/">{{ page }}</a> </li>
+    {% endifnotequal %}
+    {% ifequal page page_id %}
+      <li>{{ page }}</li>
+    {% endifequal %}
+   {% endfor %}
+    {% if flashes.has_next %}
+           <li> <a href="{{ base_url }}/page/{{ flashes.next_page_number }}">&rarr;</a></li>
+        {% endif %}
+  </ul>
+</div>
+

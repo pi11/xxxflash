@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page_content">
+  {% if user.is_authenticated %}
+  Welcome {{ user }}!
+  {% else %}
+  Login error, possibly link too old. <a href="{% url 'login' %}">Try again</a>.
+  {% endif %}
+</div>
+
+{% endblock %}

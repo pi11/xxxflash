@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>{% block title %}Детские игры онлайн. Детские флэш игры бесплатно. {% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link href="{{ STATIC_URL }}style.css" type="text/css" rel="stylesheet" />
+  <meta name="Description" content="Детские игры, детские флэш игры" />
+  <meta name="Keywords" content="игры, флэш, онлайн" />
+  <link href="{{ STATIC_URL }}images/favicon.png" rel='shortcut icon'/>
+  <link href="{{ STATIC_URL }}images/favicon.png" rel='icon'/>
+
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.3.2.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/bookmark.js"></script>
+
+</head>
+<body>
+{% block header %}
+<div class="root">
+  <div class="top_container">
+    <div class="top_text">
+      <a href="/">Детские флэш игры онлайн</a>
+    <div id="search_form">
+	<form action="{% url 'search' %}" method="get">
+	  <input type="text" name="q" class="t" placeholder="Введите текст для поиска" />
+	  <input type="submit" value="Найти" />
+	</form>
+      </div>
+    </div>
+    <span class="small">
+	{% block user_panel %}
+	{% include "user/user_panel.html" %}
+	{% endblock %}
+      Мы загружаем игры каждый день! Добавь нас в закладки и приходи за новыми детскими играми!
+      <p>
+	<a href="javascript:void(0);" onclick="return bookmark(this);">Добавить в избранное</a>
+      </p>
+    </span>
+<!-- top_text -->
+  </div><!-- top_conteiner -->
+{% endblock %}
+{% block navigation %}
+  <div class="side_col">
+    {% include "menu.html" %}
+  </div>
+{% endblock %} 
+{% block content %}
+{% endblock %} 
+{% block footer %}  
+  <div class="footer">
+    <div id="left_footer">
+      &copy; <a href="http://webii.ru/" style="font-size:12px;">WebII Lab</a>
+      {% include "li.html" %}
+      <br />
+      <a href="https://bitbucket.org/pi11/xxxflash" rel="nofollow">Powered by Xflash</a>
+      
+    </div>
+    <div id="rigth_footer">
+      Если вы автор игры и не хотите, чтобы она была на сайте пишите: webii@yandex.ru.
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<script type="text/javascript">
+reformal_wdg_domain    = "igry";
+reformal_wdg_mode    = 0;
+reformal_wdg_title   = "Детские игры";
+reformal_wdg_ltitle  = "Оставьте свой отзыв";
+reformal_wdg_lfont   = "";
+reformal_wdg_lsize   = "";
+reformal_wdg_color   = "#FFD98F";
+reformal_wdg_bcolor  = "#516683";
+reformal_wdg_tcolor  = "#FFFFFF";
+reformal_wdg_align   = "right";
+reformal_wdg_charset = "utf-8";
+reformal_wdg_waction = 0;
+reformal_wdg_vcolor  = "#9FCE54";
+reformal_wdg_cmline  = "#E0E0E0";
+reformal_wdg_glcolor  = "#105895";
+reformal_wdg_tbcolor  = "#FFFFFF";
+ 
+reformal_wdg_bimage = "7688f5685f7701e97daa5497d3d9c745.png";
+ 
+</script>
+
+<script type="text/javascript" language="JavaScript" src="http://reformal.ru/tab6.js?charset=utf-8"></script><noscript><a href="http://igry.reformal.ru">Детские игры feedback </a> <a href="http://reformal.ru"><img src="http://reformal.ru/i/logo.gif" /></a></noscript>
+
+</body>
+</html>
+
+
+	

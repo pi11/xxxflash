@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %} Игра: {{ g.name }}. Скачать флеш игру {{ g.name }} бесплатно. Описание игры {{ g.name }}.{% endblock %}
+{% block description %}Подробное описание игры {{ g.name }}.{% endblock %}
+{% block keywords %}скачать {{ g.name }}, флеш игры, flash игры, флеш-игры, флэш игры, flash-игры{% endblock %}
+{% block extra_head %}
+<script type="text/javascript" charset="UTF8">
+function save() {
+  $.getJSON("/save/", { pk:{{ g.id }} }, function(json){
+    $("#save").text(json['success']);
+  });
+}
+function vote2(kind) {
+  $.getJSON("/mark/", { pk:{{ g.id }}, vote: kind }, function(json){
+    $("#mark1").text(json['success']);
+  });
+}
+function addClickHandlers() {
+  $("#upvote").click( function() { vote2("up") });
+  $("#downvote").click( function() { vote2("down") });
+}
+$(document).ready(addClickHandlers);
+</script>
+{% endblock %}
+{% block content %}
+
+<div class="c4">
+  <h2>{{ g.name }}</h2>
+  <div class="game">
+    <object type="application/x-shockwave-flash" style="width:700px; height:700px;" data="{{ MEDIA_URL}}{{ g.flashfile }}"><param name="movie" value="{{ MEDIA_URL}}{{ g.flashfile }}" />
+    </object> 
+  </div>
+
+  <div class="rateb">
+    <div class="rate">Просмотров: {{ g.views }}</div>
+    <div class="rate">Рейтинг: <span id="mark1">{{ mark|default:0 }}</span></div>
+    <div class="ratex"><a href="#" id="upvote"><img src="{{ MEDIA_URL }}images/rup.gif" alt="+" /></a>
+      <a href="#"><img src="{{ MEDIA_URL }}images/rdown.gif" alt="-" id="downvote" /></a>
+    </div>
+    <div class="rate">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    <div class="rate"><script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+      <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="none" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki"></div> </div>
+  </div>
+
+  <div class="title">{{ g.name }}</div>
+  <div class="des">{{ g.description }}</div>
+  
+
+</div>
+
+<!--<div align="right">
+  Смотри также жанры: <br />
+  {% for t in gt %}
+  <a href="/theme/{{ t.url }}/">{{ t.name }}</a>
+  {% endfor %}
+</div>-->
+
+<div class="c5">
+
+  {% include "comments.html" %}
+  <h2 class="padpad">Добавить комментарий</h2>
+  <form action="/add-comment" method="post">{% csrf_token %}
+    <input type="hidden" name="flash_id" value="{{ g.id }}">
+    <span style="display:none;"><input type="text" name="email" value="" size="1"></span>
+    <div class="forma">
+      <table border="0" cellspacing="5" cellpadding="0">
+	<tr><td valign="top">Комментарий:</td><td><textarea name="text" style="width:275px; height: 106px;" rows="" cols=""></textarea></td></tr>
+	<tr><td colspan="2" align="right"><input type="image" src="{{ MEDIA_URL }}images/send.gif" style="border: none" /></td></tr>
+      </table>
+      <!--<input type="submit" value=" Добавить ">-->
+    </div>
+  </form>
+</div>
+
+{% endblock %}    
+
+{% block footer %}  
+	<p id="footer_c">&copy; JP-Net Group - <a href="http://www.jp-net.ru/">продвижение сайтов.</a> & WebII Lab <a href="http://webii.ru/">WebII Lab</a></p>
+	<p>Эта страница посвещена флеш игре {{ g.name }}.<br />Поддержи проект! Поставь ссылку на своем сайте или блоге: http://online-flash.com/</p>
+        <!--LiveInternet counter--><script type="text/javascript"><!--
+								    document.write("<span "+
+								    "target=_blank><img src='http://counter.yadro.ru/hit?t44.1;r"+
+								    escape(document.referrer)+((typeof(screen)=="undefined")?"":
+								    ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+								    screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+								    ";"+Math.random()+
+								    "' alt='' title='LiveInternet' "+
+								    "border='0' width='11' height='11'><\/span>")
+								    //--></script><!--/LiveInternet-->
+{% endblock %} 
+

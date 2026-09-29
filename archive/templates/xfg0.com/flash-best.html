@@ -1,0 +1,21 @@
+{% load banertag %}
+<div id="flashes_best" class="row text-center">
+  <div class="row">
+    <h3>Лучшие эротические flash игры:</h3>
+    {% for g in best %}
+    <div class="col-md-2 col-lg-2 col-sm-2 col-xs-4">
+      <div class="row" style="height:140px; overflow:hidden;">
+        <a title="{{ g.name }}" href="{% url 'view_game' game_id=g.id %}" target="_blank"><img alt="{{ g.name }}" src="{{ g.get_thumb }}" style="width: 145px;" border="0" /></a>
+      </div>
+      <div class="row">
+        <a href="{% url 'view_game' game_id=g.id %}">{{ g.name }}</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="container">
+    <!--noindex-->
+    {% get_baner top_ad1 %}
+    <!--/noindex-->
+  </div>
+</div>

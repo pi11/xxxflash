@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page_content">
+  {% if user.is_authenticated %}
+  Добро пожаловать {{ user }}!
+  {% else %}
+  Ошибка входа, возможно ссылка устарела. <a href="{% url 'login' %}">Попробуйте еще раз</a>.
+  {% endif %}
+</div>
+
+{% endblock %}

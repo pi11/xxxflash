@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %} Игра для девочек: {{ g.name }}{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript" charset="UTF8">
+function save() {
+  $.getJSON("/save/", { pk:{{ g.id }} }, function(json){
+    $("#save").text(json['success']);
+  });
+}
+
+function vote(kind) {
+  $.getJSON("/mark/", { pk:{{ g.id }}, vote: kind }, function(json){
+    $("#mark1").text(json['success']);
+  });
+}
+function addClickHandlers() {
+  $("#upvote").click( function() { vote("up") });
+  $("#downvote").click( function() { vote("down") });
+}
+$(document).ready(addClickHandlers);
+</script>
+
+  {% load check_mobile %}
+  {% check_mobile %}
+
+  {% if is_edge == 0 %}
+  {% endif %}
+  
+  {% if is_edge == 1 %}
+    {% get_baner megafon %}
+  {% endif %}
+  {% if is_edge == 2 %}
+    {% get_baner beeline %}
+  {% endif %}
+  {% if is_edge == 3 %}
+    {% get_baner mts %}
+  {% endif %}
+
+  <div id="flashes">
+    <div class="drevo" align="center"><a href="/" title="">Онлайн игры для девочек</a> > <a href="{% url 'view_game' game_id=g.id %}" title="{{ g.name }}">{{ g.name }}</a></div>
+    <div class="acenter">
+      <div class="game_title">{{ g.name }}</div>
+   
+      <div id="game" style="width:{{ g.width }}px; width:{{ g.height }}px;"> 
+	<object type="application/x-shockwave-flash" style="width:{{ g.width }}px;height:{{ g.height }}px;" data="{{ MEDIA_URL}}{{ g.flashfile }}"><param name="movie" value="{{ MEDIA_URL}}{{ g.flashfile }}" />
+	</object> 
+      </div>
+
+      <div class="">
+	<div align="left" class="desc">{{ g.description }}</div>
+      </div>
+
+      <div class="options">
+	<div align="right">Добавил: <a href="#">{{ g.user }}</a></div>
+	<div align="right">Оценка игры:  <span style="font-size:18px; font:bold;"> <span id="mark1">{{ mark|default:0 }}</span> <a class="mark" id="upvote"><img src="{{ STATIC_URL }}images/up.gif" /></a>  <a class="mark" id="downvote"><img src="{{ STATIC_URL }}images/down.gif" /></a> </span> </div>
+	<div align="right">Играли: {{ views }} раз</div>
+	<div align="right">
+          {% for t in gt %}
+              <a href="{% url 'theme' theme_name=t.url %}">{{ t.name }}</a>
+          {% endfor %}
+	</div>
+      </div>
+      
+      <div class="break">
+	{% include "comments.html" %}
+      </div>
+      <div align="left" class="break">Добавить комментарий:</div>
+      <div align="left" class="break">
+	<form action="{% url 'add_comment' %}" method="post">{% csrf_token %}
+	  {{ form.text }}
+	  <input type="hidden" name="flash_id" value="{{ g.id }}" />
+	  <span class="off"><input type="text" name="email" value="" size="10" /></span>
+	  <br />
+	  <input type="submit" value=" Добавить " />
+	</form>
+      </div>
+
+      <div align="left">
+	    {% include "flash-random.html" %}
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+{% endblock %}    
+

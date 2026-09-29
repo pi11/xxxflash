@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} Erotic flash games: {{ theme.name }}{% endblock %}
+{% block content %}
+
+<!--<div class="cb">-->
+<div class="cb_top"></div>
+<!--<div class="cb_cen">-->
+
+  <h1>Genre: {{ theme.name }} </h1>
+  <div class="cmen">
+    <ul>
+       <li><a href="{% url 'best' %}" id="c1">Best Adult Games</a></li>
+        <li><a href="{% url 'popular' %}" id="c2">Popular Erotic Games</a></li>
+        <li><a href="{% url 'best2' %}" id="c3">More best games</a></li>
+ 
+    </ul>
+  </div>
+  <br />
+  {% include "flash-list.html" %}
+  <div class="pages">
+    {% include "paginator.html" %}
+  </div>
+
+{% endblock %}
+
+
+
+

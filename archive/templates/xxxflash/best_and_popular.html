@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %} Эротические флэш игры. Лучшие порно игры. Самые популярные.{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center"><a href="/" title="">Порно игры</a> </div>
+    <br />
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+  {% include "banner-foot.html" %}
+  </div>
+{% endblock %}
+

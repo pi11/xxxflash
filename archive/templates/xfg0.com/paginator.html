@@ -1,0 +1,19 @@
+<div id="paginator">
+  <div class="pages-info">
+    Страница <b>{{ flashes.number }}</b> из {{ flashes.paginator.num_pages }}.
+  </div>
+  <ul class="pagination pagination-lg ">
+    {% if flashes.has_previous %}
+    <li><a href="#">&laquo;</a></li>
+    {% endif %}
+    {% for page in pages %}
+
+    <li{% if page == page_id %} class="active"{% endif %}>
+      <a class="pages_links page" href="?p={{ page }}">{{ page }}</a>
+    </li>
+    {% endfor %}
+    {% if flashes.has_next %}
+    <li><a href="#">&raquo;</a></li>
+    {% endif %}
+  </ul>
+</div>

@@ -1,0 +1,9 @@
+
+<h2>Комментарии</h2>
+{% for comment in comments %}
+<a name="{{ comment.id }}" href="/game/{{ comment.flash.id }}/#{{ comment.id }}">#{{ comment.id }}</a> 
+{% if user.is_staff %}
+<a href="/del-comment/{{ comment.id }}">[del]</a>:
+{% endif %}
+<p><b>{{ comment.user }}:</b>{{ comment.text }}</p>
+{% endfor %}

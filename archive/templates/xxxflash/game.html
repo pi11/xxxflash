@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load banertag %}
+
+{% block title %} Эротическая флэш игра: {{ g.name }}{% endblock %}
+{% block add_headers %}
+
+  {% load check_mobile %}
+  {% check_mobile %}
+
+  {% if is_edge == 0 %}
+  {% endif %}
+  
+  {% if is_edge == 1 %}
+    {% get_baner megafon %}
+  {% endif %}
+  {% if is_edge == 2 %}
+    {% get_baner beeline %}
+  {% endif %}
+  {% if is_edge == 3 %}
+    {% get_baner mts %}
+  {% endif %}
+
+{% endblock %}
+
+{% block after_body %}
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+{% endblock %}
+
+{% block content %}
+
+{% get_baner game %}
+
+
+
+<script type="text/javascript" charset="UTF8">
+
+function save() {
+  $.getJSON("/save/", { pk:{{ g.id }} }, function(json){
+    $("#save").text(json['success']);
+  });
+}
+
+function vote(kind) {
+  $.getJSON("/mark/", { pk:{{ g.id }}, vote: kind }, function(json){
+    $("#mark1").text(json['success']);
+  });
+}
+function addClickHandlers() {
+  $("#upvote").click( function() { vote("up") });
+  $("#downvote").click( function() { vote("down") });
+}
+$(document).ready(addClickHandlers);
+</script>
+
+  <div id="flashes">
+    <div class="drevo" align="center"><a href="/" title="">Эротические игры</a> > <a href="/game/{{ g.id }}/" title="{{ g.name }}">{{ g.name }}</a></div>
+    <div class="acenter">
+     {% if game_under_moderation %} <div class="game_title">Эта игра еще не прошла модерацию!</div>{% endif %}
+
+      <div class="game_title">{{ g.name }}</div>{% if user.is_staff %}<a href="/secret-admin-lol/flash/flash/{{ g.id }}/"> Edit </a>{% endif %}</h1>
+
+      <div id="game">
+	<object type="application/x-shockwave-flash" style="width:700px; height:700px;" data="{{ MEDIA_URL}}{{ g.flashfile }}"><param name="movie" value="{{ MEDIA_URL}}{{ g.flashfile }}" />
+	</object>
+
+      </div>
+      
+      <div class="">
+	<div align="left" class="desc">{{ g.description }}</div>
+      </div>
+
+      <div class="options">
+        <div style="float:left;display:block;width: auto; padding:3px;">
+        <strong>Поделиться игрой:</strong><br />
+        <div style="float:left;display:block;padding:3px;"><a href="http://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div>
+<!--        <div  id="vk_like"></div>-->
+        <div style="float:left;display:block;padding:3px;"><script type="text/javascript"><!--
+        document.write(VK.Share.button({title: "Эротическая флэш игра: {{ g.name }}",description: "{{ g.description|truncatewords:5 }}",},{type: "round", text: "Поделиться"}));
+        --></script></div>
+        <div style="float:left;display:block;padding:3px;"><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:like href="" layout="button_count" show_faces="true" width="90" font=""></fb:like></div>
+        </div>
+	<div align="right">Загрузил: <a href="/profiles/{{ g.user }}">{{ g.user }}</a></div>
+	<div align="right">Оценка флэш игры:  <span style="font-size:18px; font:bold;"> <span id="mark1">{{ mark|default:0 }}</span> <a class="mark" id="upvote">+</a> / <a class="mark" id="downvote">-</a> </span> </div>
+	<div align="right">Просмотров: {{ views }}</div>
+
+<!--        <script type="text/javascript">
+        VK.Widgets.Like("vk_like", {type: "button", width: "200", pageTitle: "Эротическая флэш игра: {{ g.name }}", pageDescription: "{{ g.description|truncatewords:5 }}"});
+        </script>-->
+      </div>
+
+      <div style="float:left;display:block;">
+          Смотри также: <br />
+          {% for t in gt %}
+              <a href="/theme/{{ t.url }}/">{{ t.name }}</a> |
+          {% endfor %}
+      </div>
+
+      <div class="break">
+	{% include "comments.html" %}
+      </div>
+      <div class="break">
+        <div style="width:49%; float:left;">
+          <div align="left" class="break">Добавить комментарий:</div>
+          <div align="left" class="break">
+            <form action="/add-comment" method="post">{% csrf_token %}
+              {{ form.text }} {{ form.text.errors }}
+              <input type="hidden" name="flash_id" value="{{ g.id }}" />
+              <span class="off"><input type="text" name="email" value="" size="10" /></span>
+              <br />
+              <input type="submit" value=" Добавить " />
+            </form>
+          </div>
+        </div>
+        <div style="width:49%; float:left;">
+          {% get_baner comments %}
+        </div>
+      </div>
+      {% include "banner-foot.html" %}
+      {% include "flash-random.html" %}
+    </div>
+
+  </div>
+
+{% endblock %}
+

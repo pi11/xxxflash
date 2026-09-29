@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+<p>Логин или пароль не верен.</p>
+{% endif %}
+
+<p>
+Вход на сайт:
+</p>
+<form method="post" action="{% url django.contrib.auth.views.login %}">
+<table>
+<tr>
+    <td>Имя пользователя</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>Пароль</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value=" Войти " />
+<input type="hidden" name="next" value="/" />
+</form>
+
+{% endblock %}

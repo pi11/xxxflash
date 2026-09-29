@@ -1,0 +1,15 @@
+Django
+pillow
+-e hg+https://bitbucket.org/pi11/django-baner#egg=django-baner
+-e hg+https://bitbucket.org/pi11/django-email-auth#egg=emailuser
+-e hg+https://bitbucket.org/pi11/django-misc-helpers/#egg=djangohelpers
+django-postgrespool
+-e git+git://github.com/dcramer/django-sphinx.git#egg=django-sphinx
+ipaddr
+psycopg2
+python-memcached
+pylibmc
+pytz
+hexagonit.swfheader
+
+

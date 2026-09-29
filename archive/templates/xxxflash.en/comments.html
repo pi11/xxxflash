@@ -1,0 +1,24 @@
+{% if not index_page %}
+
+{% endif %}
+{% for comment in comments %}
+  <div class="comment" align="left">
+    <div class="comment_header">
+      <a name="{{ comment.id }}" href="/game/{{ comment.flash.id }}/#{{ comment.id }}">#{{ comment.id }}</a>
+      {% if user.is_staff %}
+        <a href="/del-comment/{{ comment.id }}">[del]</a> | <a href="/ban/{{ comment.id }}/">[ban IP {{ comment.ip }}]</a>:
+
+      {% endif %}
+      {{ comment.publication_date }}
+      <a href="/profiles/{{ comment.user }}">{{ comment.user }}</a> wrote:
+    </div>
+    <div class="comment_text">
+    {% if first_page %}
+    {% if comment.user.get_profile.avatar %}<div class="avatar"><a href="/profiles/{{ comment.user }}"><img width="40px" src="{{ MEDIA_URL }}{{ comment.user.get_profile.avatar }}"></img></a></div>{% endif %}
+    {% else %}
+     {% if comment.user.get_profile.avatar %}<div class="avatar"><a href="/profiles/{{ comment.user }}"><img width="40px" src="{{ MEDIA_URL }}{{ comment.user.get_profile.avatar }}"></img></a></div>{% endif %}
+    {% endif %}
+      {{ comment.text }}
+    </div>
+</div>
+{% endfor %}

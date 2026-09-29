@@ -1,0 +1,21 @@
+  <div class="game_list">
+    <div class="thumb">
+	<a title="{{ g.name }}" href="/game/{{ g.id }}/" target="_blank"><img alt="{{ g.name }}" src="{{ MEDIA_URL }}{{ g.thumbfile }}" style="width: 350px;" border="0" width="350" /></a>
+    </div>
+
+    <div class="description">
+      <a href="/game/{{ g.id }}/" class="title">{{ g.name }}</a>
+      <div class="">
+	{{ g.description|truncatewords:20 }}
+      </div>
+      <div style="padding-top:20px;">
+	Рейтинг флэш игры:&nbsp;<span id="mark-{{ g.id }}">{{ g.rate }}</span>
+	<a class="mark" onclick="vote('up', {{ g.id }});">&nbsp;+&nbsp;</a> <a class="mark" onclick="vote('down', {{ g.id }});">&nbsp;-&nbsp;</a>
+	<div>
+	  Просмотров:&nbsp;<span style="font-weight: 700;">{{ g.views }}</span>
+	</div>
+	{{ g.comments }}
+      </div>
+    </div>
+
+  </div>

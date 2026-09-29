@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ theme.name }}: игры для девочек.{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center"><a href="/" title="">Игры для девочек</a> > <a href="{% url 'theme' theme_name=theme.url %}" title="{{ theme.name }}">{{ theme.name }}</a></div>
+    <h1>Раздел: {{ theme.name }} </h1>
+    <br />
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+  </div>
+{% endblock %}    
+

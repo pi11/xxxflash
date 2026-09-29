@@ -1,0 +1,40 @@
+    <p>
+      Темы игр:
+    </p>
+    <div class="left_menu">
+      <ul>
+	{% for t in themes %}
+          <li><a title="{{ t.name }}" href="{% url 'theme' theme_name=t.url %}">{{ t.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="left_menu best">
+    <ul>
+      <li><a href="{% url 'best2' %}">Топ игр!</a></li>
+      <li><a href="{% url 'best' %}">Лучшие игры</a></li>
+      <li><a href="{% url 'popular' %}">Популярные игры</a></li>
+    </ul>
+    </div>
+    <div class="line"></div>
+    <div class="left_menu">
+      Рекомендуем:
+      <div class="left_menu">
+	<ul>
+	  <li><a href="http://pozdravilnik.ru/f/15/tswnyzm.html" style="font-size:12px;">Поздравления с днем рождения</a> |</li> 
+	  <li><a href="http://puto.ws/" style="font-size:12px;">Логические загадки</a> |</li> 
+	</ul>
+      </div>
+    </div>
+    <div class="left_menu">
+      AD
+    </div>
+    <div class="left_menu">
+      <div style="font-size:10px;margin-left: 5px;margin-right: 5px; width: 150px;">
+	<b>Хочешь помочь проекту?</b><br/>
+	Размести ссылку: <p><span style="color:gray;"> &lt;a href=&quot;http://igry-dlya-devochek-online.com/&quot;&gt;Игры для девочек&lt;/a&gt;</span></p>
+      </div>
+    </div>
+    <div class="left_menu" style="height:550px">
+      <div id="visitweb_container_21498" style="width:100%;"></div><script src="http://visitweb.com/v/21498" type="text/javascript"></script>
+    </div>

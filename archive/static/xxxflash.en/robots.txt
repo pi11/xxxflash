@@ -1,0 +1,6 @@
+User-Agent: *
+Disallow: /mark/
+
+User-Agent: Yandex
+Disallow: /mark/
+Host: flashpron.com

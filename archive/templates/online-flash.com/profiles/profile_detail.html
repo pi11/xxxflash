@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Профиль пользователя {{ user }}{% endblock %}
+
+{% block content %}
+{% if profile.avatar %}<div class="avatar"><img width="150 px" src="{{ MEDIA_URL }}{{ profile.avatar }}" alt="Аватар для {{ profile.user }}"></img></div>{% endif %}
+<div class="profile_text"><h1>Пользователь {{ profile.user }} </h1><br />
+{% if profile.site %}Домашняя страница: <a ref="nofollow" href="http://http://{{ profile.site }}">http://{{ profile.site }}</a><br />{% endif %}
+{% if profile.about %}Немного о себе: <td>{{ profile.about }}</td>{% endif %}
+</div>
+{% endblock content %}

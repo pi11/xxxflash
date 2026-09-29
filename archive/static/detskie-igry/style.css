@@ -1,0 +1,274 @@
+@charset "utf-8";
+*{
+    padding:0px; 
+    margin:0px; 
+
+}
+
+body{
+    
+    font-family: "Trebuchet MS", "Palatino Linotype", Verdana, "Courier New", sans-serif; 
+    font-size:16px; 
+    border-top:4px #fff solid;
+    background-position:right bottom; 
+    background-repeat:no-repeat;
+    background-image: url("/images/games.png");
+}
+
+a {
+    color:#00056C;/*#FFFE00;/*#2e8b57; */
+    text-decoration:none;
+}
+
+
+a:hover {
+    text-decoration:underline;
+}
+.best ul li a {
+    font-size:18px;
+}
+
+
+.left_menu ul li a {
+    padding:3px;
+    color:#FF5B00;
+}
+.left_menu ul li {
+    padding:3px;
+}
+.left_menu ul li a:hover {
+    border:1px solid #FF5B00;
+    color: #fff;
+    background-color:#FF5B00;
+    border-radius:4px;
+    text-decoration:none;
+}
+
+a.mark{
+    text-decoration:none;
+    cursor: pointer;
+    font-size:22px;
+    font-weight:bold;
+}
+a.title{
+    font-size:20px;
+    padding:3px;
+    color:#FF5B00;
+
+}
+
+
+.root{ 
+    width:980px; 
+    margin:0 auto;
+}
+.top_container{
+    height:80px;
+    position:relative;
+
+}
+
+.top_text{
+	color:#FF5B00;
+	font-size:25px;
+	clear:both;
+}
+
+
+.top_text a{
+	color:#FF5B00;
+}
+
+.my_put { border:1px gray solid; }
+
+.top_text_1{height:135px}
+
+.top_text .white{color:white; display:block; font-size:12px}
+.side_col{
+    float:left; 
+    width:200px; 
+    padding:10px
+}
+
+.side_col ul li{ list-style:none}
+
+.page_content{ 
+    float:left;
+    width:750px
+}
+.tum1{border:1px #0000ff solid;}
+
+.footer{ 
+    border-top:1px #a0a0f5 solid; 
+/*    border-bottom:2px #a0a0f5 solid; */
+    height:30px; 
+    float:left; 
+    width:100%; 
+    margin-top:40px; 
+    background-color:#fbfbfb;
+    padding: 10px;
+}
+
+.drevo { padding: 5px; font-size: 14px; }
+
+.desc { 
+    margin:10px;
+    padding:5px; border: 1px #d8d8d8 dashed; 
+}
+
+textarea input {
+    border: 1px black solid;
+}
+
+.comment_header { 
+    margin:5px;
+    padding: 5px;
+    background-color:#d5d5d5;
+    font-size:10px;
+    float: left;
+    width: 100%;
+}
+.comment_text {
+    padding: 5px;
+    background-color:white;
+    float: left;
+}
+
+      
+      
+div#left_footer {
+    float:left; 
+    width:25%;
+}
+div#rigth_footer {
+    float:left; 
+    width:70%; 
+    font-size:10px;
+}
+
+.left_menu {
+    margin-top:20px;
+}
+.line {
+    margin-top: 50px;
+    border-top: 1px gray dashed;
+}
+.pages {
+    float: left;
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+div#flashes {
+    width: 760px;
+
+    float: left;
+}
+
+.comments{
+    width:100%;
+    float: left;
+    margin-top:10px;
+}
+
+.game_list{
+    width:760px;
+    padding-top: 10px;
+    padding-bottom:10px;
+    border: 1px #DCDCDC solid;
+    float: left;
+    margin-top:5px;
+}
+
+div.thumb {
+    float:left; 
+    width:350px;
+
+}
+
+div.description {
+    float:left; 
+    width:330px; 
+    padding: 10px;
+
+}
+.options{
+    width: 100%;
+    text-align: rigth;
+
+    
+}
+.game_title{
+    font-size:22px; 
+    color: red;
+}
+div#game {
+    
+}
+.off {
+    display: none;
+}
+div.acenter{
+    text-align:center;
+}
+.break{
+    padding: 2px;
+    margin-top: 5px;
+    width: 100%;
+    float: left;
+    overflow: hidden;
+    white-space: nowrap; /* Don't forget this one */
+    text-overflow: ellipsis;
+}
+.small{
+    font-size:10px;
+}
+.pages_links{
+    font-size:22px;
+    padding-left:2px;
+    padding-right:2px;
+}
+.c_page {
+   font-size:22px;
+    padding-left:2px;
+    padding-right:2px;
+    background-color:gray;
+    color:#fff;
+}
+.top {
+    width:98%;
+    background-color:#FFFAF0;
+    padding:5px;
+    border-top: 1px solid #FFE0A4;
+    border-bottom: 1px solid #FFE0A4;
+/*    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border:1px solid #FFE0A4;*/
+
+}
+.cmen li {
+    list-style: none;
+    display: inline-block;
+}
+
+.title-1{
+    color: #FF0000!important;
+}
+.title-2{
+    color: #02DA00!important;
+}
+.title-3{
+    color: #FFF700!important;
+}
+.title-4{
+    color: #000BFF!important;
+}
+.title-5{
+    color: #FF00EF!important;
+}
+#search_form {
+    float:right;
+    padding-left:20px;
+}
+#search_form .t{
+    width: 270px;
+}

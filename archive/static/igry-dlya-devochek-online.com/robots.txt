@@ -1,0 +1,9 @@
+User-Agent: *
+Disallow: /media/
+Disallow: /mark/
+
+User-Agent: Yandex
+Disallow: /media/
+Disallow: /mark/
+Host: igry-dlya-devochek-online.com
+

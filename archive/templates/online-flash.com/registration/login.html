@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Авторизация{% endblock %}
+{% block content %}
+<div class="page_content">
+  <div class="login">
+    <h1>Авторизация</h1>
+    <br />
+    {% if user.is_authenticated %}
+    Что такое, {{ user.username }}? Вы же уже авторизорваны.
+    Впрочем, всегда можно <a href="{% url auth_logout %}">выйти</a>.<br/><br/>
+    {% else %}
+
+      <form method="post" action="/accounts/login/">
+	{% csrf_token %}
+	<fieldset>
+	  <p>Имя:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="id_username" type="text" name="username" maxlength="30" size="10" /></p>
+	  <p>Пароль:<input type="password" name="password" id="id_password" maxlength="30" size="10" /></p>
+	  <p><input type="submit" value="Войти" /></p>
+	</fieldset>
+	<fieldset style="display: none">  <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" /></fieldset>
+      </form>
+
+    {% if form.errors %}
+    <p>Имя или пароль не подходят.</p>
+    {% endif %}
+    <script type="text/javascript">
+      document.getElementById('id_username').focus()
+    </script>
+
+    <br />
+    <a href="{% url auth_password_reset %}">Забыли пароль?</a> | <a href="{% url registration_register %}">Регистрация</a>
+    <br/><br/><br/>
+
+    {% include "registration/social_auth.html" %}
+    
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,4 @@
+{% if not index_page %}
+<div class="fb-comments" data-href="http://flash-xxx.com{% url 'view_game' game_id=g.id %}" data-width="750" data-num-posts="10"></div>
+{% endif %}
+{% include "comments_list.html" %}

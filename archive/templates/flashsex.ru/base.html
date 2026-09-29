@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{% block title %} Порно и секс игры на FlashSexRU.com | Бесплатные эротические игры онлайн.{% endblock %}</title>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/e.js"></script>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="title" content="Title" />
+	<meta name="description" content="Самая большая коллекция эротических флеш игр, эротических flash игр. " />
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" media="screen" />
+	<meta name='yandex-verification' content='7daf8194d5699bf5' />
+	<meta name="google-site-verification" content="hJtpkLL9gi-ZCHmD8uGjuKGl8DAIpMxDeUOO9E_eQ8o" />
+	<meta name="google-site-verification" content="w31NeLqkjPZfso8XCaddfmUKXdGR_kuB3Wb_qn27cSI" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/bookmark.js"></script>
+	<script type="text/javascript">
+	  VK.init({apiId: 3118404, onlyWidgets: true});
+	</script>
+	<link href="{{ STATIC_URL }}images/favicon.ico" rel='shortcut icon'/>
+	<script type="text/javascript" charset="utf-8">
+	  function vote(kind, id) {
+	  $.getJSON("/mark/", { pk:id, vote: kind }, function(json){
+	  $("#mark-"+id).text(json['success']);
+	  });
+	  }
+	</script>
+
+
+{% block extra_head %}
+
+{% endblock %}
+
+</head>
+<body>
+  <div id="container">
+    {% block header %}
+    
+    <div id="header">
+      <div id="logo"><a href="/"><img src="{{ STATIC_URL }}images/logo.gif" alt="" /></a></div>
+      <div id="slogo">{% block title2 %}Эротические и порно игры{% endblock %}</div>
+      <div id="panel">
+	<div id="spanel">
+	  <table border="0" cellspacing="0" cellpadding="0">
+	    <tr>
+              <!-- reg -->
+
+	      <div id="search_form">
+		<form action="{% url 'search' %}" method="get">
+		  <input type="text" name="q" class="t" placeholder="Введите текст для поиска" />
+		  <input type="submit" value="Найти" />
+		</form>
+	      </div>
+
+	    </tr>
+	  </table>
+	</div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <div id="maintop"></div>
+    <div id="main">
+      <div id="main2">
+	{% include "menu.html" %}
+	<div id="mainint">
+          <div class="cb">
+            <div class="cb_top"></div>
+            <div class="cb_cen">
+	      {% block info %}
+	      {% endblock %}
+	      {% block content %}
+	      {% endblock %}
+            </div>
+            <div class="cb_bot"></div>
+	  </div>
+
+	  <div class="cb">
+	    <div class="cb_top"></div>
+            <div class="cb_cen">
+              <div class="ban3" style="height:180px;">
+		<div class="ms_block" block_id="6005" place_id="4571"></div>
+		<!-- noindex -->
+		{% load banertag %}
+		{% get_baner footer_ad %}
+		<!--/noindex -->
+              
+
+              </div>
+            </div>
+            <div class="cb_bot"></div>
+	  </div>
+
+	  <div class="cb">
+            <div class="cb_top">
+
+            </div>
+            <div class="cb_cen">
+	      <div class="ban3">
+		<div id="info">
+		  {% block "info" %}
+		  {% endblock %}
+		</div>
+	      </div>
+	    </div>
+            <div class="cb_bot">
+            </div>
+	  </div>
+	</div>
+	<div id="footer">
+	  <p> <a href="/">Домой</a></p>
+	  <p>&copy; 2006 - {% now "Y" %} flashsexru.com, Контакты: email/jid: webii@webii.ru</p>
+          <p></p>
+	  <!--noindex-->
+	  <p><!--LiveInternet counter--><script type="text/javascript"><!--
+document.write("<a href='http://www.liveinternet.ru/click' "+
+"target=_blank><img src='//counter.yadro.ru/hit?t26.1;r"+
+escape(document.referrer)+((typeof(screen)=="undefined")?"":
+";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+";"+Math.random()+
+"' alt='' title='LiveInternet: показано число посетителей за"+
+" сегодня' "+
+"border='0' width='1' height='1'><\/a>")
+//--></script><!--/LiveInternet-->
+	  </p>
+	  <!--/noindex-->
+	</div>
+      </div>
+    </div>
+    <div id="mainbot"></div>
+  </div>
+</body>
+</html>
+
+
+

@@ -1,0 +1,30 @@
+{% block content %}
+<div>
+  <h3>Войти с помощью:</h3>
+  {% for name in social_auth.backends.oauth %}
+        <a rel="nofollow" href="{% url socialauth_begin name %}"><img src="{{ MEDIA_URL }}/images/{{ name|title }}.png" alt="{{ name|title }}"></img></a>
+  {% endfor %}
+  {% for name in social_auth.backends.oauth2 %}
+        <a rel="nofollow" href="{% url socialauth_begin name %}"><img src="{{ MEDIA_URL }}/images/{{ name|title }}.png" alt="{{ name|title }}"></img></a>
+  {% endfor %}
+  <h3>Войти с помощью <a href="http://openid.net/" title="OpenId">OpenId</a>:</h3>
+  {% for name in social_auth.backends.openid %}
+    {% if name != "livejournal" and name != "openid" %}
+      <a rel="nofollow" href="{% url socialauth_begin name %}"><img src="{{ MEDIA_URL }}/images/{{ name|title }}.png" alt="{{ name|title }}"></img></a>
+    {% else %}
+      {% if name == "livejournal" %}
+      <form action="{% url socialauth_begin "livejournal" %}" method="post">{% csrf_token %}
+        <div>
+          <label for="openid_lj_user"><img src="{{ MEDIA_URL }}/images/{{ name|title }}.png" alt="{{ name|title }}"></img></label>
+          <input id="openid_lj_user" type="text" value="" name="openid_lj_user" />
+          <input type="submit" value="Войти"/>
+        </div>
+      </form>
+      {% else %}
+        {% if name == "openid" %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

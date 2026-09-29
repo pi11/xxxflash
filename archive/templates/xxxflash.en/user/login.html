@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page_content">
+{% if user.is_authenticated %}
+  Welcome {{ user }}!
+{% else %}
+    {% if sended %}
+    <p>We sent login link to you email. Please, click on this link to login.</p>
+    <p>In case of any problems write an email to: webii@webii.ru</p>
+    {% else %}
+     <div id="login_form_div">
+       <p>Please enter your email:</p>
+       <form id="login_form" action="" method="post">{% csrf_token %}
+	 <p>{{ form.email|safe }} <input id="id_login" type="submit" value=" Login / Signup " /></p>
+       </form>
+     </div>
+    {% endif %}
+{% endif %}
+</div>
+{% endblock %}

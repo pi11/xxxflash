@@ -1,0 +1,23 @@
+{% load cache %}
+{% for g in flashes.object_list %}
+   <div class="gameblock">
+    <!-- GAME START -->
+         <div class="game">
+          <div class="game_thumb"><a href="/game/{{ g.id }}/"><img width="300px" height="300px" src="{{ MEDIA_URL }}{% if g.thumbfile %}{{ g.thumbfile }}{% else %}images/noimage.jpg{% endif %}" alt="{{ g.name }}" /></a></div>
+          <div class="game_des">
+	  <a href="/game/{{ g.id }}/"><strong>{{ g.name }}</strong></a><br />
+          <p>{{ g.description|truncatewords:20 }}</p>
+          <p class="game_rate">
+	    Rate :&nbsp;<span id="mark-{{ g.id }}">{{ g.rate }}</span>
+	    <a style="cursor:pointer;" class="mark" onclick="vote('up', {{ g.id }});">&nbsp;+&nbsp;</a> <a style="cursor:pointer;"  class="mark" onclick="vote('down', {{ g.id }});">&nbsp;-&nbsp;</a>
+	    <div>
+	      Views:&nbsp;<b>{{ g.views }}</b><br />
+	      Size: <b>{{ g.filesize }}</b>
+	    </div>
+	    {% if user.is_staff %}<a href="/admin/flash/flash/{{ g.id }}/">Edit</a>{% endif %}
+          </p>
+          </div>
+        </div>
+       <!-- GAME END -->
+   </div>
+{% endfor %}

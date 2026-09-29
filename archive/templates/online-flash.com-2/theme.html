@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} Скачать игры по теме: {{ t.name }}{% endblock %}
+{% block content %}
+    <!--<div class="page_content">-->
+      <!--<div class="drevo" align="center"><a href="/" title="">На главную</a> > <a href="/theme/{{ t.url }}/" title="{{ t.name }}">{{ t.name }}</a></div>-->
+    <div class="c2">
+    <h2>Тема: {{ t.name }} </h2>
+    {% include "flash-list.html" %}
+    </div>
+    {% include "theme_pages.html" %}
+  <!--</div>-->
+{% endblock %}    
+

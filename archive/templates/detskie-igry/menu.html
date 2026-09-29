@@ -1,0 +1,41 @@
+    <p>
+      Жанры игр:
+    </p>
+    <div class="left_menu">
+      <ul>
+	{% for t in themes %}
+          <li><a title="{{ t.name }}" href="/theme/{{ t.url }}/">{{ t.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="left_menu best">
+    <ul>
+      <li><a href="{% url 'best2' %}">Топ игр!</a></li>
+      <li><a href="{% url 'best' %}">Лучшие игры</a></li>
+      <li><a href="{% url 'popular' %}">Популярные игры</a></li>
+    </ul>
+    </div>
+    <div class="line"></div>
+    <div class="left_menu">
+      Рекомендуем:
+      <div class="left_menu">
+	<ul>
+	  <li><a href="http://pozdravilnik.ru/" style="font-size:12px;">Поздравления</a> |</li> 
+	  <li><a href="http://jpg-1.com/" style="font-size:12px;">Приколы</a> |</li> 
+	  <li><a href="http://igry-dlya-devochek-online.com/" style="font-size:12px;">Игры для девочек</a> |</li> 
+	</ul>
+      </div>
+    </div>
+    <div class="left_menu">
+    <!--noindex-->
+    {% load banertag %}
+    {% get_baner menu_ad %}
+    <!--/noindex-->
+    </div>
+    <div class="left_menu">
+      <div style="font-size:10px;margin-left: 5px;margin-right: 5px; width: 150px;">
+	<b>Помоги проекту!</b><br/>
+	Размести ссылку: <p><span style="color:gray;"> &lt;a href=&quot;http://detskie-igry.com/&quot;&gt;Детские игры&lt;/a&gt;</span></p>
+      </div>
+    </div>

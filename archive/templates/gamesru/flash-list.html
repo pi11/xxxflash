@@ -1,0 +1,53 @@
+<script type="text/javascript" charset="UTF8">
+function vote(kind, id) {
+  $.getJSON("/mark/", { pk:id, vote: kind }, function(json){
+     $(".mark1").text(json['success']);
+  });
+}
+</script>
+  
+<table class="thumb_cont">
+{% for g in flashes %}
+<tr>
+  <td class="cell1" width="50%" valign="top">
+          <table style="width:100%" cellpadding="0" cellspacing="0">
+            <tr><!-- 1 -->
+              <td class="tum1">
+                <div class="thumb_container">
+                  <table border="0">
+		    <tr>
+		      <td><a title="{{ g.name }}" href="/game/{{ g.id }}/"><img alt="{{ g.name }}" src="{{ MEDIA_URL }}img/{{ g.thumbfile }}" style="width: 200px;" border="0" width="115" /></a> 
+		      </td>
+		      <td valign="top">
+			{{ g.description|truncatewords:17 }} <br />
+			| <a style="font-color:red;" href="{{ MEDIA_URL }}download/{{ g.flashfile }}">Скачать</a> | 
+			<a href="/game/{{ g.id }}/">Подробнее</a> 
+		      </td>
+		    </tr>
+		  </table>
+		      
+                </div>
+              </td>
+            </tr><!-- /1 -->
+            <tr><!-- 1 -->
+              <td class="bot_cell">
+                <table style="width:100%;">
+                  <tr>
+                    <td><a href="/game/{{ g.id }}/">{{ g.name }}</a></td>
+                    <td style="width:150px">
+		      Рейтинг:&nbsp;<span class="mark1">{{ g.rate }}</span>
+		      <a onclick="vote('up', {{ g.id }});">&nbsp;+&nbsp;</a> <a onclick="vote('down', {{ g.id }});">&nbsp;-&nbsp;</a>
+		      Просмотров:&nbsp;<span style="font:bold;">{{ g.views }}</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+	      <td>
+		
+	      </td>
+            </tr><!-- /1 -->
+          </table>
+  </td>
+</tr>
+{% endfor %}
+</table>

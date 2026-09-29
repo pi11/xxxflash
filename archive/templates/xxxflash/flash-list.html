@@ -1,0 +1,25 @@
+{% load banertag %}
+{% if first_page %}
+{% else %}
+<div id="flashes_best" style="border:1px dashed gray; padding:5px; float:left; margin-bottom:20px;">
+  {% get_baner top_ad1 %}
+</div>
+{% endif %}
+<div id="flashes">
+  {% for g in flashes.object_list %}
+  {% include "game-list-item.html" %}
+  {% endfor %}
+  <div class="game_list">
+      {% get_baner flash_in2 %}
+  </div>
+
+
+  <div class="game_list">
+    <div class="thumb">
+      {% get_baner flash_in %}
+    </div>
+    <div class="description">
+      <b>Видео / игра дня.</b>
+    </div>
+  </div>
+</div>

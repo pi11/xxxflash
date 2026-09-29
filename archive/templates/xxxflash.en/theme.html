@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %} Erotic flash games: {{ theme.name }}{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center"><a href="/" title="">Erotic Flash Games</a> > <a href="/theme/{{ theme.url }}/" title="{{ theme.name }}">{{ theme.name }}</a></div>
+    <h1>Theme: {{ theme.name }} </h1>
+    <br />
+    <div id="flashes_best" style="border:1px dashed gray; padding:5px; float:left; margin-bottom:20px;">
+    {% include "top_ad.html" %}
+    </div>
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+{% include "banner-foot.html" %}
+  </div>
+{% endblock %}
+

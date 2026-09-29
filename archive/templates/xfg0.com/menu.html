@@ -1,0 +1,58 @@
+    <p>
+      Темы игр:
+    </p>
+    <div class="left_menu">
+      <ul class="menu-list">
+        {% load menu %}
+        {% get_themes %}
+
+	{% for t in theme_list %}
+          <li title="{{ t.count }} игр в разделе"> » <a title="{{ t.name }}" href="{% url 'theme' theme_url=t.url %}">{{ t.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+
+
+  <div class="row text-center">
+    <b>Случайные эротические flash игры:<br /></b>
+    <br />
+    {% get_random_flashses %}
+
+    {% for g in random_flash_list %}
+    <div class="col-lg-12 col-md-12 col-sm-2 col-xs-3">
+      <a title="{{ g.name }}" href="{% url 'view_game' game_id=g.id %}" target="_blank"><img alt="{{ g.name }}" src="{{ MEDIA_URL }}{{ g.thumbfile }}" style="width: 145px;" border="0" height="120px" /></a>
+      <br />
+      <a href="{% url 'view_game' game_id=g.id %}">{{ g.name }}</a>
+    </div>
+    <br />
+    {% endfor %}
+
+  </div>
+
+
+
+
+    <div class="row">
+    <ul>
+      <li><a href="{% url 'best2' %}" style="color:red; font-size:16px;">Супер топ</a></li>
+      <li><a href="{% url 'best' %}" style="color:red; font-size:16px;">Лучшие игры</a></li>
+      <li><a href="{% url 'popular' %}" style="color:red; font-size:16px;">Самые просматриваемые</a></li>
+    </ul>
+    </div>
+    <div class="clearfix"></div>
+    <div class="left_menu">
+      Рекомендуем:
+      <div class="left_menu">
+	<ul>
+	  <li><a href="http://faptuber.com/" style="font-size:12px;">Порно хостинг</a></li>
+	  <li><a href="http://onlythere.com/" style="font-size:12px;">Порно фотки</a></li>
+ 	</ul>
+      </div>
+    </div>
+    <div class="left_menu">
+    <!--noindex-->
+    {% load banertag %}
+    <!--/noindex-->
+    </div>
+

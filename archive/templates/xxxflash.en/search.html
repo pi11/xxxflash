@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load banertag %}
+{% block title %} Поиск эротических игр: {{ query }}{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center"><a href="/" title="">Эротические игры</a> > Поиск {{ q }}</div>
+    <h1>Результат поиска по запросу {{ query }} </h1>
+    <br />
+    <div id="flashes_best" style="border:1px dashed gray; padding:5px; float:left; margin-bottom:20px;">
+      {% get_baner top_ad1 %}
+    </div>
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+    {% include "banner-foot.html" %}
+  </div>
+{% endblock %}
+

@@ -1,0 +1,88 @@
+#wrap {
+    height: auto;
+    margin: 0 auto -60px;
+    min-height: 100%;
+    padding: 0 0 60px;
+}
+#wrap > .container {
+    padding: 60px 15px 0;
+}
+#footer {
+    background-color: #F5F5F5;
+    height: 60px;
+    padding-top:20px;
+    text-align:center;
+}
+.container .credit {
+    margin: 20px 0;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+    width:95%;
+    max-width:1200px;
+    margin-top:80px;
+}
+
+.off {
+    display:none;
+}
+.game-item{
+    margin-top:20px; 
+}
+.mark {
+    text-decoration:none;
+    cursor:pointer;
+}
+
+.random-flash-item {
+    width:14%;
+    height:100px; 
+    overflow:hidden;
+    float:left; 
+    padding:3px;
+}
+
+.pagination {
+    width:100%;
+    float:left;
+}
+.pages-info {
+    font-size:1.2em;
+    padding-top:10px;
+}
+.regular-border {
+    box-sizing: border-box;
+    border-radius:5px;
+    border: 1px solid #ddd;
+}
+.navbar-brand {
+    color:black!important;
+}
+.game-title {
+    text-align:center;
+    width:100%;
+    font-size:2em;
+}
+ul.menu-list {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 1em;
+    text-indent: -1em;
+
+}
+#game {
+    width:100%;
+    text-align:center;
+}
+.desc {
+    padding:15px;
+}
+.title {
+    font-size:1.5em;
+}
+
+.sub-screens {
+    padding-top:20px;
+}

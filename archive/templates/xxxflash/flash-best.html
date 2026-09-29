@@ -1,0 +1,34 @@
+{% load banertag %}
+<div id="flashes_best" style="border:1px dashed gray; padding:5px; float:left; margin-bottom:20px;">
+  <div style="float:left; width:100%; padding:5px; color:red;"><strong>Лучшие эротические flash игры:</strong></div>
+  {% for g in best %}
+  <div style="width:146px; float:left; ">
+    <div style="float:left;">
+       <a title="{{ g.name }}" href="{% url 'view_game' game_id=g.id %}" target="_blank"><img alt="{{ g.name }}" src="{{ MEDIA_URL }}{{ g.thumbfile }}" style="width: 145px;" border="0" height="120px" /></a>
+    </div>
+    <div style="float:left;">
+      <a href="{% url 'view_game' game_id=g.id %}" class="title">{{ g.name }}</a>
+    </div>
+  </div>
+  {% endfor %}
+  <div style="float:left; width:100%; padding:5px; color:red;"><strong>Случайные эротические flash игры:</strong></div>
+
+  {% for g in random2 %}
+  <div style="width:146px; float:left; ">
+    <div style="float:left;">
+      <a title="{{ g.name }}" href="{% url 'view_game' game_id=g.id %}" target="_blank"><img alt="{{ g.name }}" src="{{ MEDIA_URL }}{{ g.thumbfile }}" style="width: 145px;" border="0" height="120px" /></a>
+    </div>
+    <div style="float:left;">
+      <a href="{% url 'view_game' game_id=g.id %}" class="title">{{ g.name }}</a>
+    </div>
+  </div>
+  {% endfor %}
+  <div style="width:100%; float:left; ">
+  <!--noindex-->
+    {% load cache %}
+    {% cache 1 top_ad1 %}
+    {% get_baner top_ad1 %}
+    {% endcache %}
+  <!--/noindex-->
+  </div>
+</div>

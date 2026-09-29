@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page_content">
+  <div class="login">
+    <h1>Регистрация</h1>
+    <form method="post" action="">{% csrf_token %}
+      <fieldset>
+      <dl class="register">
+	{% for field in form %}
+	<dt>{{ field.label_tag }}:</dt>
+	<dd class="clearfix">{{ field }}
+	  {% if field.help_text %}<div class="clearfix">{{ field.help_text }}</div>{% endif %}
+	  {% if field.errors %}<div class="myerrors clearfix">{{ field.errors }}</div>{% endif %}
+	</dd>
+	{% endfor %}
+      </dl>
+      <br/>
+      <span class="off"><input type="text" name="captcha" value="" size="10" /></span>
+      <input type="submit" value="Зарегистрироваться" / class="clearfix">
+      </fieldset>
+    </form>
+    <br />    <br />    <br />
+    {% include "registration/social_auth.html" %}
+    <br />    <br />    <br />
+  </div>
+</div>
+{% endblock %}

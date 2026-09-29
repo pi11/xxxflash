@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{% block title %}Флеш-игры - флеш игры скачать, flash игры онлайн бесплатно, играть во флеш игры онлайн без регистрации, скачать flash игры{% endblock %}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link href="{{ MEDIA_URL }}css/style.css" type="text/css" rel="stylesheet">
+	<meta name="Description" content="{% block description %}Флеш-игры - флеш игры скачать, flash игры онлайн бесплатно, играть во флеш игры онлайн без регистрации, скачать flash игры{% endblock %}" />
+	<meta name="Keywords" content="{% block keywords %}флеш игры, flash игры, флеш-игры, флэш игры, flash-игры{% endblock %}" />
+	<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.3.2.js"></script>
+	<link href="{{ MEDIA_URL }}css/jquery.lightbox-0.5.css" type="text/css" rel="stylesheet">
+	 <meta name='yandex-verification' content='658d47a9f1913b8c' />
+<script type="text/javascript" charset="UTF8">
+
+function vote(kind, id) {
+  $.getJSON("/mark/", { pk:id, vote: kind }, function(json){
+     $(".mark-"+id).text(json['success']);
+  });
+}
+</script>
+{% block extra_head %}
+{% endblock %}
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	background: #05131d url({{ MEDIA_URL }}images/bg.jpg) no-repeat top center;
+	color: #63686b;
+	font-family: arial, tahoma, verdana;
+	font-size: 12px;
+}
+
+#header {
+background: url({{ MEDIA_URL }}images/header.jpg) no-repeat;
+height: 280px;
+position: relative;
+clear: both;
+overflow: hidden;
+}
+
+#menu li {
+float: left;
+list-style: none;
+background: url({{ MEDIA_URL }}images/sep.gif) no-repeat right top;
+padding: 0 2px 0 0;
+}
+
+#menu li a:hover {
+background: url({{ MEDIA_URL }}images/ma.gif) repeat-x top;
+}
+
+.sinput {
+color: #989898;
+height: 21px;
+width: 140px;
+background: url({{ MEDIA_URL }}images/sinput.gif) no-repeat;
+border: none;
+padding: 1px 5px 0 5px;
+overflow: hidden;
+}
+
+.c1 {
+background: url({{ MEDIA_URL }}images/c1.gif);
+padding: 25px 0 0 45px;
+}
+
+
+#main {
+background: url({{ MEDIA_URL }}images/cont.gif) repeat-y;
+overflow: hidden;
+padding: 0 0 20px 0;
+}
+
+.b1 {
+background: #eeeeee url({{ MEDIA_URL }}images/b1.gif) repeat-x top;
+padding: 0 0 0 17px;
+}
+
+.b2 {
+background: #114064 url({{ MEDIA_URL }}images/b2.gif) repeat-x top; 
+border-bottom: 1px solid #070b0e;
+padding: 0 0 15px 17px;
+}
+
+.b3 {
+background: #eeeeee url({{ MEDIA_URL }}images/b3.gif) repeat-x top;
+padding: 0 0 0 17px;
+}
+
+#sidebar h2 {
+background: url({{ MEDIA_URL }}images/h2.gif) no-repeat left bottom;
+font-size: 18px;
+color: #111b24;
+font-weight: normal;
+padding: 20px 0 10px 10px;
+margin: 0 0 10px 0;
+}
+
+#sidebar h3 {
+background: url({{ MEDIA_URL }}images/h3.gif) no-repeat left bottom;
+font-size: 18px;
+color: #ffffff;
+font-weight: normal;
+padding: 20px 0 10px 10px;
+margin: 0 0 10px 0;
+}
+
+#sidebar li a {
+color: #111b24;
+text-decoration: none;
+background: url({{ MEDIA_URL }}images/sel.gif) no-repeat left center;
+padding: 0 0 0 9px;
+}
+
+.c2 {
+background: url({{ MEDIA_URL }}images/c2.gif) repeat-x top;
+padding: 10px 0 0 45px;
+height: 967px;
+overflow: hidden;
+}
+
+.c3 {
+background: #1a2a37 url({{ MEDIA_URL }}images/c3.gif) repeat-x top;
+overflow: hidden;
+padding: 10px 0 0 45px;
+margin: 15px 0 0 0;
+color: #c6c6c6;
+font-size: 12px;
+}
+
+.c4 {
+padding: 10px 0 30px 45px;
+background: #273c4d url({{ MEDIA_URL }}images/c4.gif) repeat-x bottom;
+overflow: hidden;
+}
+
+.c5 {
+padding: 10px 0 30px 45px;
+background: #273c4d url({{ MEDIA_URL }}images/c5.gif) repeat-x bottom;
+color: #c6c6c6;
+font-size: 12px;
+overflow: hidden;
+}
+
+.forma {
+background: url({{ MEDIA_URL }}images/form.gif) no-repeat;
+width: 414px;
+height: 212px;
+font-size: 12px;
+color: #ffffff;
+}
+
+#logo h1 {
+font-size: 12px;
+}
+
+</style>
+</head>   
+<body> 
+{% block header %}
+<div id="container">
+  <div id="header">
+    <div id="logo">
+      <p><a href="http://online-flash.com/"><img src="{{ MEDIA_URL }}images/logo.gif" alt="Online Flash" /></a></p>
+      <p id="slogo"><h1>online-flash.com — Онлайн флэш игры</h1></p>
+    </div>
+  
+    <div id="dohead">
+      <div id="menu">
+	<ul>
+	  <li><a href="http://online-flash.com/">Главная</a></li>
+	  <li><a href="/best">Лучшие игры</a></li>
+	  <li><a href="/popular">Популярные игры</a></li>
+	  <!--    <li><a href="#">Новые игры</a></li>-->
+	</ul>
+      </div>
+      <div id="login">
+	<div>
+	  <table border="0" cellspacing="0" cellpadding="0">
+	    <tr><td><input name="a" class="sinput" /></td>
+	      <td><input name="a" class="sinput" type="password" /></td>
+	      <td><input type="image" src="{{ MEDIA_URL }}images/enter.gif" /></td>
+	    </tr>
+	  </table>
+	</div>
+	<p id="logline"><a href="{% url registration_register %}">зарегистрироваться</a> | <a href="{% url auth_password_reset %}">забыли пароль?</a></p>
+      </div>  
+    </div>
+  </div>
+  <!-- Header end -->
+  {% endblock %}
+
+  <div id="main">
+    {% block navigation %}
+    <div id="sidebar">
+      <div class="b1">
+	<h2>Категории</h2>
+	<ul>
+	  {% for t in themes %}
+	  <li><a title="{{ t.name }}" href="/theme/{{ t.url }}/">{{ t.name }}</a></li>
+	  {% endfor %}
+	</ul>
+      </div>
+      
+      <div class="b2"> 
+	<h3>Рекомендуем</h3>
+       <!--noindex-->
+	<ul>
+	  <!--<li><a href="http://ru-wallp.com/">Обои для рабочего стола</a></li>
+	  <li><a href="http://ololoop.com/">Флэш приколы</a></li>
+	  <li><a href="http://gif1.ru/">Прикольные гифки</a></li>
+	  <li><a href="http://jpg-1.com/">Веселые картинки</a></li>-->
+	  <li><a href="http://www.stost.ru/">Поздравления</a></li>
+	  <!--<li><a href="http://flashsex.ru/theme/porno/">Порно флэш игры</a></li>
+	  <li><a href="http://onlythere.com/">Порно фотки</a></li>
+	  <li><a href="http://xxx-gif.com/">Порно гифки</a></li>
+	  <li><a href="http://wp-b.com/">База обоев</a></li>-->
+	</ul>
+        <!-- /noindex -->
+      </div>
+      <div class="b3"> 
+	<h2>Топ аплоадеров</h2>
+	<ul>
+	  <li><a href="http://online-flash.com/">Anonymous</a></li>
+	</ul>
+	<p><a href="http://online-flash.com/"><img src="{{ MEDIA_URL }}images/addgame.gif" alt="" /></a></p>
+	<p><!-- Реклама <img src="{{ MEDIA_URL }}images/sample.jpg" alt="" />--></p>
+      </div>
+    </div>
+    <!-- Sidebar end -->
+    {% endblock %}
+
+    <div id="mainint">
+      {% block content %}
+      {% endblock %} 
+      {% if index_page %}
+      <div class="c3">
+	<h2>Комментарии</h2>
+	{% for comment in comments %}
+	<p> <b>{{ comment.user.username }}</b> <!--{{ comment.publication_date }} написал-->: {{ comment.text|truncatewords:5 }} <a href="/game/{{ comment.flash.id }}/#{{ comment.id }}">></a></p>
+	{% endfor %}
+      </div>
+      {% endif %}
+
+      <p class="jp"><a href="http://online-flash.com/"><img src="{{ MEDIA_URL }}images/sample3.jpg" alt="" /></a></p>
+
+      <p class="jp">
+        <a href="http://online-flash.com/"><img src="{{ MEDIA_URL }}images/sample4.jpg" alt="" /></a>&nbsp;&nbsp;
+        <a href="http://online-flash.com/"><img src="{{ MEDIA_URL }}images/sample5.jpg" alt="" /></a>&nbsp;&nbsp;
+        <a href="http://online-flash.com/"><img src="{{ MEDIA_URL }}images/sample6.jpg" alt="" /></a>
+      </p>
+
+      <div id="footer">
+	{% block footer %}  
+	<p id="footer_c">&copy; JP-Net Group - <a href="http://www.jp-net.ru/">продвижение сайтов.</a> & WebII Lab <a href="http://webii.ru/">WebII Lab</a></p>
+	<p>На этом сайте собрана интересная коллекция лучших флеш игр. Все игры отбирались и добавлялись на сайт вручную. Это гарантировало нам сохранить высокое качество базы игр. Здесь вы смодете найти флеш игры любых категорий и на любой вкус и цвет. Флеш игры для девочек и мальчивов. Аркадные, стрелялки, квесты, стратегии, умопомрачителняе игры по защите башни от нападения и ещё много много других увлекательных игр. Уверен что вы с удовольствием проведете время, воспользовавшись нашим сайтом с флеш играми.<br />Поддержи проект! Поставь ссылку на своем сайте или блоге: http://online-flash.com/</p>
+<!-- Yandex.Metrika counter -->
+<div style="display:none;"><script type="text/javascript">
+(function(w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter7394293 = new Ya.Metrika({id:7394293, enableAll: true});
+        }
+        catch(e) { }
+    });
+})(window, 'yandex_metrika_callbacks');
+</script></div>
+<script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
+<noscript><div><img src="//mc.yandex.ru/watch/7394293" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+	{% endblock %}
+      </div><!-- footer end -->
+    </div><!-- Content(mainint) end -->
+  </div><!-- Content(main) end -->
+</div><!-- container end -->
+</body>
+</html>
+
+
+	

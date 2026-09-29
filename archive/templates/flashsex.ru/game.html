@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load banertag %}
+{% block title %} Эротическая флэш игра: {{ g.name }}{% endblock %}
+{% block title2 %}Оцени порно игру!{% endblock %}
+{% block extra_head %}
+  {% load banertag %}
+  {% load check_mobile %}
+  {% check_mobile %}
+
+  {% if is_edge == 0 %}
+  {% endif %}
+  
+  {% if is_edge == 1 %}
+    {% get_baner megafon %}
+  {% endif %}
+  {% if is_edge == 2 %}
+    {% get_baner beeline %}
+  {% endif %}
+  {% if is_edge == 3 %}
+    {% get_baner mts %}
+z  {% endif %}
+
+<script type="text/javascript" src="http://vkontakte.ru/js/api/share.js?10" charset="windows-1251"></script>
+<script type="text/javascript" charset="UTF8">
+function save() {
+  $.getJSON("/save/", { pk:{{ g.id }} }, function(json){
+    $("#save").text(json['success']);
+  });
+}
+
+function vote(kind) {
+  $.getJSON("/mark/", { pk:{{ g.id }}, vote: kind }, function(json){
+    $("#mark1").text(json['success']);
+  });
+}
+function addClickHandlers() {
+  $("#upvote").click( function() { vote("up") });
+  $("#downvote").click( function() { vote("down") });
+}
+$(document).ready(addClickHandlers);
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+
+<!--<div class="cb">-->
+<div class="cb_top"></div>
+<!--  <div class="cb_cen">-->
+
+<h1>Название: {{ g.name }}    {% if user.is_staff %}<a href="/admin/flash/flash/{{ g.id }}/">Edit</a>{% endif %}</h1>
+<div class="cmen">
+  <ul>
+    <li><a href="/">Порно игры</a></li>
+  </ul>
+</div>
+
+<div class="gameb_thumb" id="game-d">
+  <object type="application/x-shockwave-flash" style="width:700px; height:700px;" data="{{ MEDIA_URL}}{{ g.flashfile }}"><param name="movie" value="{{ MEDIA_URL}}{{ g.flashfile }}" />
+  </object>
+</div>
+<div class="inser">
+
+  <p>{{ g.description }}</p>
+</div>
+
+      <div class="options">
+        <div style="float:left;display:block;width: auto; padding:3px;">
+        <strong>Поделиться игрой:</strong><br />
+        <div style="float:left;display:block;padding:3px;"><a href="http://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div>
+<!--        <div  id="vk_like"></div>-->
+        <div style="float:left;display:block;padding:3px;"><script type="text/javascript"><!--
+        document.write(VK.Share.button({title: "Эротическая флэш игра: {{ g.name }}",description: "{{ g.description|truncatewords:5 }}",},{type: "round", text: "Поделиться"}));
+        --></script></div>
+        <div style="float:left;display:block;padding:3px;"><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:like href="" layout="button_count" show_faces="true" width="90" font=""></fb:like></div>
+        </div>
+	<div align="right">Загрузил: <a href="#">{{ g.user }}</a></div>
+	<div align="right">Оценка флэш игры:  <span style="font-size:18px; font:bold;"> <span id="mark1">{{ mark|default:0 }}</span> <a href="#" id="upvote">+</a> / <a href="#" id="downvote">-</a> </span> </div>
+	<div align="right">Просмотров: {{ views }}</div>
+
+<!--        <script type="text/javascript">
+        VK.Widgets.Like("vk_like", {type: "button", width: "200", pageTitle: "Эротическая флэш игра: {{ g.name }}", pageDescription: "{{ g.description|truncatewords:5 }}"});
+        </script>-->
+      </div>
+
+<div align="left">
+  Смотри также: <br />
+  {% for t in gt %}
+  <a href="/theme/{{ t.url }}/">{{ t.name }}</a> |
+  {% endfor %}
+</div>
+
+<p><h3>Секс чат:</h3></p>
+<p><!-- BEGIN CBOX - www.cbox.ws - v001 -->
+<div id="cboxdiv" style="text-align: center; line-height: 0">
+<div><iframe frameborder="0" width="600" height="225" src="http://www3.cbox.ws/box/?boxid=3228495&amp;boxtag=5q01a7&amp;sec=main" marginheight="2" marginwidth="2" scrolling="auto" allowtransparency="yes" name="cboxmain" style="border:#EDDEDB 1px solid;" id="cboxmain"></iframe></div>
+<div><iframe frameborder="0" width="600" height="75" src="http://www3.cbox.ws/box/?boxid=3228495&amp;boxtag=5q01a7&amp;sec=form" marginheight="2" marginwidth="2" scrolling="no" allowtransparency="yes" name="cboxform" style="border:#EDDEDB 1px solid;border-top:0px" id="cboxform"></iframe></div>
+</div>
+<!-- END CBOX --></p>
+
+
+<h3>Комментарии</h3>
+
+<div class="insercom" style="padding-bottom:15px;">
+</div>
+
+{% include "comments.html" %}
+
+
+<div align="left" class="break">Добавить комментарий:</div>
+<div style="width:49%; float:left;">
+    <div align="left" class="break">
+      <form action="/add-comment" method="post">{% csrf_token %}
+        {{ form.text }}
+        <input type="hidden" name="flash_id" value="{{ g.id }}" />
+        <span class="off"><input type="text" name="email" value="" size="10" /></span>
+        <br />
+        <input type="submit" value=" Добавить " />
+      </form>
+    </div>
+</div>
+<div style="width:49%; float:right;">
+    {% get_baner comments %}
+</div>
+
+{% include "flash-random.html" %}
+{% endblock %}
+

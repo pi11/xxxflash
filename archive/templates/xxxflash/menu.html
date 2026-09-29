@@ -1,0 +1,53 @@
+<p>
+    Жанры игр:
+</p>
+<div class="left_menu">
+    <ul>
+	{% for t in themes %}
+            <li><a title="{{ t.name }}" href="/theme/{{ t.url }}/">{{ t.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="left_menu">
+    <ul>
+	<li><a href="{% url 'best2' %}" style="color:#8fc400; font-size:16px;">Новый топ игр!</a></li>
+	<li><a href="{% url 'best' %}" style="color:#8fc400; font-size:16px;">Лучшие игры</a></li>
+	<li><a href="{% url 'popular' %}" style="color:#8fc400; font-size:16px;">Самые просматриваемые</a></li>
+
+    </ul>
+</div>
+<div class="line"></div>
+<div class="left_menu">
+    Рекомендуем:
+    <div class="left_menu">
+	<ul>
+		
+	    <li><a href="http://spree.link/" style="font-size:12px;">Архив порно Вконтакте</a></li>
+	    <li><a href="http://pronru.com/" style="font-size:12px;">Порно для телефона</a></li>
+	    <li><a href="http://onlythere.com/" style="font-size:12px;">Эротические фотки</a></li>
+	    <li><a href="http://pron-xxx.click/" style="font-size:12px;">Поиск порно видео</a></li>
+
+	</ul>
+    </div>
+</div>
+<div class="left_menu">
+    <!--noindex-->
+    {% load cache %}
+    {% cache 1 menu_ad %}
+	{% load banertag %}
+	{% get_baner menu_ad %}
+    {% endcache %}
+    <!--/noindex-->
+</div>
+
+<div class="left_menu">
+    <div style="font-size:10px;margin-left: 5px;margin-right: 5px; width: 150px;">
+	<b>Помоги проекту!</b><br/>
+	Размести ссылку: <p><span style="color:gray;"> &lt;a href=&quot;http://flash-xxx.com/&quot;&gt;&#x042d;&#x0440;&#x043e;&#x0442;&#x0438;&#x0447;&#x0435;&#x0441;&#x043a;&#x0438;&#x0435; &#x0438;&#x0433;&#x0440;&#x044b;&lt;/a&gt;</span></p>
+    </div>
+</div>
+<!--<div id="vk_recommended"></div>
+<script type="text/javascript">
+VK.Widgets.Recommended("vk_recommended", {limit: 10, period: 'month'});
+</script>-->

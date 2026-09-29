@@ -1,0 +1,29 @@
+{% load cache %}
+
+<div id="video_list" style="border:1px dashed gray; padding:8px; float:left; margin-top:20px; width:100%;">
+  <h3>Случайные порно видео ролики:</h3>
+  <div id="videos_list" style="float:left;"></div>
+</div>
+
+<script>
+$(document).ready(function() {
+  var url = "http://1tbporno.com/get_baners/4/?callback=?";
+  $.getJSON(url, null, function(data){
+         $.each(data.items, function(i,item){
+           $('#video_list').append('<div title="'+item.title+'" style="float:left; padding:3px;" class="video_item"><a target="_blank" href="'+item.page+'"><img src="'+item.image+'" width="170px" height="140px" alt="'+item.title+'"/></a></div>');
+         });
+        });
+  });
+</script>
+
+
+<div id="flashes_random" style="border:1px dashed gray; padding:8px; float:left; margin-top:20px; width:100%;">
+<h3>Случайные порно игры:</h3>
+  {% for g in random %}
+  <div style="width:102px; float:left; ">
+    <div style="float:left;">
+      <a title="{{ g.name }}" href="/game/{{ g.id }}/"><img alt="{{ g.name }}" src="{% if g.thumbfile %}{{ MEDIA_URL }}{{ g.thumbfile }}{% else %}{{ STATIC_URL }}images/noimage.jpg{% endif %}" border="0" width="100px" /></a>
+    </div>
+  </div>
+  {% endfor %}
+</div>

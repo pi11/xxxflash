@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ theme.name }}: детские флэш игры.{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center"><a href="/" title="">Детские флэш игры</a> > <a href="/theme/{{ theme.url }}/" title="{{ theme.name }}">{{ theme.name }}</a></div>
+    <h1>Раздел: {{ theme.name }} </h1>
+    <br />
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "pages_theme.html" %}
+    </div>
+  </div>
+{% endblock %}    
+

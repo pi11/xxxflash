@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %} Best erotic flash games. Best porno games. Most popular.{% endblock %}
+{% block title2 %}{% if best %}Best{% else %}Most popular{% endif %} adult games{% endblock %}
+{% block content %}
+
+<div class="cb">
+  <div class="cb_top"></div>
+  <div class="cb_cen">
+     <h1>  Top {% if best %}best{% else %}popular{% endif %} erotic games</h1>
+    <div class="cmen">
+      <ul>
+        <li><a href="{% url 'best' %}" id="c1">Best Adult Games</a></li>
+        <li><a href="{% url 'popular' %}" id="c2">Popular Erotic Games</a></li>
+        <li><a href="{% url 'best2' %}" id="c3">More best games</a></li>
+      </ul>
+    </div>
+ 
+    {% include "flash-list.html" %}
+  <div class="pages">
+    {% include "paginator.html" %}
+  </div>
+{% endblock %}
+

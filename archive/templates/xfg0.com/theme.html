@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Эротические флэш игры: {{ theme.name }}{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center">
+      <a href="/" title="">Эротические игры</a> → <a href="/theme/{{ theme.url }}/" title="{{ theme.name }}">{{ theme.name }}</a>
+    </div>
+    <h1>{{ theme.name }} </h1>
+    <br />
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+    {% include "banner-foot.html" %}
+  </div>
+  {% endblock %}
+

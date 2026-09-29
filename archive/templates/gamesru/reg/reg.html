@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Регистрация</h1>
+<hr />
+
+{% if errors %}
+    <h2>Ошибка.</h2>
+    {% for error in errors %}
+      - <b>  {{ error }}</b> <br />
+    {% endfor %}
+    попробуйте еще раз. <br /><br />
+{% endif %}
+
+<form method="post" action=".">
+<table>
+<tr>
+    <td><label for="id_username">Имя</label></td>
+    <td><input id="id_username" type="text" name="username" maxlength="30" /></td>
+</tr>
+<tr>
+    <td><label for="id_email">E-mail</label></td>
+    <td><input id="id_email" type="text" name="email" maxlength="30" /></td>
+</tr>
+<tr>
+    <td><label for="id_password">Пароль</label></td>
+    <td><input id="id_password" type="password" name="password" maxlength="30" /></td>
+</tr>
+<tr>
+    <td><label for="id_rpassword">Повторите пароль</label></td>
+    <td><input id="id_rpassword" type="password" name="rpassword" maxlength="30" /></td>
+</tr>
+</table>
+
+<br />
+<input type="submit" value=" Зарегистрироваться " />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+<br />
+{% endblock %}

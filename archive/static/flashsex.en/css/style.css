@@ -1,0 +1,489 @@
+* {margin:0; padding:0;}
+
+
+
+html {
+	margin:0;
+	padding:0;
+}
+
+
+img {
+border: 0;
+}
+
+#container {
+width: 1000px;
+margin: 0 auto;
+overflow: hidden;
+}
+
+#header {
+position: relative;
+height: 81px;
+width: 1000px;
+overflow: hidden;
+clear: both;
+}
+
+#logo {
+position: absolute;
+top: 15px;
+left: 17px;
+width: 261px;
+height: 56px;
+}
+
+#slogo {
+position: absolute;
+bottom: 10px;
+left: 290px;
+width: 280px;
+height: 20px;
+color: #d8b2d1;
+font-size: 14px;
+font-family: Myriad Pro;
+}
+
+#spanel {
+padding: 2px 0 0 22px;
+}
+
+#panel table {
+overflow: hidden;
+height: 30px;
+display: inline-block;
+}
+
+
+#panel p {
+padding: 0 0 0 30px;
+line-height: 1;
+}
+
+#panel td {
+}
+
+
+
+.sinput input{
+ background: none;
+ width: 124px;
+ padding: 4px 0 0 7px;
+ border: none;
+}
+
+#panel a {
+color: #f3d0ea;
+font-size: 12px;
+}
+
+
+#sidebar {
+width: 209px;
+float: left;
+padding: 0 0 0 7px;
+}
+
+#mainint {
+width: 730px;
+float: left;
+}
+
+
+#sidebar ul {
+padding: 15px 0 0 15px;
+}
+
+
+#sidebar li a {
+font-size: 14px;
+color: #654988;
+text-decoration: none;
+}
+
+#sidebar li a:hover {
+color: #b036b0;
+}
+
+.sidbtn {
+padding: 15px 0 35px 13px;
+}
+
+#info {
+color: #3a2b36;
+}
+
+#info p {
+padding: 5px 80px 10px 15px;
+}
+
+.cb {
+clear: both;
+overflow: hidden;
+width: 734px;
+margin: 0 0 10px 15px;
+}
+
+
+.cmen {
+text-align: center;
+}
+
+.cmen li {
+list-style: none;
+display: inline-block;
+}
+
+*:first-child+html .cmen li {
+display: block;
+float: left;
+}
+
+.cmen a {
+font-size: 14px;
+color: #654988;
+padding: 0 15px 0 25px;
+}
+
+.cmen a:hover {
+text-decoration: none;
+}
+
+
+.cb h3 {
+color: #b036b0;
+font-size: 18px;
+font-weight: normal;
+padding: 20px 0 5px 0;
+}
+
+
+.game_thumb {
+width: 310px;
+float: left;
+}
+
+.game_rate {
+padding: 15px 0 0 0;
+}
+
+.game_thumb a img {
+border: 5px solid #ffffff;
+}
+
+.game_thumb a:hover img {
+border: 5px solid #dd51dd;
+}
+
+.gameblock {
+    clear: both;
+    overflow: hidden;
+}
+
+.paging {
+float: right;
+padding: 10px 20px 20px 0;
+}
+
+.paging li {
+list-style: none;
+display: inline-block;
+}
+
+*:first-child+html .paging li  {
+display: block;
+float: left;
+}
+
+.paging a {
+font-size: 14px;
+color: #634489;
+padding: 3px 5px;
+}
+
+.paging a:hover, .paging .act {
+ text-decoration: none;
+ color: #ffffff;
+ background: #9e83c0;
+}
+
+#comments {
+padding: 0 10px;
+clear: both;
+overflow: hidden;
+color: #3d2b54;
+}
+
+#comments b {
+color: #634489;
+font-size: 14px;
+font-weight: normal;
+}
+
+#comments p {
+padding: 5px 0 13px 0;
+}
+
+#comments h3 {
+padding-bottom: 13px;
+}
+
+.ban3 {
+
+}
+
+.ban3 img {
+padding: 5px 0 2px 12px;
+}
+
+#footer a {
+color: #342a41;
+}
+
+#footer {
+padding: 10px 0 20px 255px;
+clear: both;
+overflow: hidden;
+}
+
+#footer p {
+padding: 0 0 2px 0;
+}
+
+
+.cb.inside h3 {
+padding: 3px 0 5px 6px;
+}
+
+.gameb_thumb img {
+border: 3px solid #ff6dde;
+}
+
+.gameb_thumb {
+padding: 0 0 0 10px;
+}
+
+.gameb_rate {
+text-align: right;
+padding: 0 13px 0 0;
+}
+
+.inser {
+padding: 0 15px;
+}
+
+.inser p{
+padding: 5px 0 0 0;
+}
+
+.inside .inser h3 {
+padding: 10px 0 15px 0;
+}
+
+.insercom {
+color: #441e44;
+}
+
+.insercom b {
+font-size: 14px;
+color: #441e44;
+}
+
+.insercom p {
+padding-bottom: 15px;
+}
+
+
+.forma table {
+padding: 8px 0 0 10px;
+}
+
+.forma input, .forma textarea {
+border: 1px solid #d0cdce;
+ -moz-border-radius: 10px;
+  border-radius: 10px;
+  padding: 1px 2px;
+}
+
+.off {
+    display:none;
+}
+a {
+    color: #654988;
+}
+div.avatar {
+float: left;
+    padding:20px;
+}
+div.profile_text{
+      text-align: left;
+}
+div.avatar {
+    float: left;
+    padding:10px;
+}
+
+.comment {
+    width:100%;
+    float:left;
+}
+.comment_header {
+    background-color:#F0E7F3;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.error {
+    color:red;
+    font-weight:bold;
+    padding:5px;
+    margin:10px;
+}
+fieldset {
+    padding: 10px;
+    border: 1px solid #D6D6D6;
+
+}
+.login {
+    padding:15px;
+    border: 1px solid #D6D6D6;
+    -moz-box-shadow: 10px 10px 5px #888;
+    -webkit-box-shadow: 10px 10px 5px #888;
+    box-shadow: 10px 10px 5px #888;
+    margin:5px;
+}
+.top {
+    width:98%;
+    background-color:#FFFAF0;
+    padding:5px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border:1px solid #FFE0A4;
+
+}
+
+
+
+body {
+	margin: 0;
+	padding: 0;
+	background: url(/static/images/bg.jpg);
+	color: #443a51;
+	font-family: arial, tahoma, verdana;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+
+#panel {
+position: absolute;
+top: 0px;
+right: 3px;
+width: 420px;
+height: 62px;
+background: url(/static/images/panel.png) no-repeat;
+color: #f3d0ea;
+
+}
+
+.sinput {
+background: url(/static/images/sinput.gif) no-repeat;
+width: 144px;
+height: 26px;
+padding: 0 4px 0 0;
+}
+#main {
+background: url(/static/images/mt.png) repeat-y;
+overflow: hidden;
+}
+
+#maintop {
+background: url(/static/images/mttop.png) no-repeat top left;
+height: 29px;
+overflow: hidden;
+clear: both;
+}
+
+#main2 {
+background: url(/static/images/mainint.jpg) no-repeat center top;
+overflow: hidden;
+width: 981px;
+margin: 0 0 0 9px;
+}
+#sidebar h2 {
+background: url(/static/images/he.gif) no-repeat;
+width: 179px;
+height: 41px;
+font-size: 18px;
+color: #634489;
+font-weight: normal;
+text-align: center;
+padding: 6px 0 0 0;
+margin: 0 0 0 10px;
+overflow: hidden;
+}
+#sidebar li {
+ background: url(/static/images/sel.gif) no-repeat left center;
+padding: 0 0 0 23px;
+list-style: none;
+}
+.cb_top {
+background: url(/static/images/cbt.png) no-repeat left;
+height: 13px;
+}
+
+.cb_bot {
+background: url(/static/images/cbb.png) no-repeat left;
+height: 13px;
+}
+
+.cb_cen {
+background: url(/static/images/cbc.png) repeat-y center;
+overflow: hidden;
+padding: 0 10px;
+}
+.game {
+width: 100%;
+overflow: hidden;
+float: left;
+background: url(/static/images/bl.gif) no-repeat 0 bottom;
+margin: 0 15px 10px 0;
+}
+
+.game_des {
+background: url(/static/images/bl2.gif) repeat-y right;
+float: left;
+width: 280px;
+padding: 0px 28px 0 10px;
+}
+
+#c1 {
+background: url(/static/images/c1.gif) no-repeat left center;
+font-size:20px;
+paddging-top:5px;
+}
+
+#c2 {
+background: url(/static/images/c2.gif) no-repeat left center;
+font-size:20px;
+paddging-top:5px;
+}
+
+#c3 {
+background: url(/static/images/c3.gif) no-repeat left center;
+}
+#mainbot {
+background: url(/static/images/mtbot.png) no-repeat left;
+height: 26px;
+margin: 0 0 50px 0;
+}
+
+.forma {
+background: url(/static/images/form.gif) no-repeat;
+width: 413px;
+height: 213px;
+font-size: 12px;
+color: #614377;
+}
+

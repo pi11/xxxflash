@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>{% block title %}Erotic Flash Games. Porno Games, Hentai Games. Free XXX Games. Adult Flash Games.{% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link href="{{ STATIC_URL }}/css/style.css" type="text/css" rel="stylesheet" />
+  <meta name="Description" content="Adult flash games" />
+  <meta name="Keywords" content="Erotic flash games, xxx, sex" />
+  <link href="{{ STATIC_URL }}images/favicon.png" rel='shortcut icon'/>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
+  <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?24"></script>
+
+  <script type="text/javascript" charset="UTF8">
+    function vote(kind, id) {
+    $.getJSON("/mark/", { pk:id, vote: kind }, function(json){
+    $("#mark-"+id).text(json['success']);
+    });
+    }
+  </script>
+</head>
+<body>
+{% block header %}
+<div class="root">
+  <div class="top_container">
+    <div class="top_text">
+      <a href="/">Erotic flash games for adults.</a> | <a href="{% url 'upload_game' %}">Upload game</a>
+    </div>
+    <span class="small">
+      Daily updates! Come back to see new flash games.
+      <p><a href="javascript:void(0);" onclick="return bookmark(this);">Add to favorites</a></p>
+    </span>
+  </div>
+{% endblock %}
+    {% block user_panel %}
+    <div id="user_panel">
+      <div style="width:50px; float:none; margin-left:auto; margin-right:auto;">
+        <img src="{{ STATIC_URL }}images/spinner.gif" />
+      </div>
+    </div>
+    {% endblock %}
+{% block navigation %}
+  <div class="side_col">
+    {% include "menu.html" %}
+  </div>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+{% block footer %}
+  <div class="footer">
+    <div id="left_footer">
+      &copy; <a href="http://webii.ru/" style="font-size:12px;">WebII Lab</a>
+      {% include "li.html" %}
+    </div>
+    <div id="rigth_footer">
+      If you are under 18 years please leave this site with <a href="http://google.com/">this</a> link. <br />
+      Please send any questions: Email/jid: webii@webii.ru
+    </div>
+  </div>
+</div>
+
+<!-- Yandex.Metrika counter -->
+<div style="display:none;"><script type="text/javascript">
+(function(w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter4957927 = new Ya.Metrika(4957927);
+             yaCounter4957927.clickmap(true);
+             yaCounter4957927.trackLinks(true);
+
+        } catch(e) { }
+    });
+})(window, 'yandex_metrika_callbacks');
+</script></div>
+<script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
+<noscript><img src="//mc.yandex.ru/watch/4957927" style="position:absolute; left:-9999px;" alt="" /></noscript>
+<!-- /Yandex.Metrika counter -->
+
+
+{% endblock %}
+
+
+</body>
+</html>
+

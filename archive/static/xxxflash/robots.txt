@@ -1,0 +1,9 @@
+# test
+User-Agent: *
+Disallow: /mark/
+
+User-Agent: Yandex
+Disallow: /mark/
+Host: flash-xxx.club
+
+

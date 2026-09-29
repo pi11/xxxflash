@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %} Adult Erotic Flash Game: {{ g.name }}{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript" charset="UTF8">
+function save() {
+  $.getJSON("/save/", { pk:{{ g.id }} }, function(json){
+    $("#save").text(json['success']);
+  });
+}
+
+function vote(kind) {
+  $.getJSON("/mark/", { pk:{{ g.id }}, vote: kind }, function(json){
+    $("#mark1").text(json['success']);
+  });
+}
+function addClickHandlers() {
+  $("#upvote").click( function() { vote("up") });
+  $("#downvote").click( function() { vote("down") });
+}
+$(document).ready(addClickHandlers);
+</script>
+
+  <div id="flashes">
+    <div class="drevo" align="center"><a href="/" title="">Erotic Games</a> > <a href="/game/{{ g.id }}/" title="{{ g.name }}">{{ g.name }}</a></div>
+    <div class="acenter">
+     {% if game_under_moderation %} <div class="game_title">This games does not approved yet!</div>{% endif %}
+
+      <div class="game_title">{{ g.name }}</div>{% if user.is_staff %}<a href="/admin/flash/flash/{{ g.id }}/"> Edit </a>{% endif %}</h1>
+
+      <div id="game">
+	<object type="application/x-shockwave-flash" style="width:700px; height:700px;" data="{{ MEDIA_URL}}{{ g.flashfile }}"><param name="movie" value="{{ MEDIA_URL}}{{ g.flashfile }}" />
+	</object>
+
+      </div>
+      
+      <div class="">
+	<div align="left" class="desc">{{ g.description }}</div>
+      </div>
+
+      <div class="options">
+        <div style="float:left;display:block;width: auto; padding:3px;">
+        <strong>Share:</strong><br />
+        <div style="float:left;display:block;padding:3px;"><a href="http://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div>
+
+        <div style="float:left;display:block;padding:3px;"><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:like href="" layout="button_count" show_faces="true" width="90" font=""></fb:like></div>
+        </div>
+	<div align="right">Uploaded by: <a href="/profiles/{{ g.user }}">{{ g.user }}</a></div>
+	<div align="right">Flash Game Rate:  <span style="font-size:18px; font:bold;"> <span id="mark1">{{ mark|default:0 }}</span> <a href="#" id="upvote">+</a> / <a href="#" id="downvote">-</a> </span> </div>
+	<div align="right">Views: {{ views }}</div>
+
+      </div>
+
+      <div style="float:left;display:block;">
+          Also take a look at: <br />
+          {% for t in gt %}
+              <a href="/theme/{{ t.url }}/">{{ t.name }}</a> |
+          {% endfor %}
+      </div>
+
+      <div class="break">
+	{% include "comments.html" %}
+      </div>
+      <div align="left" class="break">Add Comment:</div>
+      <div align="left" class="break">
+	<form action="/add-comment" method="post">{% csrf_token %}
+	  {{ form.text }} {{ form.text.errors }}
+	  <input type="hidden" name="flash_id" value="{{ g.id }}" />
+	  <span class="off"><input type="text" name="email" value="" size="10" /></span>
+	  <br />
+	  <input type="submit" value=" Добавить " />
+	</form>
+      </div>
+      {% include "banner-foot.html" %}
+      {% include "flash-random.html" %}
+    </div>
+
+  </div>
+
+{% endblock %}
+

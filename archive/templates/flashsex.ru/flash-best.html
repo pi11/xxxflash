@@ -1,0 +1,30 @@
+<div id="flashes_best" style="border:1px dashed gray; padding:5px; float:left; margin-bottom:20px;">
+  <div style="float:left; width:100%; padding:5px; color:red;"><strong>Лучшие игры:</strong></div>
+  {% for g in best %}
+  <div style="width:136px; float:left; ">
+    <div style="float:left;">
+       <a title="{{ g.name }}" href="/game/{{ g.id }}/" target="_blank"><img alt="{{ g.name }}" src="{% if g.thumbfile %}{{ MEDIA_URL }}{{ g.thumbfile }}{% else %}{{ STATIC_URL }}images/noimage.jpg{% endif %}" style="width: 135px;" border="0" height="110px" /></a>
+
+    </div>
+    <div style="float:left; text-align:center;">
+      <a href="/game/{{ g.id }}/" class="title">{{ g.name }}</a>
+    </div>
+  </div>
+  {% endfor %}
+  <div style="float:left; width:100%; padding:5px; color:red;"><strong>Случайные игры:</strong></div>
+  {% for g in random2 %}
+  <div style="width:136px; float:left; ">
+    <div style="float:left;">
+      <a title="{{ g.name }}" href="/game/{{ g.id }}/" target="_blank"><img alt="{{ g.name }}" src="{% if g.thumbfile %}{{ MEDIA_URL }}{{ g.thumbfile }}{% else %}{{ STATIC_URL }}images/noimage.jpg{% endif %}" style="width: 135px;" border="0" height="110px" /></a>
+    </div>
+    <div style="float:left; text-align:center;">
+      <a href="/game/{{ g.id }}/" class="title">{{ g.name }}</a>
+    </div>
+  </div>
+  {% endfor %}
+  <div style="width:100%; float:left; height:230px;">
+    {% include "top_ad.html" %}
+  </div>
+  <br />
+</div>
+

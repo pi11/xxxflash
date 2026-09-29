@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>{% block title %}Игры для девочек.{% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link href="{{ STATIC_URL }}/css/style.css" type="text/css" rel="stylesheet" />
+  <meta name="Description" content="Игры для девочек." />
+  <meta name="Keywords" content="игры, флэш, онлайн" />
+  <meta name='yandex-verification' content='4c5cbe26af06b90d' />
+  <link href="{{ STATIC_URL }}images/favicon.png" rel='shortcut icon'/>
+  <link href="{{ STATIC_URL }}images/favicon.png" rel='icon'/>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.3.2.js"></script>
+</head>
+<body>
+{% block header %}
+<div class="root">
+  <div class="top_container">
+    <div class="top_text">
+      <a href="/">Игры для девочек</a>
+    </div>
+    <span class="small">
+      Мы добавляем новые игры каждый день! Добавь нас в закладки и приходи за новыми играми для девочек!
+      <p>
+	<a href="javascript:void(0);" onclick="return bookmark(this);">Добавить в избранное</a>
+      </p>
+    </span>
+<!-- top_text -->
+  </div><!-- top_conteiner -->
+{% endblock %}
+{% block user_panel %}
+{% include "user/panel.html" %}
+{% endblock %}
+{% block navigation %}
+  <div class="side_col">
+    {% include "menu.html" %}
+  </div>
+{% endblock %} 
+{% block content %}
+{% endblock %} 
+{% block footer %}  
+  <div class="footer">
+    <div id="left_footer">
+      &copy; <a href="http://webii.ru/" style="font-size:12px;">WebII Lab</a>
+      {% include "li.html" %}
+      <br />
+      
+    </div>
+    <div id="rigth_footer">
+      По всем вопросам обращайтесь: webii@webii.ru.
+    </div>
+  </div>
+</div>
+{% endblock %}
+</body>
+</html>
+
+
+	

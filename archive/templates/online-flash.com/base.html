@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{% block title %}Бесплатные казуальные игры. Мини игры. Скачивай бесплатно!{% endblock %}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link href="{{ MEDIA_URL }}css/style.css" type="text/css" rel="stylesheet">
+	<meta name="Description" content="{% block description %}Мини Игры{% endblock %}" />
+	<meta name="Keywords" content="{% block keywords %}Мини Игры{% endblock %}" />
+	<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.3.2.js"></script>
+	<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.lightbox-0.5.min.js"></script>
+	<link href="{{ MEDIA_URL }}css/jquery.lightbox-0.5.css" type="text/css" rel="stylesheet">
+</head>   
+<body> 
+<div id="wrapper">
+<!-- start header  -->
+{% block header %}
+<div id="header">
+	<div id="logo">    
+            {% if user.is_authenticated %}
+          Добро пожаловать, {{ user.username }}!
+          <a href="/accounts/logout/">Выход</a>
+        {% else %}
+          <a href="/accounts/login/">Вход</a> | <a href="/accounts/registration/">Регистрация</a> 
+        {% endif %}
+  	</div>
+	<div id="menu">
+	 <h1><a href="/">Бесплатные мини игры</a></h1>
+	</div>
+	
+</div>
+{% endblock %}
+<!-- end header -->
+	<!-- start page -->
+	<div id="page">
+
+		<div id="sidebar1" class="sidebar">
+{% block navigation %}
+			<ul>
+				<li>
+
+    
+    <h2>Темы:</h2>
+
+    <br />
+    <ul>
+      {% for t in themes %}
+                  <li><a title="{{ t.name }}" href="/theme/{{ t.url }}/">{{ t.name }}</a></li>
+      {% endfor %}
+    </ul>
+    <br />
+
+
+    <ul>
+      <li><a href="/best" style="color:#8fc400">Лучшие игры</a></LI>
+      <li><a href="/popular" style="color:#8fc400">Самые просматриваемые</a></li>
+    </ul>
+    <br /><br /><br />
+      Рекомендуем:
+      <ul>
+	<li><a href="http://ru-wallp.com/" style="font-size:12px;" target="_blank">Обои для рабочего стола</a></li>
+	<li><a href="http://flashsex.ru/" style="font-size:12px;"  target="_blank">Эротические игры</a></li>
+	<li><a href="http://www.ololoop.com/" style="font-size:12px;"  target="_blank">Флэш приколы</a></li>
+	<li><a href="http://gif1.ru/" style="font-size:12px;"  target="_blank">Прикольные гифки</a></li>
+	<li><a href="http://jpg-1.com/" style="font-size:12px;"  target="_blank">Веселые картинки</a></li>
+	<li><a href="http://www.stost.ru/" style="font-size:12px;"  target="_blank">Поздравления</a></li>
+	<li><a href="http://www.onlythere.com/" style="font-size:12px;"  target="_blank">Порно фото</a></li>
+	<li><a href="http://xxx-gif.com/" style="font-size:12px;"  target="_blank">Порно гифки</a></li>
+
+	<br />
+
+
+     <br /><br /><br />
+    <div style="font-size:10px;margin-left: 5px;margin-right: 5px; width: 150px;">
+      <br />
+      <b>Помоги проекту!</b><br/>
+      Размести ссылку: <textarea rows=3 cols=22><a href="http://games-ru.ru/">Игры</a></textarea> у себя на сайте,  форуме или блоге!
+    </div>
+      <br />
+
+
+      </ul>
+				</li>
+			</ul>
+		{% endblock %} 
+		</div>
+
+		<!-- start content -->
+		<div id="content">
+			<div class="post">
+				{% block content %}
+
+				{% endblock %} 
+			</div>
+		</div>
+		<!-- end content -->
+		<!-- start sidebars -->
+	
+		<div id="sidebar2" class="sidebar">
+<ul><li>
+      {% if index_page %}
+        <h2>Последние комментарии:</h2>
+	{% for comment in comments %}
+	<p>
+  	  <span style="color:green;">{{ comment.user.username }}</span> {{ comment.publication_date }} написал: <a href="/game/{{ comment.flash.id }}/#{{ comment.id }}">{{ comment.text|truncatewords:5 }}</a>
+
+	  </p>
+        {% endfor %}
+      {% else %}
+      <h2>Ad</h2>
+        <noindex><center><a href="http://www.alawar.ru/?pid=6015" target="_blank"><img src="http://promo.partner.alawar.ru/images/7a7/090400-4-search-120x600.gif?pid=6015" width="120" height="600" alt="" /></a></center></noindex>
+      {% endif %}
+
+</li></ul>
+  		</div>	
+		<!-- end sidebars -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	<!-- end page -->
+</div>
+
+<div id="footer">
+{% block footer %}  
+          <p>
+&copy; <a href="http://www.jp-net.ru/">Jp-Net Group</a>
+</p>
+<p>
+<noindex><a ref="nofollow" href="http://www.freecsstemplates.org">Templates</a></noindex>
+
+<!--LiveInternet counter--><script type="text/javascript"><!--
+	document.write("<span "+
+	"target=_blank><img src='http://counter.yadro.ru/hit?t44.1;r"+
+	escape(document.referrer)+((typeof(screen)=="undefined")?"":
+	";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+	screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+	";"+Math.random()+
+	"' alt='' title='LiveInternet' "+
+	"border='0' width='11' height='11'><\/span>")
+	//--></script><!--/LiveInternet-->
+</p>
+{% endblock %}
+</div>
+
+</body>
+</html>
+
+
+	

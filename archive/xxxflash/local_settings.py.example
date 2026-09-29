@@ -1,0 +1,43 @@
+import os
+DEBUG = True
+DATABASES = {
+    'default': {
+        'ENGINE' : 'django.db.backends.postgresql_psycopg2',           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME' : 'flash',             # Or path to database file if using sqlite3.
+        'USER' : 'flash',             # Not used with sqlite3.
+        'PASSWORD' : '',         # Not used with sqlite3.
+        'HOST' : 'localhost',             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT' : '',
+    }
+}
+TEMPLATE_DEBUG = DEBUG
+
+_PROJECT = "flashsex.ru"
+
+ABS_ROOT = os.path.abspath(os.path.dirname(__file__))
+TEMPLATE_DIRS = (
+    ABS_ROOT+"/../templates/%s/" % _PROJECT,
+)
+
+                
+MEDIA_URL = "http://localhost/xxxflash/media/%s/" % _PROJECT
+STATIC_URL = "http://localhost/xxxflash/static/%s/" % _PROJECT
+MEDIA_ROOT = ABS_ROOT+"/../media/%s/" % _PROJECT
+
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+)
+MANAGERS = ADMINS
+                    
+ADMIN_MEDIA_PREFIX = "/amedia/"
+
+GAMES_PER_PAGE = 10
+INDEX_ORDER_BY = ["-publication_date", "-rate", "-views", "-id"]
+
+_BEST_GAMES_COUNT = 50
+#INSTALLED_APPS += ('uwsgi_admin',)
+SITE_URL = "http://xxxflash/"
+_PAGE_LINKS = 10
+SPHINX_INDEX = "xxxflash"
+SITE_BASE = "localhost"
+

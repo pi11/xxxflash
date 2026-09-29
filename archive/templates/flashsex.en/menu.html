@@ -1,0 +1,24 @@
+<div id="sidebar">
+  <h2>Erotic games</h2>
+
+  <ul>
+    {% for t in themes %}
+    <li><a title="{{ t.name }}" href="/theme/{{ t.url }}/">{{ t.name }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <ul>
+    <li><a href="http://flashsexru.com/">Russian flash games</a></li>
+  </ul>
+
+  <p class="sidbtn"><a href="{% url 'upload_game' %}"><img src="{{ STATIC_URL }}images/upload.gif" alt="Upload" /></a></p>
+     
+  <h2></h2>
+  
+   <b>Help our project!</b><br> 
+	<p> 
+          Share this link please:<br />
+          &lt;a href= "http://www.flashsexru.com/" target="_blank"&gt; Erotic Games &lt/a&gt;
+	</p>
+</div>
+  

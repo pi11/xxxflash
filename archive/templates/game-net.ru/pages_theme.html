@@ -1,0 +1,24 @@
+<div class="paging">
+Страница {{ flashes.number }} из {{ flashes.paginator.num_pages }}.
+    <ul>
+        {% if flashes.has_previous %}
+           <li><a href="/theme/{{ theme.url }}/{{ flashes.previous_page_number }}/">&larr;</a></li>
+        {% endif %}
+
+
+   {% for page in pages %}
+        {% ifnotequal page page_id %}
+      <li><a class="pages_links" href="/theme/{{ theme.url }}/{{ page }}/">{{ page }}</a></li>
+    {% endifnotequal %}
+    {% ifequal page page_id %}
+      <span class="c_page">{{ page }}</span>
+    {% endifequal %}
+   {% endfor %}
+
+
+        {% if flashes.has_next %}
+            <li> <a href="/theme/{{ theme.url }}/{{ flashes.next_page_number }}/">&rarr;</a></li>
+        {% endif %}
+    </span>
+  </ul>
+</div>

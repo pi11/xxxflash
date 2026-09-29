@@ -1,0 +1,40 @@
+<div id="sidebar">
+  <h2>Эротические игры</h2>
+
+  <ul>
+    {% for t in themes %}
+    <li><a title="{{ t.name }}" href="/theme/{{ t.url }}/">{{ t.name }}</a></li>
+    {% endfor %}
+  </ul>
+
+
+  <ul>
+    <li><a href="http://1tbporno.com/">Порно видео</a></li>
+    <li><a href="http://semyana.ru/">Порно из вконтакта</a></li>
+    <li><a href="http://pron2.com/">Подборки порно</a></li>
+
+  </ul>
+
+
+
+  <p class="sidbtn"><a href="/upload/"><img src="{{ STATIC_URL }}images/upload.gif" alt="Загрузить" /></a></p>
+     
+  <h2>Топы игр:</h2>
+  <ul>
+    <li><a href="{% url 'best2' %}">Новый топ!</a></li>
+    <li><a href="{% url 'best' %}">Лучшие игры</a></li>
+    <li><a href="{% url 'popular' %}">Популярные игры</a></li>
+  </ul>
+
+  <!--noindex-->
+  {% load banertag %}
+  {% get_baner menu_ad %}
+  <!--/noindex-->
+  <b>Помочь проекту:</b><br> 
+	<p> Помоги старейшему в Рунете сайту порно-игр!
+          Разместите ссылку на своем сайте:<br />
+          &lt;a href= "http://www.flashsexru.com/" target="_blank"&gt; Эротические игры &lt/a&gt;
+	</p>
+
+</div>
+  

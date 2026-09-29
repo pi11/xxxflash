@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center">
+      <a href="/" title="">Игры для девочек</a> > <a href="/" title="Главная">Главная</a>
+    </div>
+
+    {% if first_page %}
+
+    {% include "flash-best.html" %}
+    <div class="cmen top" style="text-align:center; float:left;">
+      <b>Активные пользователи:</b>
+      <ul>
+	{% for p in top_profiles %}
+	{% if p.score > 0 %}
+	<li><a href="#">{{ p.user.username }} <img src="{{ STATIC_URL }}images/star.png" width="14px" /> <b>{{ p.score }}</b></a></li>
+	{% endif %}
+	{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    
+    {% include "flash-list.html" %}
+
+    <div class="pages">
+      {% include "paginator.html" %}
+    </div>
+
+    <div class="left_menu">
+    </div>
+      <div class="comments">
+	Последние комментарии:
+	{% include "comments.html" %}
+      </div>
+      <div align="left">
+	    {% include "flash-random.html" %}
+      </div>
+   
+  </div>
+{% endblock %}    
+

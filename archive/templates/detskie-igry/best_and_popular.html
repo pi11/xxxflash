@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Самые популярные детские флэш игры.{% endblock %}
+{% block content %}
+  <div class="page_content">
+    <div class="drevo" align="center"><a href="/" title="">Детские флэш игры</a> </div>
+    <br />
+    {% include "flash-list.html" %}
+    <div class="pages">
+      {% include "pages.html" %}
+    </div>
+
+  </div>
+{% endblock %}    
+
