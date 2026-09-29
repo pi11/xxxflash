@@ -44,6 +44,9 @@ class Settings:
     # Behind PgBouncer: no startup parameters (search_path comes from the role default set by
     # `python -m app migrate`) and no prepared-statement cache (breaks transaction pooling).
     db_pgbouncer: bool = False
+    # UI language of the templates (ru | en) and whether comments are shown / accepted.
+    language: str = "ru"
+    show_comments: bool = True
     comments_per_page: int = 20
     best_games_per_page: int = 20
     theme_games_per_page: int = 10
@@ -93,6 +96,8 @@ def load_settings(env_file: str | os.PathLike | None = None) -> Settings:
         hide_compat=_list(env("HIDE_COMPAT", "")),
         debug=_bool(env("DEBUG", "0")),
         db_pgbouncer=_bool(env("DB_PGBOUNCER", "0")),
+        language=env("SITE_LANGUAGE", "ru").strip().lower(),
+        show_comments=_bool(env("SHOW_COMMENTS", "1")),
     )
 
 

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{{ theme.name }} — эротические флэш игры — xxxflash{% endblock %}
+{% block title %}{{ _(theme.name) }} — {{ _("эротические флэш игры") }} — xxxflash{% endblock %}
 {% block content %}
 <div class="page-head">
-  <h1>{{ theme.name }}</h1>
-  <p>{{ flashes.count }} игр в жанре, сначала самые популярные</p>
+  <h1>{{ _(theme.name) }}</h1>
+  <p>{{ _("%(count)s в жанре, сначала самые популярные")|format(count=num(flashes.count) ~ " " ~ plural(flashes.count, "игра|игры|игр")) }}</p>
 </div>
 {% include "flash-list.html" %}
 {% include "paginator.html" %}

@@ -1,6 +1,6 @@
 {% if random %}
 <section id="flashes_random" class="shelf" aria-labelledby="random-title">
-  <h2 id="random-title">Случайные игры</h2>
+  <h2 id="random-title">{{ _("Случайные игры") }}</h2>
   <div class="shelf-row">
     {% for g in random %}
     <a href="/game/{{ g.id }}/" title="{{ g.name }}"><img src="{{ thumb(g) }}" alt="{{ g.name }}" loading="lazy" /></a>

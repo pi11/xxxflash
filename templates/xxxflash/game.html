@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}{{ g.name }} — играть онлайн — xxxflash{% endblock %}
+{% block title %}{{ g.name }} — {{ _("играть онлайн") }} — xxxflash{% endblock %}
 {% block description %}{{ g.description|truncatewords(30) }}{% endblock %}
 
 {% block frame %}
 <div class="frame frame--wide">
   <main>
-    <nav class="crumbs" aria-label="Путь">
-      <a href="/">Все игры</a>
-      {% if gt %} / <a href="/theme/{{ gt[0].slug }}/">{{ gt[0].name }}</a>{% endif %}
+    <nav class="crumbs" aria-label="{{ _("Путь") }}">
+      <a href="/">{{ _("Все игры") }}</a>
+      {% if gt %} / <a href="/theme/{{ gt[0].slug }}/">{{ _(gt[0].name) }}</a>{% endif %}
     </nav>
 
     <div class="stage">
@@ -22,7 +22,7 @@
         {% if g.description %}<p class="description">{{ g.description }}</p>{% endif %}
         {% if gt %}
         <div class="chips">
-          {% for t in gt %}<a href="/theme/{{ t.slug }}/">{{ t.name }}</a>{% endfor %}
+          {% for t in gt %}<a href="/theme/{{ t.slug }}/">{{ _(t.name) }}</a>{% endfor %}
         </div>
         {% endif %}
       </div>
@@ -30,28 +30,30 @@
         {% set mark_id = "mark1" %}
         {% include "rating.html" %}
         <div class="meta">
-          <span>Загрузил {{ g.user.username }}</span>
-          {% if user.is_staff %}<a class="edit-link" href="/{{ settings.admin_prefix }}/games/{{ g.id }}/">Редактировать</a>{% endif %}
+          <span>{{ _("Загрузил %(user)s")|format(user=g.user.username) }}</span>
+          {% if user.is_staff %}<a class="edit-link" href="/{{ settings.admin_prefix }}/games/{{ g.id }}/">{{ _("Редактировать") }}</a>{% endif %}
         </div>
       </div>
     </div>
 
+    {% if settings.show_comments %}
     <section class="discussion" aria-labelledby="comments-title">
-      <h2 id="comments-title">Комментарии</h2>
+      <h2 id="comments-title">{{ _("Комментарии") }}</h2>
       {% if user.is_authenticated %}
       <form class="comment-form" action="/add-comment" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
         <input type="hidden" name="flash_id" value="{{ g.id }}" />
-        <label class="visually-hidden" for="comment-text">Ваш комментарий</label>
-        <textarea id="comment-text" name="text" maxlength="1000" required placeholder="Что думаете об игре?"></textarea>
+        <label class="visually-hidden" for="comment-text">{{ _("Ваш комментарий") }}</label>
+        <textarea id="comment-text" name="text" maxlength="1000" required placeholder="{{ _("Что думаете об игре?") }}"></textarea>
         <span class="honeypot" aria-hidden="true"><input type="text" name="email" value="" tabindex="-1" autocomplete="off" /></span>
-        <button type="submit" class="btn">Отправить</button>
+        <button type="submit" class="btn">{{ _("Отправить") }}</button>
       </form>
       {% else %}
-      <p><a href="/login/">Войдите</a>, чтобы оставить комментарий.</p>
+      <p><a href="/login/">{{ _("Войдите, чтобы оставить комментарий.") }}</a></p>
       {% endif %}
       {% include "comments.html" %}
     </section>
+    {% endif %}
 
     {% include "flash-random.html" %}
   </main>

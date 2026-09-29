@@ -7,7 +7,7 @@
   <div id="comments-more-{{ comments.next_page_number }}">
     <button type="button" class="more-comments"
             onclick="$('#comments-more-{{ comments.next_page_number }}').load('/get_comments/{{ g.id }}/{{ comments.next_page_number }}/');">
-      Показать ещё комментарии
+      {{ _("Показать ещё комментарии") }}
     </button>
   </div>
   {% endif %}

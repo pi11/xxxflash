@@ -98,6 +98,11 @@ game, voting over POST+CSRF, and "load more comments".
 - [x] Comments list with search, delete and ban-IP; bans and banned words CRUD
 - [x] `python -m app create-staff <email>`
 
+### Phase 8: Redesign and English site (2026-09-30)
+- [x] xxxflash redesign ("velvet stage" theme, self-hosted Unbounded + Golos Text, no external links)
+- [x] English version of xxxflash via a translation catalog (`SITE_LANGUAGE=en`), comments hidden and disabled (`SHOW_COMMENTS=0`)
+- [ ] English game titles/descriptions (data exists only in Russian)
+
 ### Phase 7: Ops
 - [x] `deploy/nginx.conf.example` (static/media, `parts/` MIME type, CSP with `wasm-unsafe-eval`)
 - [x] `deploy/flash@.service` (one instance per site / env file) and `deploy/flash-counts.cron.example`

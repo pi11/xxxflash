@@ -45,3 +45,6 @@ extend-exclude = ["archive", "app/migrations"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.setuptools.package-data]
+app = ["locales/*.json"]

@@ -40,6 +40,7 @@ def _rate_limited(*keys: str) -> bool:
 @csrf_protect
 async def login_view(request: Request):
     settings = request.app.ctx.settings
+    _ = request.app.ctx.tr
     error = ""
     sended = False
     email_value = ""
@@ -47,15 +48,15 @@ async def login_view(request: Request):
         email_value = (request.form or {}).get("email", "")
         email = normalize_email(email_value)
         if email is None:
-            error = "Введите правильный адрес электронной почты."
+            error = _("Введите правильный адрес электронной почты.")
         elif _rate_limited(f"ip:{client_ip(request)}", f"email:{email}"):
-            error = "Слишком много попыток входа. Попробуйте позже."
+            error = _("Слишком много попыток входа. Попробуйте позже.")
         else:
             user, token = await issue_login_token(email)
             link = f"{settings.site_url}/auth/{user.id}/{token}/"
             if settings.debug or not settings.resend_api_key:
                 log.warning("login link for %s: %s", email, link)
-            await send_login_link(settings, email, link)
+            await send_login_link(settings, email, link, _)
             sended = True
     return await render(request, "user/login.html", sended=sended, error=error, email=email_value)
 

@@ -2,6 +2,6 @@
   {% for g in flashes.object_list %}
   {% include "game-list-item.html" %}
   {% else %}
-  <p class="empty">Здесь пока нет игр. Загляните в <a href="/best2/">топ</a> или выберите жанр.</p>
+  <p class="empty">{{ _("Здесь пока нет игр.") }} <a href="/best2/">{{ _("Открыть топ игр") }}</a></p>
   {% endfor %}
 </div>

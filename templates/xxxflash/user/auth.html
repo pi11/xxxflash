@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Вход — xxxflash{% endblock %}
+{% block title %}{{ _("Вход") }} — xxxflash{% endblock %}
 {% block content %}
 <div class="panel">
   {% if user.is_authenticated %}
-  <h1>Добро пожаловать {{ user.username }}!</h1>
-  <p><a href="/">Перейти к играм</a></p>
+  <h1>{{ _("Добро пожаловать %(user)s!")|format(user=user.username) }}</h1>
+  <p><a href="/">{{ _("Перейти к играм") }}</a></p>
   {% else %}
-  <h1>Ошибка входа</h1>
-  <p>Ссылка устарела или уже использована. <a href="/login/">Запросите новую</a>.</p>
+  <h1>{{ _("Ошибка входа") }}</h1>
+  <p>{{ _("Ссылка устарела или уже использована.") }} <a href="/login/">{{ _("Запросите новую") }}</a></p>
   {% endif %}
 </div>
 {% endblock %}

@@ -1,9 +1,9 @@
-<h2>Жанры</h2>
+<h2>{{ _("Жанры") }}</h2>
 <ul>
-  {% for t in themes %}
+  {% for t in themes|by_label %}
   <li>
     <a href="/theme/{{ t.slug }}/"{% if theme is defined and theme and theme.id == t.id %} aria-current="page"{% endif %}>
-      <span>{{ t.name }}</span><span class="count">{{ t.game_count }}</span>
+      <span>{{ _(t.name) }}</span><span class="count">{{ num(t.game_count) }}</span>
     </a>
   </li>
   {% endfor %}

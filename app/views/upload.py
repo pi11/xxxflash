@@ -27,6 +27,7 @@ def _file(request: Request, name: str):
 @csrf_protect
 async def upload(request: Request):
     settings = request.app.ctx.settings
+    _ = request.app.ctx.tr
     all_themes = await Theme.all().order_by("name")
     errors: dict[str, str] = {}
     values = {"name": "", "description": "", "themes": []}
@@ -45,36 +46,38 @@ async def upload(request: Request):
         thumb = _file(request, "thumbfile")
 
         if not values["name"] or len(values["name"]) > MAX_NAME:
-            errors["name"] = f"Введите название (до {MAX_NAME} символов)."
+            errors["name"] = _("Введите название (до %(n)s символов).") % {"n": MAX_NAME}
         if not values["description"] or len(values["description"]) > MAX_DESCRIPTION:
-            errors["description"] = f"Введите описание (до {MAX_DESCRIPTION} символов)."
+            errors["description"] = _("Введите описание (до %(n)s символов).") % {
+                "n": MAX_DESCRIPTION
+            }
         themes = [t for t in all_themes if t.id in theme_ids]
         if not themes:
-            errors["theme"] = "Выберите хотя бы одну тему."
+            errors["theme"] = _("Выберите хотя бы одну тему.")
 
         info = None
         if swf is None or not swf.body:
-            errors["flashfile"] = "Выберите файл игры."
+            errors["flashfile"] = _("Выберите файл игры.")
         elif len(swf.body) > settings.max_upload_mb * 1024 * 1024:
-            errors["flashfile"] = f"Файл больше {settings.max_upload_mb} МБ."
+            errors["flashfile"] = _("Файл больше %(n)s МБ.") % {"n": settings.max_upload_mb}
         elif not is_swf(swf.body):
-            errors["flashfile"] = "Неверный тип файла"
+            errors["flashfile"] = _("Неверный тип файла")
         else:
             try:
                 info = parse_header(swf.body)
             except SwfError:
-                errors["flashfile"] = "Файл повреждён"
+                errors["flashfile"] = _("Файл повреждён")
             else:
                 if await Game.exists(sha512=sha512_hex(swf.body)):
-                    errors["flashfile"] = "Эта игра уже загружена"
+                    errors["flashfile"] = _("Эта игра уже загружена")
         if thumb is None or not thumb.body:
-            errors["thumbfile"] = "Выберите скриншот."
+            errors["thumbfile"] = _("Выберите скриншот.")
 
         if not errors:
             try:
                 thumb_path = store_thumbnail(settings.media_root, thumb.body)
             except UploadError as exc:
-                errors["thumbfile"] = str(exc)
+                errors["thumbfile"] = _(str(exc))
             else:
                 swf_path = store_swf(settings.media_root, swf.body)
                 user = request.ctx.user

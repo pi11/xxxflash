@@ -30,14 +30,20 @@ async def send_email(settings: Settings, to: list[str], subject: str, text: str)
     return True
 
 
-async def send_login_link(settings: Settings, email: str, link: str) -> bool:
+def _identity(text: str) -> str:
+    return text
+
+
+async def send_login_link(settings: Settings, email: str, link: str, _=_identity) -> bool:
     host = settings.site_url.split("://", 1)[-1]
-    text = (
-        f"Для входа на сайт {host} пройдите по ссылке:\n{link}\n\n"
-        "Ссылка одноразовая и действует 24 часа.\n"
-        "Если вы не запрашивали вход, просто проигнорируйте это письмо."
+    text = "\n\n".join(
+        [
+            _("Для входа на сайт %(host)s пройдите по ссылке:") % {"host": host} + "\n" + link,
+            _("Ссылка одноразовая и действует 24 часа."),
+            _("Если вы не запрашивали вход, просто проигнорируйте это письмо."),
+        ]
     )
-    return await send_email(settings, [email], f"Вход на сайт {host}", text)
+    return await send_email(settings, [email], _("Вход на сайт %(host)s") % {"host": host}, text)
 
 
 async def send_moderation_notice(settings: Settings, game_id: int, name: str) -> bool:

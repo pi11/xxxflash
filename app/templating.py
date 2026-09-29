@@ -7,6 +7,7 @@ from sanic import Request
 from sanic.response import html
 
 from app.config import BASE_DIR, Settings
+from app.i18n import Translator
 from app.services.rules import truncate_words
 
 RUFFLE_VERSION_FILE = BASE_DIR / "static" / "vendor" / "ruffle" / "VERSION"
@@ -69,6 +70,12 @@ def create_env(settings: Settings) -> Environment:
         thumb=thumb,
         now=lambda: dt.datetime.now(dt.UTC),
         ruffle_version=ruffle_version,
+    )
+    tr = Translator(settings.language)
+    env.globals.update(_=tr.gettext, plural=tr.plural, num=tr.number, lang=tr.language)
+    # Genres keep their admin order, then alphabetical in the *displayed* language.
+    env.filters["by_label"] = lambda themes: sorted(
+        themes, key=lambda t: (-t.sort_order, tr.gettext(t.name).casefold())
     )
     env.filters["truncatewords"] = truncate_words
     env.filters["date"] = _date

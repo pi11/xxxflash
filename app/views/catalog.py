@@ -53,7 +53,7 @@ async def index(request: Request):
         best=await best_games(5),
         random2=await random_games(5),
         random=await random_games(7),
-        comments=await latest_comments(5) if first_page else [],
+        comments=await latest_comments(5) if first_page and cfg.show_comments else [],
         **_page_ctx(page),
     )
 

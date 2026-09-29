@@ -55,6 +55,25 @@ The dev DB `flashxxx` (user `flashxxx`, password `123123`, localhost) holds the 
 
 The flashsex site needs its own DB (or schema) with the legacy flashsex dump restored the same way. Then the same copy tool runs against it.
 
+### Languages and the English site
+
+The xxxflash templates are translated rather than duplicated. Every UI string is Russian source
+wrapped in `_()` (or `plural(n, "игра|игры|игр")`), and `app/locales/en.json` maps it to English.
+A missing entry falls back to the Russian source. `tests/test_i18n.py` fails if any template or
+view string lacks an English entry.
+
+The English site is the same code and database started with a different env file:
+
+```dotenv
+SITE=xxxflash
+SITE_LANGUAGE=en
+SHOW_COMMENTS=0
+```
+
+With `SHOW_COMMENTS=0`, no comments are rendered (game page, "latest comments") and
+`/get_comments/…` and `/add-comment` return 404. Genre names are translated through the same
+catalog. Game titles and descriptions are data and exist only in Russian.
+
 ### Behind PgBouncer (`DB_PGBOUNCER=1`)
 
 PgBouncer rejects the `search_path` startup parameter (`unsupported startup parameter:

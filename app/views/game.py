@@ -43,7 +43,8 @@ async def game_page(request: Request, game_id: int):
     if request.headers.get("referer"):
         xrate = compute_xrate(game.rate, views)
         await Game.filter(id=game.id).update(views=F("views") + 1, xrate=xrate)
-    comments = await _comments_page(request, game, 1)
+    show = request.app.ctx.settings.show_comments
+    comments = await _comments_page(request, game, 1) if show else None
     return await render(
         request,
         "game.html",
@@ -58,6 +59,8 @@ async def game_page(request: Request, game_id: int):
 
 @bp.get("/get_comments/<game_id:int>/<page_id:int>/")
 async def get_comments(request: Request, game_id: int, page_id: int):
+    if not request.app.ctx.settings.show_comments:
+        raise NotFound("comments are disabled")
     game = await Game.get_or_none(id=game_id)
     if game is None:
         raise NotFound("game")
@@ -83,7 +86,7 @@ async def mark(request: Request):
         if game is None:
             raise NotFound("game")
         if not user.is_staff and await Vote.exists(game_id=game.id, ip=ip):
-            return json({"success": ALREADY_VOTED})
+            return json({"success": request.app.ctx.tr(ALREADY_VOTED)})
         await Vote.create(
             game_id=game.id, ip=ip, value=value, user_id=user.id if user.is_authenticated else None
         )
@@ -103,6 +106,8 @@ async def mark(request: Request):
 @login_required
 @csrf_protect
 async def add_comment(request: Request):
+    if not request.app.ctx.settings.show_comments:
+        raise NotFound("comments are disabled")
     ip = client_ip(request)
     if await Ban.exists(ip=ip):
         raise Forbidden("banned")

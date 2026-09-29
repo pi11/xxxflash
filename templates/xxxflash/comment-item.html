@@ -1,7 +1,7 @@
 <div class="comment" id="c{{ comment.id }}">
   <div class="comment-head">
     <span class="author">{{ comment.user.username }}</span>
-    <span class="author-score" title="Рейтинг пользователя">★ {{ comment.user.score }}</span>
+    <span class="author-score" title="{{ _("Рейтинг пользователя") }}">★ {{ comment.user.score }}</span>
     <time datetime="{{ comment.created_at.isoformat() }}">{{ comment.created_at|date }}</time>
     {% if show_game and comment.game %}
     <a class="on-game" href="/game/{{ comment.game_id }}/#c{{ comment.id }}">{{ comment.game.name }}</a>
