@@ -1,68 +1,64 @@
+{% set path = request.path %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <title>{% block title %}Эротические игры, флэш игры, порно игры, бесплатные, без регистрации, без смсы.{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="{{ static('css/style.css') }}" type="text/css" rel="stylesheet" />
-  <link href="{{ vendor('site.css') }}" type="text/css" rel="stylesheet" />
-  <meta name="Description" content="Эротические игры, порно игры, флэш игры, флеш игры, flash игры" />
-  <meta name="Keywords" content="Эротические игры, порно игры, флэш игры, флеш игры, flash игры" />
-  {% block index_headers %}{% endblock %}
-  <link href="{{ static('images/favicon.png') }}" rel="shortcut icon" />
-  <script src="{{ vendor('jquery.min.js') }}"></script>
-  <script src="{{ vendor('site.js') }}"></script>
+  <title>{% block title %}Эротические флэш игры онлайн — xxxflash{% endblock %}</title>
+  <meta name="description" content="{% block description %}Архив эротических и порно флэш игр. Играйте прямо в браузере, без установки Flash.{% endblock %}" />
+  <meta name="theme-color" content="#1d1321" />
+  <link rel="preload" href="{{ static('fonts/unbounded-700-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+  <link href="{{ static('css/fonts.css') }}" rel="stylesheet" />
+  <link href="{{ vendor('site.css') }}" rel="stylesheet" />
+  <link href="{{ static('css/site.css') }}" rel="stylesheet" />
+  <link href="{{ static('images/favicon.png') }}" rel="icon" />
+  <script src="{{ vendor('jquery.min.js') }}" defer></script>
+  <script src="{{ vendor('site.js') }}" defer></script>
   {% block add_headers %}{% endblock %}
 </head>
 <body>
-  {% block after_body %}{% endblock %}
-  <div class="root">
-  {% block header %}
-    <div class="top_container">
-      <div class="top_text w100">
-        <div class="left">
-          <a href="/">Порно и эротические флэш игры.</a> | <a href="/upload/">Загрузить игру</a>
-        </div>
-        <div id="search_form">
-          <form action="/search/" method="get">
-            <input type="text" name="q" class="t" placeholder="Введите текст" />
-            <input type="submit" value="Найти" />
-          </form>
-        </div>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="wordmark" href="/">xxx<span>flash</span></a>
+
+      <form class="search" action="/search/" method="get" role="search">
+        <label class="visually-hidden" for="q">Поиск игр</label>
+        <input id="q" type="search" name="q" value="{{ query|default('') }}" placeholder="Найти игру" />
+        <button type="submit">Найти</button>
+      </form>
+
+      <div class="account">
+        <a class="btn-upload" href="/upload/">Загрузить игру</a>
+        <span id="user_panel">{% include "user/panel.html" %}</span>
       </div>
-      <span class="small left w100">
-        Обновления каждый день. Добавь в закладки и приходи за новыми эротическими играми!
-        <p>Нажмите Ctrl+D, чтобы добавить сайт в избранное.</p>
-      </span>
+
+      <nav class="sections" aria-label="Разделы">
+        <a href="/"{% if path == '/' %} aria-current="page"{% endif %}>Новые</a>
+        <a href="/best2/"{% if path.startswith('/best2') %} aria-current="page"{% endif %}>Топ</a>
+        <a href="/best/"{% if path.rstrip('/') == '/best' %} aria-current="page"{% endif %}>Лучшие</a>
+        <a href="/popular/"{% if path.startswith('/popular') %} aria-current="page"{% endif %}>Популярные</a>
+        <a href="/random/"{% if path.startswith('/random') %} aria-current="page"{% endif %}>Случайные</a>
+      </nav>
     </div>
-  {% endblock %}
-  {% block user_panel %}
-    <div id="user_panel">
-      {% include "user/panel.html" %}
-    </div>
-  {% endblock %}
-  {% block navigation %}
-    <div class="side_col">
+  </header>
+
+  {% block frame %}
+  <div class="frame">
+    <aside class="genres" aria-label="Жанры">
       {% include "menu.html" %}
-    </div>
-  {% endblock %}
-
-  {% block content %}{% endblock %}
-
-  {% block footer %}
-    <div class="footer">
-      <div id="left_footer">
-        &copy; 2009-{{ now().year }} WebII Lab
-      </div>
-      <div id="rigth_footer">
-        Внимание данный сайт предназначен только для взрослых.
-        Входя на сайт Вы подтверждаете, что вам 18 лет и более.
-        Если Вам нет 18 лет, покиньте наш сайт по <a rel="nofollow" href="https://ya.ru/">этой</a> ссылке. <br />
-        Email: webii@protonmail.ch
-      </div>
-    </div>
-  {% endblock %}
+    </aside>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
   </div>
+  {% endblock %}
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p>Сайт только для взрослых. Заходя на сайт, вы подтверждаете, что вам исполнилось 18 лет.</p>
+      <p>&copy; 2009–{{ now().year }} WebII Lab · webii@protonmail.ch</p>
+    </div>
+  </footer>
   {% include "counters.html" %}
 </body>
 </html>

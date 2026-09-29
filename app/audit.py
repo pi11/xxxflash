@@ -7,6 +7,7 @@ import csv
 from collections import Counter
 
 from app.config import BASE_DIR, Settings
+from app.maintenance import update_theme_counts
 from app.models import Compat, Game
 from app.services.swf import SwfError, parse_header
 
@@ -68,5 +69,6 @@ async def audit_all(settings: Settings, only_unknown: bool = False) -> Counter:
         a, i = counts[(compat.value, True)], counts[(compat.value, False)]
         if a or i:
             print(f"{compat.value:<10}{a:>8}{i:>10}")
+    await update_theme_counts(settings.hide_compat)  # compat changed -> genre counts too
     print(f"report: {report_path}")
     return counts

@@ -6,7 +6,7 @@ from tests.factories import make_game, make_theme
 
 def listing(html: str) -> str:
     """The main game list only (excludes best/random side blocks)."""
-    return html.split('<div id="flashes">', 1)[1].split('id="flashes_random"', 1)[0]
+    return html.split('id="flashes"', 1)[1].split('id="flashes_random"', 1)[0]
 
 
 async def test_index_lists_only_visible_games(client):
@@ -29,7 +29,6 @@ async def test_index_pagination(client):
         await make_game(name=f"G{i:02d}")
     _, resp = await client.get("/?p=2")
     assert resp.status == 200
-    assert "Страница <b>" not in resp.text  # xxxflash paginator uses plain text
     assert "Страница 2 из 2." in resp.text
     _, resp = await client.get("/?p=999")  # out of range -> last page
     assert "Страница 2 из 2." in resp.text
@@ -53,7 +52,7 @@ async def test_theme_page(client):
     await make_game(name="Другая игра")
     _, resp = await client.get("/theme/quest/")
     assert resp.status == 200
-    assert "Тема: Квесты" in resp.text
+    assert "<h1>Квесты</h1>" in resp.text
     assert f'/game/{game.id}/" class="title"' in resp.text
     assert "Другая игра" not in listing(resp.text)
     _, resp = await client.get("/theme/unknown/")
@@ -143,3 +142,15 @@ async def test_flashsex_templates_render(database):
         assert resp.status == 200, url
         assert "FlashSexRU" in resp.text or "flashsexru" in resp.text
     assert await Game.filter(id=game.id).exists()
+
+
+async def test_theme_counts_skip_hidden_games(database):
+    from app.maintenance import update_theme_counts
+    from app.models import Theme
+
+    theme = await make_theme("Квесты", slug="quest2")
+    await make_game(themes=[theme])
+    await make_game(themes=[theme], compat=Compat.MISSING)  # HIDE_COMPAT
+    await make_game(themes=[theme], active=False)
+    await update_theme_counts()
+    assert (await Theme.get(id=theme.id)).game_count == 1

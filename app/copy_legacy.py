@@ -78,7 +78,7 @@ class LegacyCopier:
                 await self._bans(conn)
                 await self._banned_words(conn)
                 await self._reset_sequences(conn)
-                await conn.execute(UPDATE_THEME_COUNTS_SQL)
+                await conn.execute(UPDATE_THEME_COUNTS_SQL, list(self.settings.hide_compat))
                 return await self._report(conn)
         finally:
             await conn.close()

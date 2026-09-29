@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head><meta charset="utf-8" /><title>404 - Страница не найдена</title></head>
-<body>
-<div align="center">
-<a href="/"><img src="{{ static('404.jpg') }}" alt="404" /></a>
+{% extends "base.html" %}
+{% block title %}Страница не найдена — xxxflash{% endblock %}
+{% block content %}
+<div class="panel">
+  <h1>Такой страницы нет</h1>
+  <p>Возможно, игру убрали или ссылка неверная. Попробуйте поиск или загляните в <a href="/best2/">топ игр</a>.</p>
 </div>
-</body>
-</html>
+{% endblock %}

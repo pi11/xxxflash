@@ -1,51 +1,49 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="page_content">
-  <div class="drevo" align="center">
-    <div align="center">
-      <a href="/best2/" class="top_link red">Новый топ игр</a>
-      | <a href="/best/">Лучшие порно игры</a>
-      | <a href="/popular/">Популярные порно игры</a>
-    </div>
-  </div>
+{% if first_page %}
+{% include "flash-best.html" %}
+{% endif %}
 
-  {% include "flash-best.html" %}
-
-  {% if first_page %}
-  <div class="cmen top" style="text-align:center; float:left;">
-    <b>Топ пользователей:</b>
-    <ul>
-      {% for p in top_profiles if p.score > 0 %}
-      <li>
-        <a href="#">
-          {{ p.username }} <img src="{{ static('images/star.png') }}" width="14" alt="" />
-          <b>{{ p.score }}</b>
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-
-  <h2>Новые секс игры:</h2>
+<div class="page-head">
+  {% if random_page %}
+  <h1>Случайные игры</h1>
+  <p>Каждое обновление страницы — новая подборка.</p>
+  {% else %}
+  <h1>Новые игры</h1>
   {% endif %}
-  {% include "flash-list.html" %}
+</div>
 
-  {% if first_page %}
-  <div id="comments_list">
+{% include "flash-list.html" %}
+
+{% if not random_page %}
+{% include "paginator.html" %}
+{% endif %}
+
+{% if first_page and (comments or top_profiles) %}
+<div class="lower">
+  {% if comments %}
+  <section aria-labelledby="discussion-title">
+    <h2 id="discussion-title">Обсуждают</h2>
+    {% set show_game = true %}
     {% for comment in comments %}
     {% include "comment-item.html" %}
     {% endfor %}
-  </div>
+  </section>
   {% endif %}
-
-  {% if not random_page %}
-  <div class="pages">
-    {% include "paginator.html" %}
-  </div>
+  {% set players = top_profiles|selectattr("score", "gt", 0)|list %}
+  {% if players %}
+  <section class="players" aria-labelledby="players-title">
+    <h2 id="players-title">Активные игроки</h2>
+    <ol>
+      {% for p in players %}
+      <li>{{ p.username }}<span class="score">★ {{ p.score }}</span></li>
+      {% endfor %}
+    </ol>
+  </section>
   {% endif %}
-
-  <div class="left_menu">
-  </div>
-  {% include "flash-random.html" %}
 </div>
+{% endif %}
+
+{% include "flash-random.html" %}
 {% endblock %}

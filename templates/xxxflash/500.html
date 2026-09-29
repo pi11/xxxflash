@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<title>Error 500 - Internal Error</title>
-<style type="text/css">
-body { margin: 0; background-color: #000000; }
-</style></head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ошибка сервера — xxxflash</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+           background: #1d1321; color: #eadce6; font: 16px/1.5 system-ui, sans-serif; }
+    a { color: #f2a7b8; }
+  </style>
+</head>
 <body>
-<div align="center"><img src="{{ static('500_error.jpg') }}" alt="500 Internal Server Error" width="288" height="368" />
-</div>
+  <div>
+    <h1>Что-то сломалось</h1>
+    <p>Мы уже знаем об ошибке. Обновите страницу через минуту или вернитесь <a href="/">на главную</a>.</p>
+  </div>
 </body>
 </html>

@@ -1,13 +1,10 @@
 {% extends "base.html" %}
-{% block title %} Эротические флэш игры: {{ theme.name }}{% endblock %}
+{% block title %}{{ theme.name }} — эротические флэш игры — xxxflash{% endblock %}
 {% block content %}
-  <div class="page_content">
-    <div class="drevo" align="center"><a href="/" title="">Эротические игры</a> &gt; <a href="/theme/{{ theme.slug }}/" title="{{ theme.name }}">{{ theme.name }}</a></div>
-    <h1>Тема: {{ theme.name }} </h1>
-    <br />
-    {% include "flash-list.html" %}
-    <div class="pages">
-      {% include "paginator.html" %}
-    </div>
-  </div>
+<div class="page-head">
+  <h1>{{ theme.name }}</h1>
+  <p>{{ flashes.count }} игр в жанре, сначала самые популярные</p>
+</div>
+{% include "flash-list.html" %}
+{% include "paginator.html" %}
 {% endblock %}

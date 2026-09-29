@@ -1,6 +1,7 @@
 {% if user.is_authenticated and user.username != 'Anonymous' %}
-Привет,
-{{ user.username }} | Рейтинг: <b>{{ user.score }}</b>{% if user.is_staff %} | <a href="/{{ settings.admin_prefix }}/">Админка</a>{% endif %} | <a href="/logout/">Выход</a>
+<span>{{ user.username }} <span class="score" title="Рейтинг">★ {{ user.score }}</span></span>
+{% if user.is_staff %}<a href="/{{ settings.admin_prefix }}/">Админка</a>{% endif %}
+<a href="/logout/">Выйти</a>
 {% else %}
-<a href="/login/">Войти / Зарегистрироваться</a>
+<a href="/login/">Войти</a>
 {% endif %}

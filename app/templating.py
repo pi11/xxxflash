@@ -45,6 +45,12 @@ def create_env(settings: Settings) -> Environment:
     def media(path: str | None) -> str:
         return f"{media_url}{path}" if path else ""
 
+    placeholder = static(
+        "images/noimage.svg"
+        if (settings.static_dir / "images" / "noimage.svg").is_file()
+        else "images/noimage.jpg"
+    )
+
     def thumb(game) -> str:
         """Game thumbnail, else first screenshot, else the site's placeholder."""
         if game.thumb_path:
@@ -53,7 +59,7 @@ def create_env(settings: Settings) -> Environment:
         related = getattr(shots, "related_objects", None) if shots is not None else None
         if related:
             return media(related[0].image_path)
-        return static("images/noimage.jpg")
+        return placeholder
 
     env.globals.update(
         settings=settings,

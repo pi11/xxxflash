@@ -1,14 +1,17 @@
-  <div class="comment" align="left">
-    <div class="comment_header">
-      <a id="c{{ comment.id }}" href="/game/{{ comment.game_id }}/">#{{ comment.id }}</a>
-      {% if user.is_staff %}
-      {% include "staff_comment_actions.html" %}
-      {% endif %}
-      {{ comment.created_at|date }}
-      <a href="#" title="Рейтинг пользователя: {{ comment.user.score }}">{{ comment.user.username }} ({{ comment.user.score }}) </a> написал:
-    </div>
-    <div class="comment_text">
-      {% if comment.user.avatar %}<div class="avatar"><img width="40" src="{{ media(comment.user.avatar) }}" alt="" /></div>{% endif %}
-      {{ comment.text }}
-    </div>
+<div class="comment" id="c{{ comment.id }}">
+  <div class="comment-head">
+    <span class="author">{{ comment.user.username }}</span>
+    <span class="author-score" title="Рейтинг пользователя">★ {{ comment.user.score }}</span>
+    <time datetime="{{ comment.created_at.isoformat() }}">{{ comment.created_at|date }}</time>
+    {% if show_game and comment.game %}
+    <a class="on-game" href="/game/{{ comment.game_id }}/#c{{ comment.id }}">{{ comment.game.name }}</a>
+    {% endif %}
+    {% if user.is_staff %}
+    <span class="staff">{% include "staff_comment_actions.html" %}</span>
+    {% endif %}
   </div>
+  <div class="comment-body">
+    {% if comment.user.avatar %}<img src="{{ media(comment.user.avatar) }}" alt="" loading="lazy" />{% endif %}
+    <div>{{ comment.text }}</div>
+  </div>
+</div>

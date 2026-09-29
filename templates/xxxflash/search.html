@@ -1,13 +1,12 @@
 {% extends "base.html" %}
-{% block title %} Поиск эротических игр: {{ query }}{% endblock %}
+{% block title %}Поиск: {{ query }} — xxxflash{% endblock %}
 {% block content %}
-  <div class="page_content">
-    <div class="drevo" align="center"><a href="/" title="">Эротические игры</a> &gt; Поиск {{ query }}</div>
-    <h1>Результат поиска по запросу {{ query }} </h1>
-    <br />
-    {% include "flash-list.html" %}
-    <div class="pages">
-      {% include "paginator.html" %}
-    </div>
-  </div>
+<div class="page-head">
+  <h1>Поиск: «{{ query }}»</h1>
+  <p>{% if flashes.count %}Найдено игр: {{ flashes.count }}{% else %}Ничего не нашлось. Попробуйте другое слово или выберите жанр.{% endif %}</p>
+</div>
+{% if flashes.count %}
+{% include "flash-list.html" %}
+{% include "paginator.html" %}
+{% endif %}
 {% endblock %}
