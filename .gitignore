@@ -2,10 +2,10 @@ downloads/
 *~
 \#*\#
 .\#*
-db/
+/db/
 sitemaps/
 sitemap1.txt
-config.py
+/config.py
 keys/
 app/local_settings.py
 *~
@@ -17,9 +17,22 @@ app/local_settings.py
 *.rar
 *.bak
 local_settings.py
-data/
+/data/
 .hg/
 .hgtags
 media/
 build/
 .hgignore
+
+# rewrite
+sites.toml
+var/
+media/
+*.sql.gz
+*.swf
+.venv/
+.env
+.env.*
+!.env.example
+archive/data/
+/*.sql
