@@ -3,7 +3,7 @@
   {% for t in themes|by_label %}
   <li>
     <a href="/theme/{{ t.slug }}/"{% if theme is defined and theme and theme.id == t.id %} aria-current="page"{% endif %}>
-      <span>{{ _(t.name) }}</span><span class="count">{{ num(t.game_count) }}</span>
+      <span>{{ t.title }}</span><span class="count">{{ num(t.game_count) }}</span>
     </a>
   </li>
   {% endfor %}

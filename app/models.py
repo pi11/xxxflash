@@ -12,6 +12,12 @@ def today() -> dt.date:
     return dt.date.today()
 
 
+class TranslationStatus(StrEnum):
+    MACHINE = "machine"  # produced by `python -m app translate`
+    EDITED = "edited"  # changed by a moderator; machine runs never overwrite it
+    FAILED = "failed"  # last machine attempt failed; retried on the next run
+
+
 class Compat(StrEnum):
     """Ruffle compatibility of a game's SWF, filled by `python -m app audit-swf`."""
 
@@ -74,6 +80,11 @@ class Theme(Model):
     def __str__(self) -> str:
         return self.name
 
+    @property
+    def title(self) -> str:
+        """Name in the site language (set by app.localize), else the Russian source."""
+        return getattr(self, "tr_name", None) or self.name
+
 
 class Game(Model):
     id = fields.IntField(primary_key=True)
@@ -117,6 +128,49 @@ class Game(Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def title(self) -> str:
+        """Name in the site language (set by app.localize), else the Russian source."""
+        return getattr(self, "tr_name", None) or self.name
+
+    @property
+    def text(self) -> str:
+        """Description in the site language (set by app.localize), else the Russian source."""
+        return getattr(self, "tr_description", None) or self.description
+
+
+class GameTranslation(Model):
+    id = fields.IntField(primary_key=True)
+    game: fields.ForeignKeyRelation[Game] = fields.ForeignKeyField(
+        "models.Game", related_name="translations", on_delete=fields.CASCADE
+    )
+    language = fields.CharField(max_length=8)
+    name = fields.CharField(max_length=300, default="")
+    description = fields.TextField(default="")
+    # sha256 of the Russian name + description this translation was made from
+    source_hash = fields.CharField(max_length=64, default="")
+    status = fields.CharEnumField(TranslationStatus, max_length=10)
+    error = fields.TextField(null=True)
+    translated_at = fields.DatetimeField(auto_now=True)
+
+    class Meta:
+        table = "game_translations"
+        unique_together = (("game", "language"),)
+        indexes = [Index(fields=["language", "status"])]
+
+
+class ThemeTranslation(Model):
+    id = fields.IntField(primary_key=True)
+    theme: fields.ForeignKeyRelation[Theme] = fields.ForeignKeyField(
+        "models.Theme", related_name="translations", on_delete=fields.CASCADE
+    )
+    language = fields.CharField(max_length=8)
+    name = fields.CharField(max_length=250)
+
+    class Meta:
+        table = "theme_translations"
+        unique_together = (("theme", "language"),)
 
 
 class Screenshot(Model):

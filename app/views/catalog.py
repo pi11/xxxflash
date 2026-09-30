@@ -41,7 +41,7 @@ def _page_ctx(page: Page) -> dict:
 @bp.get("/")
 async def index(request: Request):
     cfg = _cfg(request)
-    qs = visible_games().filter(rate__gt=INDEX_MIN_RATE).order_by(*INDEX_ORDER)
+    qs = visible_games(cfg).filter(rate__gt=INDEX_MIN_RATE).order_by(*INDEX_ORDER)
     page = await _page(request, qs, cfg.games_per_page)
     first_page = page.number == 1
     return await render(
@@ -50,9 +50,9 @@ async def index(request: Request):
         index_page=True,
         first_page=first_page,
         top_profiles=await top_users(5) if first_page else [],
-        best=await best_games(5),
-        random2=await random_games(5),
-        random=await random_games(7),
+        best=await best_games(cfg, 5),
+        random2=await random_games(cfg, 5),
+        random=await random_games(cfg, 7),
         comments=await latest_comments(5) if first_page and cfg.show_comments else [],
         **_page_ctx(page),
     )
@@ -60,12 +60,12 @@ async def index(request: Request):
 
 async def _ranked(request: Request, order: tuple[str, ...], **flags):
     cfg = _cfg(request)
-    page = await _page(request, visible_games().order_by(*order), cfg.best_games_per_page)
+    page = await _page(request, visible_games(cfg).order_by(*order), cfg.best_games_per_page)
     return await render(
         request,
         "best_and_popular.html",
         base_url=request.path.rstrip("/"),
-        random=await random_games(7),
+        random=await random_games(cfg, 7),
         **flags,
         **_page_ctx(page),
     )
@@ -89,16 +89,16 @@ async def popular(request: Request):
 @bp.get("/random/")
 async def random_page(request: Request):
     cfg = _cfg(request)
-    games = await random_games(cfg.games_per_page)
+    games = await random_games(cfg, cfg.games_per_page)
     page = Page(number=1, num_pages=1, count=len(games), object_list=games, page_range=[1])
     return await render(
         request,
         "index.html",
         first_page=False,
         random_page=True,
-        best=await best_games(5),
-        random2=await random_games(5),
-        random=await random_games(7),
+        best=await best_games(cfg, 5),
+        random2=await random_games(cfg, 5),
+        random=await random_games(cfg, 7),
         **_page_ctx(page),
     )
 
@@ -109,10 +109,10 @@ async def theme(request: Request, slug: str):
     theme = await Theme.get_or_none(slug=slug)
     if theme is None:
         raise NotFound("theme")
-    qs = visible_games().filter(themes__id=theme.id).order_by("-xrate", "-id")
+    qs = visible_games(cfg).filter(themes__id=theme.id).order_by("-xrate", "-id")
     page = await _page(request, qs, cfg.theme_games_per_page)
     return await render(
-        request, "theme.html", theme=theme, random=await random_games(7), **_page_ctx(page)
+        request, "theme.html", theme=theme, random=await random_games(cfg, 7), **_page_ctx(page)
     )
 
 
@@ -131,7 +131,7 @@ async def search(request: Request, query: str):
     if not query:
         # "/search/" also matches this route with an empty path: it is the ?q= form target
         return await search_form(request)
-    ids = await search_game_ids(query)
+    ids = await search_game_ids(cfg, query)
     per_page = cfg.search_games_per_page
     num_pages = max(1, -(-len(ids) // per_page))
     number = page_param(request)

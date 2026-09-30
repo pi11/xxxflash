@@ -3,6 +3,7 @@
 {% block content %}
 <h1>#{{ g.id }} {{ g.name }}</h1>
 {% if saved %}<div class="msg">Saved.</div>{% endif %}
+{% if message %}<div class="msg">{{ message }}</div>{% endif %}
 <p>
   Uploaded by {{ g.user.username }} · {{ g.swf_path }} · {{ (g.filesize / 1024)|round|int }} KB ·
   <span class="pill {{ g.compat }}">{{ g.compat }}</span>
@@ -22,8 +23,33 @@
      <label><input type="checkbox" name="active"{% if g.active %} checked{% endif %} /> active</label></p>
   <p>Thumbnail {% if g.thumb_path %}<img src="{{ media(g.thumb_path) }}" width="120" alt="" />{% endif %}
      <input type="file" name="thumbfile" accept="image/*" /> <span class="form-error">{{ errors.thumbfile }}</span></p>
+  {% for lang in languages %}
+  {% set tr = translations.get(lang) %}
+  <fieldset style="margin: 16px 0; border: 1px solid #ccc; padding: 8px 12px;">
+    <legend>Translation: {{ lang }}
+      {% if tr %}
+        <span class="pill {{ 'ok' if tr.status in ('machine', 'edited') else 'missing' }}">{{ tr.status }}</span>
+        {% if tr.outdated %}<span class="pill as3">Russian text changed — next translate run redoes it</span>{% endif %}
+      {% else %}
+        <span class="pill">none</span>
+      {% endif %}
+    </legend>
+    {% if tr and tr.error %}<p class="form-error">{{ tr.error }}</p>{% endif %}
+    <p>Title<br /><input type="text" name="tr_{{ lang }}_name" value="{{ tr.name if tr else '' }}" size="60" maxlength="300" /></p>
+    <p>Description<br /><textarea name="tr_{{ lang }}_description" rows="4">{{ tr.description if tr else '' }}</textarea></p>
+    <p><small>Changing these marks the translation as <b>edited</b>: machine runs never overwrite it.
+      Without a {{ lang }} translation the game is hidden on the {{ lang }} site.</small></p>
+  </fieldset>
+  {% endfor %}
   <p><button>Save</button></p>
 </form>
+{% for lang in languages %}
+<form method="post" action="{{ prefix }}/games/{{ g.id }}/translate" class="inline-action">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <input type="hidden" name="lang" value="{{ lang }}" />
+  <button onclick="return confirm('Machine-translate to {{ lang }}? This replaces the current {{ lang }} text.');">Machine-translate → {{ lang }}</button>
+</form>
+{% endfor %}
 <form method="post" action="{{ prefix }}/games/{{ g.id }}/delete" onsubmit="return confirm('Delete game #{{ g.id }}?');">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
   <button>Delete game</button>

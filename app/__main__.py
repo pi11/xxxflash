@@ -63,6 +63,24 @@ def cmd_audit_swf(args) -> None:
     asyncio.run(_with_orm(lambda: audit_all(settings, only_unknown=args.only_unknown)))
 
 
+def cmd_translate(args) -> None:
+    from app.translate_job import run
+
+    ids = [int(x) for x in args.ids.split(",")] if args.ids else None
+    asyncio.run(
+        _with_orm(
+            lambda: run(
+                settings,
+                args.lang,
+                limit=args.limit,
+                ids=ids,
+                force=args.force,
+                dry_run=args.dry_run,
+            )
+        )
+    )
+
+
 def cmd_update_counts(args) -> None:
     from app.maintenance import update_theme_counts
 
@@ -109,6 +127,14 @@ def main(argv=None) -> None:
     p = sub.add_parser("audit-swf", help="parse SWF headers, fill compat/width/height")
     p.add_argument("--only-unknown", action="store_true")
     p.set_defaults(func=cmd_audit_swf)
+
+    p = sub.add_parser("translate", help="machine-translate game titles/descriptions and genres")
+    p.add_argument("--lang", default="en", help="target language (default: en)")
+    p.add_argument("--limit", type=int, help="translate at most N games (most viewed first)")
+    p.add_argument("--ids", help="comma-separated game ids")
+    p.add_argument("--force", action="store_true", help="redo machine translations too")
+    p.add_argument("--dry-run", action="store_true", help="only list what would be translated")
+    p.set_defaults(func=cmd_translate)
 
     p = sub.add_parser("update-counts", help="recompute theme game counts")
     p.set_defaults(func=cmd_update_counts)

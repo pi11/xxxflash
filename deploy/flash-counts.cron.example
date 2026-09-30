@@ -1,2 +1,4 @@
 # Recompute theme game counts daily (legacy update_games_count cron).
 15 4 * * * www-data cd /srv/xxxflash && set -a && . ./.env.xxxflash && .venv/bin/python -m app update-counts
+# Translate new/changed games for the English site every 10 minutes (idempotent; failed ones retried).
+*/10 * * * * www-data cd /srv/xxxflash && set -a && . ./.env.xxxflash && flock -n /tmp/flash-translate.lock .venv/bin/python -m app translate --lang en >> /var/log/flash-translate.log 2>&1

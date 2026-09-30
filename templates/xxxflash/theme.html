@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}{{ _(theme.name) }} — {{ _("эротические флэш игры") }} — xxxflash{% endblock %}
+{% block title %}{{ theme.title }} — {{ _("эротические флэш игры") }} — xxxflash{% endblock %}
 {% block content %}
 <div class="page-head">
-  <h1>{{ _(theme.name) }}</h1>
+  <h1>{{ theme.title }}</h1>
   <p>{{ _("%(count)s в жанре, сначала самые популярные")|format(count=num(flashes.count) ~ " " ~ plural(flashes.count, "игра|игры|игр")) }}</p>
 </div>
 {% include "flash-list.html" %}

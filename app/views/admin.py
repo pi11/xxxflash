@@ -1,6 +1,7 @@
 """Small built-in admin at /<ADMIN_PREFIX>/ (staff only)."""
 
 import datetime as dt
+from urllib.parse import quote
 
 from sanic import Blueprint, Request
 from sanic.exceptions import NotFound
@@ -8,14 +9,26 @@ from sanic.response import redirect
 from tortoise.expressions import Q
 
 from app.config import Settings
+from app.i18n import LANGUAGES
 from app.maintenance import update_theme_counts
-from app.models import Ban, BannedWord, Comment, Compat, Game, Theme
+from app.models import (
+    Ban,
+    BannedWord,
+    Comment,
+    Compat,
+    Game,
+    GameTranslation,
+    Theme,
+    TranslationStatus,
+)
 from app.services.paging import page_param, paginate
+from app.services.translate import source_hash
 from app.services.uploads import UploadError, store_thumbnail
 from app.templating import render
 from app.web import csrf_protect, staff_required
 
 PER_PAGE = 50
+TARGET_LANGUAGES = [lang for lang in LANGUAGES if lang != "ru"]
 
 
 def create_blueprint(settings: Settings) -> Blueprint:
@@ -75,6 +88,7 @@ def create_blueprint(settings: Settings) -> Blueprint:
         all_themes = await Theme.all().order_by("name")
         errors = {}
         saved = False
+        message = request.args.get("msg", "")
         if request.method == "POST":
             form = request.form or {}
             name = (form.get("name") or "").strip()
@@ -103,6 +117,7 @@ def create_blueprint(settings: Settings) -> Blueprint:
                 chosen = [t for t in all_themes if t.id in theme_ids]
                 if chosen:
                     await game.themes.add(*chosen)
+                await _save_translations(game, form)
                 await update_theme_counts()
                 saved = True
                 game = await _get_game(game_id)
@@ -114,7 +129,59 @@ def create_blueprint(settings: Settings) -> Blueprint:
             game_theme_ids={t.id for t in game.themes},
             errors=errors,
             saved=saved,
+            message=message,
+            translations=await _translations(game),
+            languages=TARGET_LANGUAGES,
         )
+
+    async def _translations(game: Game) -> dict[str, GameTranslation]:
+        rows = await GameTranslation.filter(game_id=game.id, language__in=TARGET_LANGUAGES)
+        current = source_hash(game.name, game.description)
+        for row in rows:
+            row.outdated = row.status != TranslationStatus.EDITED and row.source_hash != current
+        return {row.language: row for row in rows}
+
+    async def _save_translations(game: Game, form) -> None:
+        """Hand-edited translations are marked `edited`; machine runs never overwrite them."""
+        existing = await _translations(game)
+        for lang in TARGET_LANGUAGES:
+            name = (form.get(f"tr_{lang}_name") or "").strip()
+            description = (form.get(f"tr_{lang}_description") or "").strip()
+            row = existing.get(lang)
+            if row is None and not name:
+                continue
+            if row is not None and (name, description) == (row.name, row.description):
+                continue
+            await GameTranslation.update_or_create(
+                game_id=game.id,
+                language=lang,
+                defaults={
+                    "name": name[:300],
+                    "description": description,
+                    "status": TranslationStatus.EDITED,
+                    "error": None,
+                    "source_hash": source_hash(game.name, game.description),
+                },
+            )
+
+    @bp.post("/games/<game_id:int>/translate")
+    @staff_required
+    @csrf_protect
+    async def game_translate(request: Request, game_id: int):
+        from app.translate_job import find_candidates, make_translator, translate_game
+
+        lang = (request.form or {}).get("lang", "en")
+        if lang not in TARGET_LANGUAGES:
+            raise NotFound("language")
+        try:
+            translator = make_translator(request.app.ctx.settings)
+        except SystemExit as exc:
+            return redirect(f"{prefix}/games/{game_id}/?msg={quote(str(exc))}")
+        # An explicit request overrides even a hand-edited translation.
+        await GameTranslation.filter(game_id=game_id, language=lang).delete()
+        [cand] = await find_candidates(lang, ids=[game_id])
+        status = await translate_game(translator, cand, lang)
+        return redirect(f"{prefix}/games/{game_id}/?msg={quote(f'{lang}: {status.value}')}")
 
     @bp.post("/games/<game_id:int>/approve")
     @staff_required

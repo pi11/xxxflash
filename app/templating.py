@@ -83,6 +83,7 @@ def create_env(settings: Settings) -> Environment:
 
 
 async def render(request: Request, template: str, status: int = 200, **context) -> object:
+    from app.localize import localize
     from app.queries import menu_themes
 
     app = request.app
@@ -90,6 +91,7 @@ async def render(request: Request, template: str, status: int = 200, **context) 
     context.setdefault("user", request.ctx.user)
     context.setdefault("csrf_token", request.ctx.csrf_token)
     if "themes" not in context:
-        context["themes"] = await menu_themes()
+        context["themes"] = await menu_themes(app.ctx.settings)
+    await localize(context.values(), app.ctx.settings.language)
     body = app.ctx.jinja.get_template(template).render(**context)
     return html(body, status=status)

@@ -35,7 +35,8 @@ async def _comments_page(request: Request, game: Game, number: int):
 
 @bp.get("/game/<game_id:int>/")
 async def game_page(request: Request, game_id: int):
-    game = await visible_games().filter(id=game_id).prefetch_related("user", "themes").first()
+    cfg = request.app.ctx.settings
+    game = await visible_games(cfg).filter(id=game_id).prefetch_related("user", "themes").first()
     if game is None:
         raise NotFound("game")
     views = game.views
@@ -53,7 +54,7 @@ async def game_page(request: Request, game_id: int):
         views=views,
         mark=game.rate,
         comments=comments,
-        random=await random_games(7),
+        random=await random_games(cfg, 7),
     )
 
 

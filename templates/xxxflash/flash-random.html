@@ -3,7 +3,7 @@
   <h2 id="random-title">{{ _("Случайные игры") }}</h2>
   <div class="shelf-row">
     {% for g in random %}
-    <a href="/game/{{ g.id }}/" title="{{ g.name }}"><img src="{{ thumb(g) }}" alt="{{ g.name }}" loading="lazy" /></a>
+    <a href="/game/{{ g.id }}/" title="{{ g.title }}"><img src="{{ thumb(g) }}" alt="{{ g.title }}" loading="lazy" /></a>
     {% endfor %}
   </div>
 </section>

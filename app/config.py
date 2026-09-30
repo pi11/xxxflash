@@ -47,6 +47,10 @@ class Settings:
     # UI language of the templates (ru | en) and whether comments are shown / accepted.
     language: str = "ru"
     show_comments: bool = True
+    # Machine translation (adtr_client); see `python -m app translate`.
+    adtr_user_id: int = 0
+    adtr_api_key: str = ""
+    translate_concurrency: int = 4
     comments_per_page: int = 20
     best_games_per_page: int = 20
     theme_games_per_page: int = 10
@@ -98,6 +102,9 @@ def load_settings(env_file: str | os.PathLike | None = None) -> Settings:
         db_pgbouncer=_bool(env("DB_PGBOUNCER", "0")),
         language=env("SITE_LANGUAGE", "ru").strip().lower(),
         show_comments=_bool(env("SHOW_COMMENTS", "1")),
+        adtr_user_id=int(env("ADTR_USER_ID", "0") or 0),
+        adtr_api_key=env("ADTR_API_KEY", ""),
+        translate_concurrency=int(env("TRANSLATE_CONCURRENCY", "4")),
     )
 
 

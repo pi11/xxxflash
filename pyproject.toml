@@ -11,6 +11,7 @@ dependencies = [
     "httpx>=0.27",
     "itsdangerous>=2.2",
     "pillow>=11",
+    "adtr_client>=0.0.6",
 ]
 
 [project.optional-dependencies]

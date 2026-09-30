@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}{{ g.name }} — {{ _("играть онлайн") }} — xxxflash{% endblock %}
-{% block description %}{{ g.description|truncatewords(30) }}{% endblock %}
+{% block title %}{{ g.title }} — {{ _("играть онлайн") }} — xxxflash{% endblock %}
+{% block description %}{{ g.text|truncatewords(30) }}{% endblock %}
 
 {% block frame %}
 <div class="frame frame--wide">
   <main>
     <nav class="crumbs" aria-label="{{ _("Путь") }}">
       <a href="/">{{ _("Все игры") }}</a>
-      {% if gt %} / <a href="/theme/{{ gt[0].slug }}/">{{ _(gt[0].name) }}</a>{% endif %}
+      {% if gt %} / <a href="/theme/{{ gt[0].slug }}/">{{ gt[0].title }}</a>{% endif %}
     </nav>
 
     <div class="stage">
@@ -18,11 +18,11 @@
 
     <div class="game-info">
       <div>
-        <h1>{{ g.name }}</h1>
-        {% if g.description %}<p class="description">{{ g.description }}</p>{% endif %}
+        <h1>{{ g.title }}</h1>
+        {% if g.text %}<p class="description">{{ g.text }}</p>{% endif %}
         {% if gt %}
         <div class="chips">
-          {% for t in gt %}<a href="/theme/{{ t.slug }}/">{{ _(t.name) }}</a>{% endfor %}
+          {% for t in gt %}<a href="/theme/{{ t.slug }}/">{{ t.title }}</a>{% endfor %}
         </div>
         {% endif %}
       </div>

@@ -4,7 +4,7 @@
     <span class="author-score" title="{{ _("Рейтинг пользователя") }}">★ {{ comment.user.score }}</span>
     <time datetime="{{ comment.created_at.isoformat() }}">{{ comment.created_at|date }}</time>
     {% if show_game and comment.game %}
-    <a class="on-game" href="/game/{{ comment.game_id }}/#c{{ comment.id }}">{{ comment.game.name }}</a>
+    <a class="on-game" href="/game/{{ comment.game_id }}/#c{{ comment.id }}">{{ comment.game.title }}</a>
     {% endif %}
     {% if user.is_staff %}
     <span class="staff">{% include "staff_comment_actions.html" %}</span>

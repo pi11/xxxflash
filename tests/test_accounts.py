@@ -125,7 +125,7 @@ async def test_upload_rejects_non_swf_and_bad_image(client):
 
 async def test_admin_is_staff_only(client):
     user = await make_user()
-    _, resp = await client.get("/secret-admin/", headers=headers(user))
+    _, resp = await client.get("/admin-test/", headers=headers(user))
     assert resp.status == 403
 
 
@@ -134,16 +134,16 @@ async def test_admin_moderation(client):
     theme = await make_theme("Квесты", slug="quest")
     pending = await make_game(name="Ждёт модерации", active=False, themes=[theme])
 
-    _, resp = await client.get("/secret-admin/games/?status=pending", headers=headers(staff))
+    _, resp = await client.get("/admin-test/games/?status=pending", headers=headers(staff))
     assert resp.status == 200
     assert "Ждёт модерации" in resp.text
 
-    _, resp = await client.get(f"/secret-admin/games/{pending.id}/", headers=headers(staff))
+    _, resp = await client.get(f"/admin-test/games/{pending.id}/", headers=headers(staff))
     assert resp.status == 200
     assert 'class="game-player"' in resp.text
 
     _, resp = await client.post(
-        f"/secret-admin/games/{pending.id}/approve",
+        f"/admin-test/games/{pending.id}/approve",
         data={"csrf_token": CSRF},
         headers=headers(staff),
     )
@@ -159,7 +159,7 @@ async def test_admin_edit_game(client):
     t2 = await make_theme("B", slug="b")
     game = await make_game(name="Old", themes=[t1])
     _, resp = await client.post(
-        f"/secret-admin/games/{game.id}/",
+        f"/admin-test/games/{game.id}/",
         data={
             "csrf_token": CSRF,
             "name": "New name",

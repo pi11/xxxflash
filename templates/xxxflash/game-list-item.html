@@ -1,6 +1,6 @@
 <article class="tile">
   <a href="/game/{{ g.id }}/" tabindex="-1" aria-hidden="true"><img src="{{ thumb(g) }}" alt="" loading="lazy" /></a>
-  <a href="/game/{{ g.id }}/" class="title">{{ g.name }}</a>
-  <p>{{ g.description|truncatewords(24) }}</p>
+  <a href="/game/{{ g.id }}/" class="title">{{ g.title }}</a>
+  <p>{{ g.text|truncatewords(24) }}</p>
   {% include "rating.html" %}
 </article>

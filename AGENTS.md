@@ -41,6 +41,7 @@ cp .env.example .env                          # set SECRET_KEY; RESEND_API_KEY o
 .venv/bin/python -m app audit-swf
 .venv/bin/python -m app serve --dev           # http://127.0.0.1:8000  (SITE=flashsex for the other set)
 .venv/bin/python -m app create-staff you@example.com
+.venv/bin/python -m app translate --lang en --limit 10   # machine translation (see docs); --dry-run first
 .venv/bin/pytest
 .venv/bin/ruff check . && .venv/bin/ruff format .
 ```
@@ -51,6 +52,7 @@ cp .env.example .env                          # set SECRET_KEY; RESEND_API_KEY o
 - Views are thin. Business rules (vote scoring, xrate, auto-hide, comment filters) are pure functions in `app/services/rules.py` and have unit tests.
 - Keep legacy URL shapes (`/game/<id>/`, `/theme/<slug>/`, `?p=N`) and the `/mark/` JSON shape `{"success": ...}`.
 - UI text in `templates/xxxflash/` (and `_shared/player.html`, `_shared/403.html`) is Russian source wrapped in `_()` / `plural()`; add the English entry to `app/locales/en.json` in the same change (`tests/test_i18n.py` enforces it). The English site runs with `SITE_LANGUAGE=en SHOW_COMMENTS=0`.
+- Game/genre text in templates is `g.title` / `g.text` / `t.title` (localized), never `g.name` / `g.description`. Never run a full `translate` against the dev DB; it is billed and runs in production.
 - Templates: Jinja2 with autoescape on. Port markup faithfully and change only what's required: Django → Jinja syntax, `<object>` → Ruffle player, removed widgets, CSRF tokens. User-facing text stays in Russian.
 - All config comes from `.env` through `app/config.py`. Nothing environment-specific is hard-coded. `.env` is never committed; `.env.example` is.
 - Email goes only through the Resend API, from `no-reply@authmail.click`, with the key in `RESEND_API_KEY`.

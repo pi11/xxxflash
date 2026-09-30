@@ -7,8 +7,8 @@ import pytest
 
 from app.config import BASE_DIR, settings
 from app.i18n import Translator, _catalog
-from app.models import Comment
-from tests.factories import CSRF, headers, make_game, make_theme, make_user
+from app.models import Comment, ThemeTranslation, TranslationStatus
+from tests.factories import CSRF, headers, make_game, make_theme, make_user, translate
 
 CYRILLIC = re.compile(r"[Ѐ-ӿ]")
 
@@ -105,6 +105,7 @@ async def test_english_site_has_no_russian_ui(en_client):
 async def test_english_site_hides_comments(en_client):
     user = await make_user()
     game = await make_game()
+    await translate(game, "Translated game")
     await Comment.create(game=game, user=user, text="Отличная игра", ip="10.0.0.1")
 
     _, resp = await en_client.get(f"/game/{game.id}/")
@@ -126,6 +127,50 @@ async def test_english_site_hides_comments(en_client):
     )
     assert resp.status == 404
     assert await Comment.filter(game_id=game.id).count() == 1
+
+
+async def test_english_site_shows_only_translated_games(en_client):
+    theme = await make_theme("Квесты", slug="quest")
+    done = await make_game(name="Русское название", description="Русское описание", themes=[theme])
+    await translate(done, "Mermaid adventure", "A story about a mermaid")
+    pending = await make_game(name="Непереведённая игра", themes=[theme])
+    failed = await make_game(name="Сломанный перевод", themes=[theme])
+    await translate(failed, "", status=TranslationStatus.FAILED)
+
+    _, resp = await en_client.get("/")
+    assert "Mermaid adventure" in resp.text
+    assert "A story about a mermaid" in resp.text
+    assert "Русское название" not in resp.text
+    for hidden in (pending, failed):
+        assert f"/game/{hidden.id}/" not in resp.text
+        _, page = await en_client.get(f"/game/{hidden.id}/")
+        assert page.status == 404
+
+    _, resp = await en_client.get(f"/game/{done.id}/")
+    assert "<h1>Mermaid adventure</h1>" in resp.text
+    _, resp = await en_client.get("/theme/quest/")
+    assert "1 game in this genre" in resp.text
+    assert '<span class="count">1</span>' in resp.text  # rail counts translated games only
+
+
+async def test_english_search_uses_translations(en_client):
+    game = await make_game(name="Русалка")
+    await translate(game, "Little mermaid", "Underwater love story")
+    await translate(await make_game(name="Другое"), "Space trip", "Aliens")
+    _, resp = await en_client.get("/search/mermaid")
+    assert f"/game/{game.id}/" in resp.text
+    assert "Space trip" not in resp.text
+    _, resp = await en_client.get("/search/stories")  # english stemming
+    assert "Little mermaid" in resp.text
+
+
+async def test_theme_names_from_db_override_catalog(en_client):
+    theme = await make_theme("Квесты", slug="quest")
+    await ThemeTranslation.create(theme=theme, language="en", name="Quests")
+    game = await make_game(themes=[theme])
+    await translate(game, "Some game")
+    _, resp = await en_client.get("/theme/quest/")
+    assert "<h1>Quests</h1>" in resp.text
 
 
 async def test_english_vote_message(en_client):

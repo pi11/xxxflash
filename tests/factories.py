@@ -10,7 +10,7 @@ from itsdangerous import URLSafeTimedSerializer
 from PIL import Image
 
 from app.config import settings
-from app.models import Compat, Game, Theme, User
+from app.models import Compat, Game, GameTranslation, Theme, TranslationStatus, User
 from app.web import CSRF_COOKIE, SESSION_COOKIE
 
 CSRF = "test-csrf-token"
@@ -38,6 +38,18 @@ async def make_game(user: User | None = None, themes=(), **kwargs) -> Game:
     if themes:
         await game.themes.add(*themes)
     return game
+
+
+async def translate(
+    game: Game,
+    name: str,
+    description: str = "",
+    language: str = "en",
+    status: TranslationStatus = TranslationStatus.MACHINE,
+) -> GameTranslation:
+    return await GameTranslation.create(
+        game=game, language=language, name=name, description=description, status=status
+    )
 
 
 CLIENT_IP = "198.51.100.10"

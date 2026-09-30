@@ -8,7 +8,7 @@
   </div>
 
   {% if done %}
-  <div class="notice">{{ _("Игра «%(name)s» загружена и отправлена на модерацию. Спасибо!")|format(name=done.name) }}</div>
+  <div class="notice">{{ _("Игра «%(name)s» загружена и отправлена на модерацию. Спасибо!")|format(name=done.title) }}</div>
   {% endif %}
   {% if errors %}
   <div class="notice">{{ _("Исправьте ошибки в форме.") }}</div>
@@ -40,7 +40,7 @@
       <label for="id_theme">{{ _("Жанры") }}</label>
       <select id="id_theme" name="theme" multiple>
         {% for t in all_themes %}
-        <option value="{{ t.id }}"{% if t.id in values.themes %} selected{% endif %}>{{ _(t.name) }}</option>
+        <option value="{{ t.id }}"{% if t.id in values.themes %} selected{% endif %}>{{ t.title }}</option>
         {% endfor %}
       </select>
       <div class="hint">{{ _("Удерживайте Ctrl (⌘ на Mac), чтобы выбрать несколько.") }}</div>

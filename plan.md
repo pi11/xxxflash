@@ -101,7 +101,39 @@ game, voting over POST+CSRF, and "load more comments".
 ### Phase 8: Redesign and English site (2026-09-30)
 - [x] xxxflash redesign ("velvet stage" theme, self-hosted Unbounded + Golos Text, no external links)
 - [x] English version of xxxflash via a translation catalog (`SITE_LANGUAGE=en`), comments hidden and disabled (`SHOW_COMMENTS=0`)
-- [ ] English game titles/descriptions (data exists only in Russian)
+- [x] English game titles/descriptions: machine translation (Phase 9)
+
+### Phase 9: Fully translatable content (agreed 2026-09-30)
+Translator: `adtr_client` (sync `requests`, one text per call, max 300 chars, raises
+`requests.HTTPError` / `ValueError`, no batching or retries). Credentials `ADTR_USER_ID`,
+`ADTR_API_KEY` in `.env`.
+
+Decisions: a translation table (not per-language columns); the English site **hides** games
+without an English translation; translate **all** games (3 422, ~6.9k API calls); ship ru + en
+now, with a design ready for more languages.
+
+- [x] Models + migration: `game_translations(game_id, language, name, description, source_hash,
+      status: machine|edited|failed, error, translated_at)`, unique (game_id, language);
+      `theme_translations(theme_id, language, name)` (genre names move out of `en.json`, seeded from it)
+- [x] English FTS: generated `tsvector` (`english` config) + trigram index on the translated name
+- [x] `app/services/translate.py`: wraps `adtr_client` in a thread pool (`TRANSLATE_CONCURRENCY`,
+      default 4), retries with backoff on 429/5xx/timeouts, splits text > 300 chars at sentence
+      boundaries, copies Latin-only titles as-is (190 titles), language code → API name map
+- [x] `python -m app translate --lang en [--limit N] [--force] [--dry-run]`: idempotent via
+      `source_hash` (sha256 of Russian name + description); new or changed games only; never touches
+      `edited` rows; failures recorded and retried next run; progress + summary report
+- [x] Cron example: `translate --lang en` every 10 min (new uploads, approvals, admin edits)
+- [x] Queries: `SITE_LANGUAGE != ru` → catalog, search, random, best, theme counts use the translated
+      name/description and exclude games without a translation
+- [x] Templates: game name/description come from the translation (a `g.title` / `g.text`
+      attribute set by the query layer), so templates stay language-agnostic
+- [x] Admin: English title/description fields on the game edit page (saving marks `edited`),
+      translation status per game, and a "re-translate" button
+- [x] Tests with a fake translator (no network): chunking, Latin passthrough, idempotency, edited
+      protection, failure retry, hide-untranslated on the English site
+
+- [ ] Production: first full run `python -m app translate --lang en` (~6.9k calls, ~2 h), then enable the cron
+- [ ] (optional) English URL slugs for games
 
 ### Phase 7: Ops
 - [x] `deploy/nginx.conf.example` (static/media, `parts/` MIME type, CSP with `wasm-unsafe-eval`)

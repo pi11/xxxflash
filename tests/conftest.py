@@ -20,7 +20,7 @@ os.environ.update(
     SITE="xxxflash",
     SITE_URL="http://testserver",
     SECRET_KEY="test-secret",
-    ADMIN_PREFIX="secret-admin",
+    ADMIN_PREFIX="admin-test",
     DEBUG="0",
     # the ASGI test client reports its peer as "mockserver"; treat it as the reverse proxy
     TRUSTED_PROXIES="mockserver",
@@ -35,6 +35,8 @@ from app.config import EXT_SCHEMA, settings, tortoise_config  # noqa: E402
 from app.db import drop_schema, run_migrations  # noqa: E402
 
 TABLES = [
+    "game_translations",
+    "theme_translations",
     "login_tokens",
     "votes",
     "comments",

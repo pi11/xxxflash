@@ -7,7 +7,7 @@
       <span class="rank" aria-hidden="true">{{ loop.index }}</span>
       <a href="/game/{{ g.id }}/">
         <img src="{{ thumb(g) }}" alt="" loading="lazy" />
-        <span class="name">{{ g.name }}</span>
+        <span class="name">{{ g.title }}</span>
       </a>
     </li>
     {% endfor %}

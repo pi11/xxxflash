@@ -71,8 +71,26 @@ SHOW_COMMENTS=0
 ```
 
 With `SHOW_COMMENTS=0`, no comments are rendered (game page, "latest comments") and
-`/get_comments/…` and `/add-comment` return 404. Genre names are translated through the same
-catalog. Game titles and descriptions are data and exist only in Russian.
+`/get_comments/…` and `/add-comment` return 404.
+
+**Content translation.** Game titles and descriptions live in `game_translations`
+(`game_id, language, name, description, source_hash, status, error`). Genre names live in
+`theme_translations`; the `en.json` catalog is only a fallback for them.
+- `python -m app translate --lang en [--limit N] [--ids 1,2] [--force] [--dry-run]` translates
+  through `adtr_client` (`ADTR_USER_ID`, `ADTR_API_KEY`, `TRANSLATE_CONCURRENCY`). It goes most
+  viewed first, processes all games including inactive ones, and is idempotent: only new games,
+  games whose Russian text changed (`source_hash`) and failed ones are sent. Texts over 300
+  characters are split at sentence boundaries, and titles without Cyrillic are copied as-is.
+  Measured: ~3–5 s per call, so a full run (~6.9k calls at concurrency 4) takes about 2 hours.
+- `status`: `machine` (from the job), `edited` (saved from the admin; machine runs never
+  overwrite it), `failed` (retried on the next run; the error is kept).
+- On a non-Russian site, `visible_games()` only returns games with a `machine` or `edited`
+  translation, so untranslated games are hidden everywhere: lists, game page (404), search,
+  random, and genre counts. Search uses a separate `english` tsvector on `game_translations`.
+- Templates use `g.title` / `g.text` / `t.title`. `app/localize.py` (called from `render`) sets
+  them from the translations; on the Russian site they fall back to the source fields.
+- Admin → game edit: an English title/description per language (saving marks `edited`), the
+  status and error, and a "Machine-translate" button.
 
 ### Behind PgBouncer (`DB_PGBOUNCER=1`)
 
