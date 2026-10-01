@@ -19,10 +19,15 @@
       {% for t in all_themes %}<option value="{{ t.id }}"{% if t.id in game_theme_ids %} selected{% endif %}>{{ t.name }}</option>{% endfor %}
     </select>
   </p>
-  <p>Published <input type="text" name="published_at" value="{{ g.published_at.isoformat() }}" size="12" /> <span class="form-error">{{ errors.published_at }}</span>
+  <p>Published <input type="text" name="published_at" id="published_at" value="{{ g.published_at.isoformat() }}" size="12" />
+     <button type="button" data-set-today="#published_at">Now</button> <span class="form-error">{{ errors.published_at }}</span>
      <label><input type="checkbox" name="active"{% if g.active %} checked{% endif %} /> active</label></p>
   <p>Thumbnail {% if g.thumb_path %}<img src="{{ media(g.thumb_path) }}" width="120" alt="" />{% endif %}
-     <input type="file" name="thumbfile" accept="image/*" /> <span class="form-error">{{ errors.thumbfile }}</span></p>
+     <img id="thumb-new" width="120" alt="new thumbnail" hidden />
+     <input type="file" name="thumbfile" accept="image/*" data-paste-target="thumb-new" data-paste-status="thumb-status" />
+     <button type="button" data-paste-button>Paste image</button>
+     <span class="form-error">{{ errors.thumbfile }}</span><br />
+     <small id="thumb-status">Choose a file, or copy an image and press Ctrl+V on this page.</small></p>
   {% for lang in languages %}
   {% set tr = translations.get(lang) %}
   <fieldset style="margin: 16px 0; border: 1px solid #ccc; padding: 8px 12px;">
@@ -57,4 +62,5 @@
 <h2>Preview</h2>
 {% set max_width = 800 %}
 {% include "player.html" %}
+<script src="{{ vendor('admin.js') }}" defer></script>
 {% endblock %}

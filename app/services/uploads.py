@@ -37,6 +37,10 @@ def store_thumbnail(media_root: Path, data: bytes, today: dt.date | None = None)
         image.load()
     except (UnidentifiedImageError, OSError) as exc:
         raise UploadError("Неверный формат изображения") from exc
+    if image.mode in ("RGBA", "LA", "P"):  # pasted screenshots: flatten transparency onto white
+        rgba = image.convert("RGBA")
+        image = Image.new("RGB", rgba.size, "white")
+        image.paste(rgba, mask=rgba.getchannel("A"))
     image = image.convert("RGB").resize(THUMB_SIZE, Image.Resampling.LANCZOS)
     today = today or dt.date.today()
     rel = _unique(media_root, today.strftime("th/%Y/%m"), ".jpg")

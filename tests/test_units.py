@@ -102,3 +102,17 @@ def test_vendor_urls_bust_cache_by_content():
     digest = hashlib.sha1((BASE_DIR / "static/vendor/player.js").read_bytes()).hexdigest()[:10]
     assert vendor("player.js") == f"/vendor/player.js?v={digest}"
     assert vendor("no-such-file.js") == "/vendor/no-such-file.js"
+
+
+def test_thumbnail_flattens_transparency_onto_white(tmp_path):
+    import io
+
+    from PIL import Image
+
+    from app.services.uploads import store_thumbnail
+
+    buf = io.BytesIO()
+    Image.new("RGBA", (40, 40), (0, 0, 0, 0)).save(buf, "PNG")
+    rel = store_thumbnail(tmp_path, buf.getvalue())
+    with Image.open(tmp_path / rel) as img:
+        assert img.mode == "RGB" and img.getpixel((10, 10)) > (240, 240, 240)
