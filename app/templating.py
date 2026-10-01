@@ -1,6 +1,7 @@
 """Jinja2 environment for the active SITE and the `render` helper."""
 
 import datetime as dt
+import hashlib
 
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, select_autoescape
 from sanic import Request
@@ -9,8 +10,6 @@ from sanic.response import html
 from app.config import BASE_DIR, Settings
 from app.i18n import Translator
 from app.services.rules import truncate_words
-
-RUFFLE_VERSION_FILE = BASE_DIR / "static" / "vendor" / "ruffle" / "VERSION"
 
 
 def _date(value, fmt: str = "%d.%m.%Y") -> str:
@@ -34,14 +33,23 @@ def create_env(settings: Settings) -> Environment:
         lstrip_blocks=True,
     )
     media_url = settings.media_url
-    ruffle_version = RUFFLE_VERSION_FILE.read_text().strip() if RUFFLE_VERSION_FILE.exists() else ""
+    vendor_dir = BASE_DIR / "static" / "vendor"
+    vendor_hashes: dict[str, str] = {}
 
     def static(path: str) -> str:
         return f"/static/{path.lstrip('/')}"
 
     def vendor(path: str) -> str:
-        suffix = f"?v={ruffle_version}" if path.startswith("ruffle/") else ""
-        return f"/vendor/{path.lstrip('/')}{suffix}"
+        """Cache-bust by content hash: a CDN must never pair a stale ruffle.js with new wasm."""
+        path = path.lstrip("/")
+        if path not in vendor_hashes:
+            try:
+                data = (vendor_dir / path).read_bytes()
+                vendor_hashes[path] = hashlib.sha1(data).hexdigest()[:10]
+            except OSError:
+                vendor_hashes[path] = ""
+        v = vendor_hashes[path]
+        return f"/vendor/{path}?v={v}" if v else f"/vendor/{path}"
 
     def media(path: str | None) -> str:
         return f"{media_url}{path}" if path else ""
@@ -69,7 +77,6 @@ def create_env(settings: Settings) -> Environment:
         media=media,
         thumb=thumb,
         now=lambda: dt.datetime.now(dt.UTC),
-        ruffle_version=ruffle_version,
     )
     tr = Translator(settings.language)
     env.globals.update(_=tr.gettext, plural=tr.plural, num=tr.number, lang=tr.language)

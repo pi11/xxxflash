@@ -22,7 +22,7 @@ More than 90% of the catalog is AS1/AS2, so Ruffle should run most games. Run `p
 ## Integration
 
 1. **Vendor** a pinned self-hosted build into `static/vendor/ruffle/` (served at `/vendor/ruffle/`). The release tag is pinned in `static/vendor/ruffle/VERSION` (currently `nightly-2026-09-29`), and `scripts/fetch_ruffle.sh` downloads it. The ~30 MB build itself is git-ignored. The files are `ruffle.js` plus `*.wasm` and chunk files.
-   To upgrade, edit `VERSION` and rerun the script; never load Ruffle from a CDN at runtime. The actual markup lives in `templates/_shared/player.html`, and the snippet below is illustrative.
+   To upgrade, edit `VERSION` and rerun the script; never load Ruffle from a CDN at runtime. `vendor()` URLs carry `?v=<sha1 of the file>`, so a new build always gets fresh URLs, even behind Cloudflare. Each build's `ruffle.js` points at its own hashed `core.ruffle.*.js` and `*.wasm`, so a stale cached `ruffle.js` breaks with "failed to fetch Wasm: 404". The actual markup lives in `templates/_shared/player.html`, and the snippet below is illustrative.
 2. The game page renders a container instead of `<object>`:
 
    ```html

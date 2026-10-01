@@ -90,3 +90,15 @@ def test_tortoise_config_pgbouncer_mode():
     creds = tortoise_config(bouncer, "app")["connections"]["default"]["credentials"]
     assert "schema" not in creds  # PgBouncer rejects the search_path startup parameter
     assert creds["statement_cache_size"] == 0
+
+
+def test_vendor_urls_bust_cache_by_content():
+    import hashlib
+
+    from app.config import BASE_DIR, settings
+    from app.templating import create_env
+
+    vendor = create_env(settings).globals["vendor"]
+    digest = hashlib.sha1((BASE_DIR / "static/vendor/player.js").read_bytes()).hexdigest()[:10]
+    assert vendor("player.js") == f"/vendor/player.js?v={digest}"
+    assert vendor("no-such-file.js") == "/vendor/no-such-file.js"

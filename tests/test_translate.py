@@ -102,7 +102,7 @@ async def test_translate_job_end_to_end(database):
     backend2 = FakeBackend()
     results = await run(CFG, "en", translator=translator(backend2))
     assert results[TranslationStatus.MACHINE] == 1
-    assert backend2.calls == ["Сломается", "тут плохо"]
+    assert sorted(backend2.calls) == ["Сломается", "тут плохо"]  # translated concurrently
 
     # editing the Russian source re-translates; moderator-edited rows are never touched
     popular.name = "Популярная 2"
