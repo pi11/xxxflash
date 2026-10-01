@@ -129,6 +129,14 @@ async def test_admin_is_staff_only(client):
     assert resp.status == 403
 
 
+async def test_admin_pages_render(client):
+    staff = await make_user("mod", is_staff=True)
+    game = await make_game(name="Игра")
+    for path in ("", "games/", f"games/{game.id}/", "themes/", "comments/", "bans/", "words/"):
+        _, resp = await client.get(f"/admin-test/{path}", headers=headers(staff))
+        assert resp.status == 200, (path, resp.text[:300])
+
+
 async def test_admin_moderation(client):
     staff = await make_user("mod", is_staff=True)
     theme = await make_theme("Квесты", slug="quest")
