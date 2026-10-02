@@ -104,7 +104,8 @@ game, voting over POST+CSRF, and "load more comments".
 - [x] English game titles/descriptions: machine translation (Phase 9)
 
 ### Phase 9: Fully translatable content (agreed 2026-09-30)
-Translator: `adtr_client` (sync `requests`, one text per call, max 300 chars, raises
+Translator: `adtr_client` (sync `requests`, one text per call, max 300 chars until 0.0.7, which allows
+50 000 plus a `context` of up to 1 000 that we fill with the title/description; raises
 `requests.HTTPError` / `ValueError`, no batching or retries). Credentials `ADTR_USER_ID`,
 `ADTR_API_KEY` in `.env`.
 
@@ -117,8 +118,8 @@ now, with a design ready for more languages.
       `theme_translations(theme_id, language, name)` (entered by hand in the admin Themes page since 2026-10-03; unnamed genres are hidden on that site)
 - [x] English FTS: generated `tsvector` (`english` config) + trigram index on the translated name
 - [x] `app/services/translate.py`: wraps `adtr_client` in a thread pool (`TRANSLATE_CONCURRENCY`,
-      default 4), retries with backoff on 429/5xx/timeouts, splits text > 300 chars at sentence
-      boundaries, copies Latin-only titles as-is (190 titles), language code → API name map
+      default 4), retries with backoff on 429/5xx/timeouts, splits over-long text at sentence
+      boundaries, sends title/description as each other's context (2026-10-03), copies Latin-only titles as-is (190 titles), language code → API name map
 - [x] `python -m app translate --lang en [--limit N] [--force] [--dry-run]`: idempotent via
       `source_hash` (sha256 of Russian name + description); new or changed games only; never touches
       `edited` rows; failures recorded and retried next run; progress + summary report

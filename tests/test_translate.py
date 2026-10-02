@@ -7,7 +7,14 @@ import requests
 
 from app.config import settings
 from app.models import GameTranslation, ThemeTranslation, TranslationStatus
-from app.services.translate import MAX_CHARS, MachineTranslator, TranslationError, chunk_text
+from app.services.translate import (
+    MAX_CHARS,
+    MAX_CONTEXT,
+    MachineTranslator,
+    TranslationError,
+    chunk_text,
+    clip,
+)
 from app.translate_job import find_candidates, run
 from tests.factories import make_game, make_theme
 
@@ -15,12 +22,15 @@ from tests.factories import make_game, make_theme
 class FakeBackend:
     def __init__(self, fail_on: str | None = None, transient_failures: int = 0):
         self.calls: list[str] = []
+        self.contexts: dict[str, str | None] = {}
         self.fail_on = fail_on
         self.transient_failures = transient_failures
 
-    def __call__(self, text: str, source: str, target: str) -> str:
+    def __call__(self, text: str, source: str, target: str, context: str | None = None) -> str:
         self.calls.append(text)
+        self.contexts[text] = context
         assert len(text) <= MAX_CHARS
+        assert context is None or 0 < len(context) <= MAX_CONTEXT
         if self.transient_failures:
             self.transient_failures -= 1
             resp = requests.Response()
@@ -43,19 +53,27 @@ CFG = dataclasses.replace(settings, translate_concurrency=2)
 def test_chunk_text_prefers_sentences():
     sentence = "Это предложение про игру номер {}. "
     text = "".join(sentence.format(i) for i in range(20)).strip()
-    chunks = chunk_text(text)
-    assert all(len(c) <= MAX_CHARS for c in chunks)
+    chunks = chunk_text(text, limit=300)
+    assert len(chunks) > 1
+    assert all(len(c) <= 300 for c in chunks)
     assert all(c.endswith(".") for c in chunks)
     assert " ".join(chunks) == text
 
 
 def test_chunk_text_hard_split():
     text = "слово " * 200
-    chunks = chunk_text(text)
-    assert all(len(c) <= MAX_CHARS for c in chunks)
+    chunks = chunk_text(text, limit=300)
+    assert all(len(c) <= 300 for c in chunks)
     assert " ".join(chunks).split() == text.split()
-    assert chunk_text("а" * 700) == ["а" * 300, "а" * 300, "а" * 100]
+    assert chunk_text("а" * 700, limit=300) == ["а" * 300, "а" * 300, "а" * 100]
+    assert chunk_text(text) == [text.strip()]  # the API takes up to 50 000 characters
     assert chunk_text("   ") == []
+
+
+def test_clip_cuts_at_a_word():
+    assert clip("short  text", 50) == "short text"
+    assert clip("один два три четыре", 12) == "один два…"
+    assert len(clip("слово " * 500, MAX_CONTEXT)) <= MAX_CONTEXT
 
 
 async def test_translator_passthrough_retry_and_errors():
@@ -87,7 +105,11 @@ async def test_translate_job_end_to_end(database):
     rows = {t.game_id: t for t in await GameTranslation.filter(language="en")}
     assert rows[popular.id].name == "EN[Популярная]"
     assert rows[latin.id].name == "Bootycall 2"  # copied, not translated
-    assert rows[long.id].description.count("EN[") >= 2  # chunked
+    assert rows[long.id].description == f"EN[{long_desc.strip()}]"  # one call, not chunked
+    # each text is sent with context: titles with their description, descriptions with the title
+    assert "Описание" in backend.contexts["Популярная"]
+    assert "“Популярная”" in backend.contexts["Описание"]
+    assert len(backend.contexts["Длинная"]) <= MAX_CONTEXT  # long description clipped
     assert rows[broken.id].status == TranslationStatus.FAILED and rows[broken.id].error
     assert rows[inactive.id].status == TranslationStatus.MACHINE  # all games, not only active
 

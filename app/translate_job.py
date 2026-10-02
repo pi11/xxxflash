@@ -1,4 +1,4 @@
-"""`python -m app translate --lang en`: machine-translate game titles/descriptions and genres.
+"""`python -m app translate --lang en`: machine-translate game titles and descriptions.
 
 Idempotent: a game is (re)translated only when it has no translation, its Russian source changed
 (source_hash), or the last attempt failed. Rows a moderator edited are never overwritten.

@@ -89,9 +89,12 @@ not in the menu or the upload form, and `/theme/<slug>/` returns 404.
 - `python -m app translate --lang en [--limit N] [--ids 1,2] [--force] [--dry-run]` translates
   through `adtr_client` (`ADTR_USER_ID`, `ADTR_API_KEY`, `TRANSLATE_CONCURRENCY`). It goes most
   viewed first, processes all games including inactive ones, and is idempotent: only new games,
-  games whose Russian text changed (`source_hash`) and failed ones are sent. Texts over 300
-  characters are split at sentence boundaries, and titles without Cyrillic are copied as-is.
-  Measured: ~3–5 s per call, so a full run (~6.9k calls at concurrency 4) takes about 2 hours.
+  games whose Russian text changed (`source_hash`) and failed ones are sent. Each text goes in
+  one call (`adtr_client` >= 0.0.7 accepts up to 50 000 characters) with a `context` (up to
+  1 000): the site in one sentence, plus the game's description for a title and the title for
+  a description. Texts without Cyrillic are copied as-is.
+  Measured: ~3–5 s per call without context; one title + description pair with context took
+  16 s (both calls in parallel). A full run is ~6.9k calls at concurrency 4: several hours.
 - `status`: `machine` (from the job), `edited` (saved from the admin; machine runs never
   overwrite it), `failed` (retried on the next run; the error is kept).
 - On a non-Russian site, `visible_games()` only returns games with a `machine` or `edited`
