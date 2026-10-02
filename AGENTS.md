@@ -49,7 +49,7 @@ cp .env.example .env                          # set SECRET_KEY; RESEND_API_KEY o
 
 ## Conventions
 
-- Python 3.12+ with async everywhere. Tortoise models live in `app/models.py`. Use `F()` expressions for counters (`views`, `rate`, `score`), never read-modify-write.
+- Python 3.11+ (production runs 3.11; no 3.12-only syntax, ruff targets py311) with async everywhere. Tortoise models live in `app/models.py`. Use `F()` expressions for counters (`views`, `rate`, `score`), never read-modify-write.
 - Views are thin. Business rules (vote scoring, xrate, auto-hide, comment filters) are pure functions in `app/services/rules.py` and have unit tests.
 - Keep legacy URL shapes (`/game/<id>/`, `/theme/<slug>/`, `?p=N`) and the `/mark/` JSON shape `{"success": ...}`.
 - UI text in `templates/xxxflash/` (and `_shared/player.html`, `_shared/403.html`) is Russian source wrapped in `_()` / `plural()`; add the English entry to `app/locales/en.json` in the same change (`tests/test_i18n.py` enforces it). The English site runs with `SITE_LANGUAGE=en SHOW_COMMENTS=0`.

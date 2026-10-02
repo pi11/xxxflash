@@ -4,7 +4,7 @@
 
 | Concern | Choice |
 |---|---|
-| Runtime | Python 3.12+ (dev: 3.14) in a project `.venv`, `pip install -e ".[dev]"` |
+| Runtime | Python 3.11+ (prod: 3.11, dev: 3.14) in a project `.venv`, `pip install -e ".[dev]"` |
 | Web | Sanic 25.x |
 | ORM | **Tortoise ORM** on the **asyncpg** backend (`asyncpg://…`) |
 | Migrations | **Tortoise ORM built-in migrations** (tortoise-orm ≥ 1.0): `tortoise makemigrations` / `tortoise migrate` / `tortoise downgrade`. Configured through `[tool.tortoise] tortoise_orm = "app.config.TORTOISE_ORM"` in `pyproject.toml`. Migration files live in `app/migrations/`, set by `apps.models.migrations = "app.migrations"`. Postgres-specific SQL goes in `RunSQL` operations |

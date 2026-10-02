@@ -14,7 +14,7 @@ Paths below assume the checkout lives in `/srv/xxxflash` and media in `/srv/medi
 
 ## 1. Requirements
 
-- Python 3.12+ with `venv`, plus `git`, `curl` and `unzip` (for `scripts/fetch_ruffle.sh`).
+- Python 3.11+ with `venv` (Debian 12's 3.11 works), plus `git`, `curl` and `unzip` (for `scripts/fetch_ruffle.sh`).
 - Postgres with the contrib package (`pg_trgm`). The app role needs `CREATE` on the database, because it creates the schemas `app` and `ext` and the `pg_trgm` extension, a trusted extension since PG 13. It does not need to create databases.
 - nginx, whose `mime.types` must map `application/wasm wasm` (recent versions do).
 - A Resend API key for login emails. The sender is always `no-reply@authmail.click`.

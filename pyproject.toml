@@ -2,7 +2,7 @@
 name = "xxxflash"
 version = "0.1.0"
 description = "Sanic rewrite of the legacy xxxflash / flashsex Flash-games sites"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "sanic>=25.3",
     "tortoise-orm[asyncpg]>=1.1",
@@ -41,7 +41,7 @@ asyncio_default_test_loop_scope = "session"
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py311"
 extend-exclude = ["archive", "app/migrations"]
 
 [tool.ruff.lint]
