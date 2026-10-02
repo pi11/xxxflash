@@ -64,6 +64,14 @@ def test_unknown_language_rejected():
         Locale("de")
 
 
+def test_site_name_accepts_language_suffix():
+    from app.config import site_name
+
+    assert site_name("xxxflash-en", "en") == "xxxflash"
+    assert site_name("xxxflash", "en") == "xxxflash"
+    assert site_name("xxxflash", "ru") == "xxxflash"
+
+
 def test_missing_language_templates_rejected():
     from app.templating import create_env
 

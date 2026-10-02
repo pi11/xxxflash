@@ -25,7 +25,7 @@ def create_env(settings: Settings) -> Environment:
     if not settings.template_dir.is_dir():
         raise ValueError(
             f"no templates for SITE={settings.site} SITE_LANGUAGE={settings.language}: "
-            f"{settings.template_dir} is missing"
+            f"{settings.template_dir} is missing (SITE is the base set, e.g. xxxflash)"
         )
     env = Environment(
         loader=ChoiceLoader(

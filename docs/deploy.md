@@ -36,7 +36,7 @@ Copy `.env.example` once per instance (`cp .env.example .env.xxxflash`, and so o
 | Key | Notes |
 |-----|-------|
 | `PORT` | Used only by systemd. Give each instance its own port, e.g. 8001 / 8002 / 8003. |
-| `SITE` | `xxxflash` or `flashsex`. |
+| `SITE` | `xxxflash` or `flashsex`: the base set, also for the English site (`xxxflash-en` is accepted too). |
 | `SITE_LANGUAGE`, `SHOW_COMMENTS` | `ru`/`1` normally; `en`/`0` for the English site. |
 | `DATABASE_URL` | The production DSN. Point it at PgBouncer (e.g. `:6432`) and set `DB_PGBOUNCER=1` if you use it; see [architecture.md](architecture.md#behind-pgbouncer-db_pgbouncer1). |
 | `DB_SCHEMA` | `app` for xxxflash **and** xxxflash-en, which share the same data; use another schema for flashsex. |

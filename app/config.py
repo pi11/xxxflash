@@ -73,6 +73,12 @@ class Settings:
         return BASE_DIR / "static" / "vendor"
 
 
+def site_name(site: str, language: str) -> str:
+    """SITE is the base set (`xxxflash`); `SITE=xxxflash-en` with `SITE_LANGUAGE=en` is the same."""
+    site = site.strip()
+    return site.removesuffix(f"-{language}") if language != "ru" else site
+
+
 def load_settings(env_file: str | os.PathLike | None = None) -> Settings:
     load_dotenv(env_file or BASE_DIR / ".env", override=False)
     env = os.environ.get
@@ -82,8 +88,9 @@ def load_settings(env_file: str | os.PathLike | None = None) -> Settings:
     media_url = env("MEDIA_URL", "/media/")
     if not media_url.endswith("/"):
         media_url += "/"
+    language = env("SITE_LANGUAGE", "ru").strip().lower()
     return Settings(
-        site=env("SITE", "xxxflash"),
+        site=site_name(env("SITE", "xxxflash"), language),
         database_url=env("DATABASE_URL", "postgres://flashxxx:123123@localhost:5432/flashxxx"),
         db_schema=env("DB_SCHEMA", "app"),
         legacy_schema=env("LEGACY_SCHEMA", "public"),
@@ -102,7 +109,7 @@ def load_settings(env_file: str | os.PathLike | None = None) -> Settings:
         hide_compat=_list(env("HIDE_COMPAT", "")),
         debug=_bool(env("DEBUG", "0")),
         db_pgbouncer=_bool(env("DB_PGBOUNCER", "0")),
-        language=env("SITE_LANGUAGE", "ru").strip().lower(),
+        language=language,
         show_comments=_bool(env("SHOW_COMMENTS", "1")),
         adtr_user_id=int(env("ADTR_USER_ID", "0") or 0),
         adtr_api_key=env("ADTR_API_KEY", ""),
