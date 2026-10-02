@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ g.title }} — play online — xxxflash{% endblock %}
+{% block description %}{{ g.text|truncatewords(30) }}{% endblock %}
+
+{% block frame %}
+<div class="frame frame--wide">
+  <main>
+    <nav class="crumbs" aria-label="Breadcrumbs">
+      <a href="/">All games</a>
+      {% if gt %} / <a href="/theme/{{ gt[0].slug }}/">{{ gt[0].title }}</a>{% endif %}
+    </nav>
+
+    <div class="stage">
+      {% set max_width = 960 %}
+      {% include "player.html" %}
+    </div>
+
+    <div class="game-info">
+      <div>
+        <h1>{{ g.title }}</h1>
+        {% if g.text %}<p class="description">{{ g.text }}</p>{% endif %}
+        {% if gt %}
+        <div class="chips">
+          {% for t in gt %}<a href="/theme/{{ t.slug }}/">{{ t.title }}</a>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div>
+        {% set mark_id = "mark1" %}
+        {% include "rating.html" %}
+        <div class="meta">
+          <span>Uploaded by {{ g.user.username }}</span>
+          {% if user.is_staff %}<a class="edit-link" href="/{{ settings.admin_prefix }}/games/{{ g.id }}/">Edit</a>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if settings.show_comments %}
+    <section class="discussion" aria-labelledby="comments-title">
+      <h2 id="comments-title">Comments</h2>
+      {% if user.is_authenticated %}
+      <form class="comment-form" action="/add-comment" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <input type="hidden" name="flash_id" value="{{ g.id }}" />
+        <label class="visually-hidden" for="comment-text">Your comment</label>
+        <textarea id="comment-text" name="text" maxlength="1000" required placeholder="What do you think of this game?"></textarea>
+        <span class="honeypot" aria-hidden="true"><input type="text" name="email" value="" tabindex="-1" autocomplete="off" /></span>
+        <button type="submit" class="btn">Post comment</button>
+      </form>
+      {% else %}
+      <p><a href="/login/">Log in to leave a comment.</a></p>
+      {% endif %}
+      {% include "comments.html" %}
+    </section>
+    {% endif %}
+
+    {% include "flash-random.html" %}
+  </main>
+</div>
+{% endblock %}

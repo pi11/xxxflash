@@ -10,7 +10,7 @@ from tortoise.contrib.sanic import register_tortoise
 
 from app.config import Settings, tortoise_config
 from app.config import settings as default_settings
-from app.i18n import Translator
+from app.i18n import Locale
 from app.templating import create_env
 from app.web import load_request_state, save_request_state
 
@@ -30,7 +30,7 @@ def create_app(
     app.config.FALLBACK_ERROR_FORMAT = "html"
     app.ctx.settings = settings
     app.ctx.jinja = create_env(settings)
-    app.ctx.tr = Translator(settings.language)
+    app.ctx.locale = Locale(settings.language)
 
     if init_orm:  # tests manage the ORM themselves
         register_tortoise(app, config=tortoise_config(settings))

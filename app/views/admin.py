@@ -19,6 +19,7 @@ from app.models import (
     Game,
     GameTranslation,
     Theme,
+    ThemeTranslation,
     TranslationStatus,
 )
 from app.services.paging import page_param, paginate
@@ -202,6 +203,17 @@ def create_blueprint(settings: Settings) -> Blueprint:
 
     # --- themes --------------------------------------------------------------
 
+    async def save_theme_names(theme: Theme, form) -> None:
+        """Genre names for the other-language sites; an empty field hides the genre there."""
+        for lang in TARGET_LANGUAGES:
+            name = (form.get(f"name_{lang}") or "").strip()[:250]
+            if name:
+                await ThemeTranslation.update_or_create(
+                    theme=theme, language=lang, defaults={"name": name}
+                )
+            else:
+                await ThemeTranslation.filter(theme=theme, language=lang).delete()
+
     @bp.route("/themes/", methods=["GET", "POST"])
     @staff_required
     @csrf_protect
@@ -216,11 +228,22 @@ def create_blueprint(settings: Settings) -> Blueprint:
             elif await Theme.exists(slug=slug):
                 error = "slug already exists"
             else:
-                await Theme.create(
+                theme = await Theme.create(
                     name=name, slug=slug, sort_order=int(form.get("sort_order") or 0)
                 )
+                await save_theme_names(theme, form)
                 return redirect(f"{prefix}/themes/")
-        return await page(request, "themes.html", all_themes=await Theme.all(), error=error)
+        names: dict[int, dict[str, str]] = {}
+        for row in await ThemeTranslation.filter(language__in=TARGET_LANGUAGES):
+            names.setdefault(row.theme_id, {})[row.language] = row.name
+        return await page(
+            request,
+            "themes.html",
+            all_themes=await Theme.all(),
+            names=names,
+            languages=TARGET_LANGUAGES,
+            error=error,
+        )
 
     @bp.post("/themes/<theme_id:int>/")
     @staff_required
@@ -238,6 +261,7 @@ def create_blueprint(settings: Settings) -> Blueprint:
             theme.sort_order = int(form.get("sort_order") or 0)
             theme.active = form.get("active") == "on"
             await theme.save()
+            await save_theme_names(theme, form)
         await update_theme_counts()
         return redirect(f"{prefix}/themes/")
 

@@ -6,13 +6,14 @@ from sanic import Blueprint, Request
 from sanic.exceptions import NotFound
 from sanic.response import redirect
 
-from app.models import Game, Theme
+from app.models import Game
 from app.queries import (
     INDEX_ORDER,
     best_games,
     latest_comments,
     random_games,
     search_game_ids,
+    site_themes,
     top_users,
     visible_games,
 )
@@ -106,8 +107,8 @@ async def random_page(request: Request):
 @bp.get("/theme/<slug:str>/")
 async def theme(request: Request, slug: str):
     cfg = _cfg(request)
-    theme = await Theme.get_or_none(slug=slug)
-    if theme is None:
+    theme = await (await site_themes(cfg)).get_or_none(slug=slug)
+    if theme is None:  # also a genre without a name in the site language
         raise NotFound("theme")
     qs = visible_games(cfg).filter(themes__id=theme.id).order_by("-xrate", "-id")
     page = await _page(request, qs, cfg.theme_games_per_page)

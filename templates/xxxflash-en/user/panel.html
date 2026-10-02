@@ -1,0 +1,7 @@
+{% if user.is_authenticated and user.username != 'Anonymous' %}
+<span>{{ user.username }} <span class="score" title="Rating">★ {{ user.score }}</span></span>
+{% if user.is_staff %}<a href="/{{ settings.admin_prefix }}/">Admin</a>{% endif %}
+<a href="/logout/">Log out</a>
+{% else %}
+<a href="/login/">Log in</a>
+{% endif %}

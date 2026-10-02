@@ -2,12 +2,17 @@
 {% block title %}Themes{% endblock %}
 {% block content %}
 <h1>Themes</h1>
+{% if languages %}<p><small>A genre without a {{ languages|join('/') }} name is hidden on that site (menu, genre page, upload form).</small></p>{% endif %}
 <table>
-  <tr><th>ID</th><th>Name</th><th>Slug</th><th>Order</th><th>Active</th><th>Games</th><th></th></tr>
+  <tr><th>ID</th><th>Name</th>{% for lang in languages %}<th>Name ({{ lang }})</th>{% endfor %}<th>Slug</th><th>Order</th><th>Active</th><th>Games</th><th></th></tr>
   {% for t in all_themes %}
   <tr>
     <td>{{ t.id }}</td>
     <td><input form="t{{ t.id }}" type="text" name="name" value="{{ t.name }}" /></td>
+    {% for lang in languages %}
+    {% set n = names.get(t.id, {}).get(lang, '') %}
+    <td><input form="t{{ t.id }}" type="text" name="name_{{ lang }}" value="{{ n }}" maxlength="250"{% if not n %} placeholder="missing: hidden" class="missing"{% endif %} /></td>
+    {% endfor %}
     <td><input form="t{{ t.id }}" type="text" name="slug" value="{{ t.slug }}" /></td>
     <td><input form="t{{ t.id }}" type="text" name="sort_order" value="{{ t.sort_order }}" size="4" /></td>
     <td><input form="t{{ t.id }}" type="checkbox" name="active"{% if t.active %} checked{% endif %} /></td>
@@ -26,6 +31,7 @@
 <form method="post" class="row">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
   <input type="text" name="name" placeholder="name" />
+  {% for lang in languages %}<input type="text" name="name_{{ lang }}" placeholder="name ({{ lang }})" maxlength="250" />{% endfor %}
   <input type="text" name="slug" placeholder="slug" />
   <input type="text" name="sort_order" placeholder="order" size="4" />
   <button>Add</button>

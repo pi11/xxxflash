@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Log in — xxxflash{% endblock %}
+{% block content %}
+<div class="panel">
+  {% if user.is_authenticated %}
+  <h1>Welcome, {{ user.username }}!</h1>
+  <p><a href="/">Browse games</a></p>
+  {% else %}
+  <h1>Login failed</h1>
+  <p>This link has expired or was already used. <a href="/login/">Get a new link</a></p>
+  {% endif %}
+</div>
+{% endblock %}

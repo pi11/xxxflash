@@ -1,26 +1,26 @@
 {% extends "base.html" %}
-{% block title %}{{ _("Вход") }} — xxxflash{% endblock %}
+{% block title %}Вход — xxxflash{% endblock %}
 {% block content %}
 <div class="panel">
   {% if user.is_authenticated %}
-  <h1>{{ _("Вы вошли как %(user)s")|format(user=user.username) }}</h1>
-  <p><a href="/">{{ _("К играм") }}</a></p>
+  <h1>Вы вошли как {{ user.username }}</h1>
+  <p><a href="/">К играм</a></p>
   {% elif sended %}
-  <h1>{{ _("Проверьте почту") }}</h1>
-  <div class="notice">{{ _("На ваш адрес выслана ссылка для входа. Ссылка одноразовая и действует 24 часа.") }}</div>
+  <h1>Проверьте почту</h1>
+  <div class="notice">На ваш адрес выслана ссылка для входа. Ссылка одноразовая и действует 24 часа.</div>
   {% else %}
   <div class="page-head">
-    <h1>{{ _("Вход и регистрация") }}</h1>
-    <p>{{ _("Укажите почту — мы пришлём ссылку для входа. Пароль не нужен, а новый аккаунт создаётся автоматически.") }}</p>
+    <h1>Вход и регистрация</h1>
+    <p>Укажите почту — мы пришлём ссылку для входа. Пароль не нужен, а новый аккаунт создаётся автоматически.</p>
   </div>
   <form action="/login/" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
     <div class="field">
-      <label for="login-email">{{ _("Электронная почта") }}</label>
+      <label for="login-email">Электронная почта</label>
       <input id="login-email" type="email" name="email" value="{{ email }}" maxlength="254" required autocomplete="email" />
       {% if error %}<div class="form-error">{{ error }}</div>{% endif %}
     </div>
-    <button type="submit" class="btn">{{ _("Получить ссылку") }}</button>
+    <button type="submit" class="btn">Получить ссылку</button>
   </form>
   {% endif %}
 </div>

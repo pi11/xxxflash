@@ -8,7 +8,7 @@ from sanic import Request
 from sanic.response import html
 
 from app.config import BASE_DIR, Settings
-from app.i18n import Translator
+from app.i18n import Locale
 from app.services.rules import truncate_words
 
 
@@ -21,6 +21,12 @@ def _date(value, fmt: str = "%d.%m.%Y") -> str:
 
 
 def create_env(settings: Settings) -> Environment:
+    locale = Locale(settings.language)
+    if not settings.template_dir.is_dir():
+        raise ValueError(
+            f"no templates for SITE={settings.site} SITE_LANGUAGE={settings.language}: "
+            f"{settings.template_dir} is missing"
+        )
     env = Environment(
         loader=ChoiceLoader(
             [
@@ -78,11 +84,10 @@ def create_env(settings: Settings) -> Environment:
         thumb=thumb,
         now=lambda: dt.datetime.now(dt.UTC),
     )
-    tr = Translator(settings.language)
-    env.globals.update(_=tr.gettext, plural=tr.plural, num=tr.number, lang=tr.language)
+    env.globals.update(plural=locale.plural, num=locale.number)
     # Genres keep their admin order, then alphabetical in the *displayed* language.
     env.filters["by_label"] = lambda themes: sorted(
-        themes, key=lambda t: (-t.sort_order, tr.gettext(t.name).casefold())
+        themes, key=lambda t: (-t.sort_order, t.title.casefold())
     )
     env.filters["truncatewords"] = truncate_words
     env.filters["date"] = _date

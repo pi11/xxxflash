@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ theme.title }} — erotic Flash games — xxxflash{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ theme.title }}</h1>
+  <p>{{ num(flashes.count) }} {{ plural(flashes.count, "game|games") }} in this genre, most popular first</p>
+</div>
+{% include "flash-list.html" %}
+{% include "paginator.html" %}
+{% endblock %}

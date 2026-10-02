@@ -60,7 +60,9 @@ class Settings:
 
     @property
     def template_dir(self) -> Path:
-        return BASE_DIR / "templates" / self.site
+        """`templates/xxxflash` is Russian; other languages are copies, e.g. `xxxflash-en`."""
+        name = self.site if self.language == "ru" else f"{self.site}-{self.language}"
+        return BASE_DIR / "templates" / name
 
     @property
     def static_dir(self) -> Path:

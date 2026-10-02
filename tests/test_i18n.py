@@ -1,47 +1,45 @@
 import dataclasses
-import glob
 import re
 import secrets
 
 import pytest
 
 from app.config import BASE_DIR, settings
-from app.i18n import Translator, _catalog
+from app.i18n import MESSAGES, Locale
 from app.models import Comment, ThemeTranslation, TranslationStatus
 from tests.factories import CSRF, headers, make_game, make_theme, make_user, translate
 
 CYRILLIC = re.compile(r"[Ѐ-ӿ]")
+TEMPLATES = BASE_DIR / "templates"
 
 
-def _template_keys() -> set[str]:
-    files = glob.glob(str(BASE_DIR / "templates/xxxflash/**/*.html"), recursive=True)
-    files += [str(BASE_DIR / "templates/_shared/player.html")]
-    files += [str(BASE_DIR / "templates/_shared/403.html")]
-    keys = set()
-    for path in files:
-        with open(path, encoding="utf-8") as fh:
-            text = fh.read()
-        keys |= set(re.findall(r'_\("([^"]+)"\)', text))
-        keys |= set(re.findall(r'plural\([^,]+,\s*"([^"]+)"\)', text))
-    return keys
+def _names(directory):
+    return {p.relative_to(directory).as_posix() for p in directory.rglob("*.html")}
 
 
-def _python_keys() -> set[str]:
-    keys = {"Вы уже голосовали", "Неверный формат изображения"}
-    for path in glob.glob(str(BASE_DIR / "app/**/*.py"), recursive=True):
-        with open(path, encoding="utf-8") as fh:
-            keys |= set(re.findall(r'_\("([^"]+)"\)', fh.read()))
-    return keys
+def test_english_templates_mirror_russian():
+    """Every xxxflash template has an English copy; shared ones with text are overridden."""
+    ru, en = TEMPLATES / "xxxflash", TEMPLATES / "xxxflash-en"
+    missing = _names(ru) - _names(en)
+    assert not missing, f"add English copies to templates/xxxflash-en/: {sorted(missing)}"
+    for name in ("403.html", "player.html"):
+        assert (en / name).is_file(), name
 
 
-def test_english_catalog_is_complete():
-    missing = sorted((_template_keys() | _python_keys()) - set(_catalog("en")))
-    assert not missing, f"add these to app/locales/en.json: {missing}"
+def test_english_templates_have_no_russian():
+    for path in (TEMPLATES / "xxxflash-en").rglob("*.html"):
+        found = CYRILLIC.findall(path.read_text(encoding="utf-8"))
+        assert not found, (path.name, "".join(found)[:40])
 
 
-def test_catalog_placeholders_match():
-    for key, value in _catalog("en").items():
-        assert re.findall(r"%\(\w+\)s", key) == re.findall(r"%\(\w+\)s", value), key
+def test_messages_match_across_languages():
+    ru = MESSAGES["ru"]
+    for lang, messages in MESSAGES.items():
+        assert messages.keys() == ru.keys(), lang
+        for key, text in messages.items():
+            assert sorted(re.findall(r"\{(\w+)\}", text)) == sorted(
+                re.findall(r"\{(\w+)\}", ru[key])
+            ), (lang, key)
 
 
 @pytest.mark.parametrize(
@@ -49,21 +47,28 @@ def test_catalog_placeholders_match():
     [(1, "игра"), (2, "игры"), (5, "игр"), (11, "игр"), (21, "игра"), (22, "игры"), (112, "игр")],
 )
 def test_russian_plurals(n, expected):
-    assert Translator("ru").plural(n, "игра|игры|игр") == expected
+    assert Locale("ru").plural(n, "игра|игры|игр") == expected
 
 
-def test_english_plurals_and_numbers():
-    en = Translator("en")
-    assert en.plural(1, "игра|игры|игр") == "game"
-    assert en.plural(3, "игра|игры|игр") == "games"
+def test_english_plurals_numbers_and_messages():
+    en = Locale("en")
+    assert en.plural(1, "game|games") == "game"
+    assert en.plural(3, "game|games") == "games"
     assert en.number(1234567) == "1,234,567"
-    assert Translator("ru").number(1234567) == "1 234 567"
-    assert en("Нет такого ключа") == "Нет такого ключа"  # untranslated falls back to source
+    assert Locale("ru").number(1234567) == "1 234 567"
+    assert en.msg("swf_too_big", n=20) == "The file is larger than 20 MB."
 
 
 def test_unknown_language_rejected():
     with pytest.raises(ValueError):
-        Translator("de")
+        Locale("de")
+
+
+def test_missing_language_templates_rejected():
+    from app.templating import create_env
+
+    with pytest.raises(ValueError, match="flashsex-en"):
+        create_env(dataclasses.replace(settings, site="flashsex", language="en"))
 
 
 @pytest.fixture
@@ -75,7 +80,7 @@ def en_client():
 
 
 async def test_english_site_has_no_russian_ui(en_client):
-    theme = await make_theme("Квесты", slug="quest", game_count=1)
+    theme = await make_theme("Квесты", slug="quest", en="Adventure", game_count=1)
     game = await make_game(
         name="Adventure game", description="An English description", themes=[theme]
     )
@@ -130,7 +135,7 @@ async def test_english_site_hides_comments(en_client):
 
 
 async def test_english_site_shows_only_translated_games(en_client):
-    theme = await make_theme("Квесты", slug="quest")
+    theme = await make_theme("Квесты", slug="quest", en="Adventure")
     done = await make_game(name="Русское название", description="Русское описание", themes=[theme])
     await translate(done, "Mermaid adventure", "A story about a mermaid")
     pending = await make_game(name="Непереведённая игра", themes=[theme])
@@ -164,13 +169,41 @@ async def test_english_search_uses_translations(en_client):
     assert "Little mermaid" in resp.text
 
 
-async def test_theme_names_from_db_override_catalog(en_client):
-    theme = await make_theme("Квесты", slug="quest")
-    await ThemeTranslation.create(theme=theme, language="en", name="Quests")
-    game = await make_game(themes=[theme])
+async def test_genres_without_english_name_are_hidden(en_client):
+    named = await make_theme("Квесты", slug="quest", en="Quests")
+    unnamed = await make_theme("Роботы", slug="robots")
+    game = await make_game(themes=[named, unnamed])
     await translate(game, "Some game")
+
     _, resp = await en_client.get("/theme/quest/")
     assert "<h1>Quests</h1>" in resp.text
+    assert "/theme/robots/" not in resp.text  # not in the genre menu
+    _, resp = await en_client.get("/theme/robots/")
+    assert resp.status == 404
+
+    user = await make_user()
+    _, resp = await en_client.get("/upload/", headers=headers(user))
+    assert f'value="{named.id}"' in resp.text
+    assert f'value="{unnamed.id}"' not in resp.text
+
+
+async def test_admin_edits_genre_names(client):
+    staff = await make_user("mod", is_staff=True)
+    theme = await make_theme("Квесты", slug="quest")
+    _, resp = await client.get("/admin-test/themes/", headers=headers(staff))
+    assert 'name="name_en"' in resp.text
+
+    form = {"csrf_token": CSRF, "name": "Квесты", "slug": "quest", "name_en": " Adventure "}
+    await client.post(f"/admin-test/themes/{theme.id}/", data=form, headers=headers(staff))
+    assert (await ThemeTranslation.get(theme=theme, language="en")).name == "Adventure"
+
+    form["name_en"] = ""  # clearing the name hides the genre on the English site again
+    await client.post(f"/admin-test/themes/{theme.id}/", data=form, headers=headers(staff))
+    assert not await ThemeTranslation.exists(theme=theme)
+
+    form = {"csrf_token": CSRF, "name": "Роботы", "slug": "robots", "name_en": "Robots"}
+    await client.post("/admin-test/themes/", data=form, headers=headers(staff))
+    assert (await ThemeTranslation.get(theme__slug="robots")).name == "Robots"
 
 
 async def test_english_vote_message(en_client):

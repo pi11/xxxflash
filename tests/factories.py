@@ -10,7 +10,15 @@ from itsdangerous import URLSafeTimedSerializer
 from PIL import Image
 
 from app.config import settings
-from app.models import Compat, Game, GameTranslation, Theme, TranslationStatus, User
+from app.models import (
+    Compat,
+    Game,
+    GameTranslation,
+    Theme,
+    ThemeTranslation,
+    TranslationStatus,
+    User,
+)
 from app.web import CSRF_COOKIE, SESSION_COOKIE
 
 CSRF = "test-csrf-token"
@@ -22,8 +30,13 @@ async def make_user(username: str | None = None, **kwargs) -> User:
     return await User.create(username=username, **kwargs)
 
 
-async def make_theme(name: str = "Эротические", slug: str | None = None, **kwargs) -> Theme:
-    return await Theme.create(name=name, slug=slug or f"t{secrets.token_hex(3)}", **kwargs)
+async def make_theme(
+    name: str = "Эротические", slug: str | None = None, en: str | None = None, **kwargs
+) -> Theme:
+    theme = await Theme.create(name=name, slug=slug or f"t{secrets.token_hex(3)}", **kwargs)
+    if en:
+        await ThemeTranslation.create(theme=theme, language="en", name=en)
+    return theme
 
 
 async def make_game(user: User | None = None, themes=(), **kwargs) -> Game:

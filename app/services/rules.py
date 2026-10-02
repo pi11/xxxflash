@@ -8,7 +8,6 @@ DELETE_COMMENT_PENALTY = 10  # del_comment: author -10 (legacy wrongly hit the s
 
 AUTO_HIDE_BELOW = -4  # mark: rate < -4 -> game deactivated
 INDEX_MIN_RATE = -2  # index: rate > -2
-ALREADY_VOTED = "Вы уже голосовали"
 
 # Literal spam phrase rejected by the legacy CommentForm.
 SPAM_PHRASES = ("апиши этот коммент",)

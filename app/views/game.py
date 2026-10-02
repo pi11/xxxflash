@@ -10,7 +10,6 @@ from app.models import Ban, BannedWord, Comment, Game, User, Vote
 from app.queries import random_games, visible_games
 from app.services.paging import paginate
 from app.services.rules import (
-    ALREADY_VOTED,
     COMMENT_SCORE,
     DELETE_COMMENT_PENALTY,
     VOTE_SCORE,
@@ -87,7 +86,7 @@ async def mark(request: Request):
         if game is None:
             raise NotFound("game")
         if not user.is_staff and await Vote.exists(game_id=game.id, ip=ip):
-            return json({"success": request.app.ctx.tr(ALREADY_VOTED)})
+            return json({"success": request.app.ctx.locale.msg("already_voted")})
         await Vote.create(
             game_id=game.id, ip=ip, value=value, user_id=user.id if user.is_authenticated else None
         )

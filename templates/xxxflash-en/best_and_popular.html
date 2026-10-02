@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% macro heading() %}{% if top %}Top games{% elif best %}Best games{% else %}Popular games{% endif %}{% endmacro %}
+{% block title %}{{ heading() }} — xxxflash{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ heading() }}</h1>
+  <p>{% if top %}High rating across many plays{% elif best %}Rated by players{% else %}Most played{% endif %}</p>
+</div>
+{% include "flash-list.html" %}
+{% include "paginator.html" %}
+{% endblock %}

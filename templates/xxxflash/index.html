@@ -7,10 +7,10 @@
 
 <div class="page-head">
   {% if random_page %}
-  <h1>{{ _("Случайные игры") }}</h1>
-  <p>{{ _("Каждое обновление страницы — новая подборка.") }}</p>
+  <h1>Случайные игры</h1>
+  <p>Каждое обновление страницы — новая подборка.</p>
   {% else %}
-  <h1>{{ _("Новые игры") }}</h1>
+  <h1>Новые игры</h1>
   {% endif %}
 </div>
 
@@ -24,7 +24,7 @@
 <div class="lower">
   {% if comments %}
   <section aria-labelledby="discussion-title">
-    <h2 id="discussion-title">{{ _("Обсуждают") }}</h2>
+    <h2 id="discussion-title">Обсуждают</h2>
     {% set show_game = true %}
     {% for comment in comments %}
     {% include "comment-item.html" %}
@@ -34,7 +34,7 @@
   {% set players = top_profiles|selectattr("score", "gt", 0)|list %}
   {% if players %}
   <section class="players" aria-labelledby="players-title">
-    <h2 id="players-title">{{ _("Активные игроки") }}</h2>
+    <h2 id="players-title">Активные игроки</h2>
     <ol>
       {% for p in players %}
       <li>{{ p.username }}<span class="score">★ {{ p.score }}</span></li>

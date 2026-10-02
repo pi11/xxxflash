@@ -1,0 +1,10 @@
+{# Rating (vote buttons) and views for game `g`. `mark_id` overrides the rating element id. #}
+<div class="meta">
+  <span class="rating">
+    <button type="button" class="vote" onclick="vote('down', {{ g.id }}, '#{{ mark_id|default('mark-' ~ g.id) }}')" aria-label="Dislike">−</button>
+    <span class="value" id="{{ mark_id|default('mark-' ~ g.id) }}" title="Rating">{{ g.rate }}</span>
+    <button type="button" class="vote" onclick="vote('up', {{ g.id }}, '#{{ mark_id|default('mark-' ~ g.id) }}')" aria-label="Like">+</button>
+  </span>
+  {% set n_views = views if views is defined and views is not none else g.views %}
+  <span>{{ num(n_views) }} {{ plural(n_views, "play|plays") }}</span>
+</div>

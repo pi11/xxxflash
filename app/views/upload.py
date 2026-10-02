@@ -3,7 +3,8 @@
 from sanic import Blueprint, Request
 from tortoise.expressions import F
 
-from app.models import Compat, Game, Theme, User
+from app.models import Compat, Game, User
+from app.queries import site_themes
 from app.services.mail import send_moderation_notice
 from app.services.rules import UPLOAD_SCORE
 from app.services.swf import SwfError, is_swf, parse_header, sha512_hex
@@ -27,8 +28,8 @@ def _file(request: Request, name: str):
 @csrf_protect
 async def upload(request: Request):
     settings = request.app.ctx.settings
-    _ = request.app.ctx.tr
-    all_themes = await Theme.all().order_by("name")
+    t = request.app.ctx.locale.msg
+    all_themes = await (await site_themes(settings)).order_by("name")
     errors: dict[str, str] = {}
     values = {"name": "", "description": "", "themes": []}
     done = None
@@ -46,38 +47,36 @@ async def upload(request: Request):
         thumb = _file(request, "thumbfile")
 
         if not values["name"] or len(values["name"]) > MAX_NAME:
-            errors["name"] = _("Введите название (до %(n)s символов).") % {"n": MAX_NAME}
+            errors["name"] = t("name_required", n=MAX_NAME)
         if not values["description"] or len(values["description"]) > MAX_DESCRIPTION:
-            errors["description"] = _("Введите описание (до %(n)s символов).") % {
-                "n": MAX_DESCRIPTION
-            }
+            errors["description"] = t("description_required", n=MAX_DESCRIPTION)
         themes = [t for t in all_themes if t.id in theme_ids]
         if not themes:
-            errors["theme"] = _("Выберите хотя бы одну тему.")
+            errors["theme"] = t("theme_required")
 
         info = None
         if swf is None or not swf.body:
-            errors["flashfile"] = _("Выберите файл игры.")
+            errors["flashfile"] = t("swf_required")
         elif len(swf.body) > settings.max_upload_mb * 1024 * 1024:
-            errors["flashfile"] = _("Файл больше %(n)s МБ.") % {"n": settings.max_upload_mb}
+            errors["flashfile"] = t("swf_too_big", n=settings.max_upload_mb)
         elif not is_swf(swf.body):
-            errors["flashfile"] = _("Неверный тип файла")
+            errors["flashfile"] = t("not_swf")
         else:
             try:
                 info = parse_header(swf.body)
             except SwfError:
-                errors["flashfile"] = _("Файл повреждён")
+                errors["flashfile"] = t("swf_damaged")
             else:
                 if await Game.exists(sha512=sha512_hex(swf.body)):
-                    errors["flashfile"] = _("Эта игра уже загружена")
+                    errors["flashfile"] = t("swf_duplicate")
         if thumb is None or not thumb.body:
-            errors["thumbfile"] = _("Выберите скриншот.")
+            errors["thumbfile"] = t("thumb_required")
 
         if not errors:
             try:
                 thumb_path = store_thumbnail(settings.media_root, thumb.body)
-            except UploadError as exc:
-                errors["thumbfile"] = _(str(exc))
+            except UploadError:
+                errors["thumbfile"] = t("bad_image")
             else:
                 swf_path = store_swf(settings.media_root, swf.body)
                 user = request.ctx.user

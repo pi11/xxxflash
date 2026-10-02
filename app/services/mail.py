@@ -5,6 +5,7 @@ import logging
 import httpx
 
 from app.config import Settings
+from app.i18n import Locale
 
 log = logging.getLogger("app.mail")
 RESEND_URL = "https://api.resend.com/emails"
@@ -30,20 +31,14 @@ async def send_email(settings: Settings, to: list[str], subject: str, text: str)
     return True
 
 
-def _identity(text: str) -> str:
-    return text
-
-
-async def send_login_link(settings: Settings, email: str, link: str, _=_identity) -> bool:
+async def send_login_link(
+    settings: Settings, email: str, link: str, locale: Locale | None = None
+) -> bool:
+    locale = locale or Locale(settings.language)
     host = settings.site_url.split("://", 1)[-1]
-    text = "\n\n".join(
-        [
-            _("Для входа на сайт %(host)s пройдите по ссылке:") % {"host": host} + "\n" + link,
-            _("Ссылка одноразовая и действует 24 часа."),
-            _("Если вы не запрашивали вход, просто проигнорируйте это письмо."),
-        ]
-    )
-    return await send_email(settings, [email], _("Вход на сайт %(host)s") % {"host": host}, text)
+    subject = locale.msg("login_subject", host=host)
+    text = locale.msg("login_body", host=host, link=link)
+    return await send_email(settings, [email], subject, text)
 
 
 async def send_moderation_notice(settings: Settings, game_id: int, name: str) -> bool:

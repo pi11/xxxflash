@@ -57,10 +57,17 @@ The flashsex site needs its own DB (or schema) with the legacy flashsex dump res
 
 ### Languages and the English site
 
-The xxxflash templates are translated rather than duplicated. Every UI string is Russian source
-wrapped in `_()` (or `plural(n, "игра|игры|игр")`), and `app/locales/en.json` maps it to English.
-A missing entry falls back to the Russian source. `tests/test_i18n.py` fails if any template or
-view string lacks an English entry.
+Each language has its own template set with the text written inline: `templates/xxxflash/` is
+Russian, `templates/xxxflash-en/` is the English copy (it also overrides the shared
+`403.html` and `player.html`). The process picks `templates/<SITE>` for `SITE_LANGUAGE=ru` and
+`templates/<SITE>-<SITE_LANGUAGE>` otherwise, and refuses to start if that directory is missing.
+Static files (`static/xxxflash/`) are shared. A change to an xxxflash template goes into both
+copies; `tests/test_i18n.py` fails if a template has no English copy or the English set contains
+Cyrillic.
+
+Helpers left in `app/i18n.py`: `num(n)` (`1 234` / `1,234`), `plural(n, forms)` with forms in
+the template's own language (`"игра|игры|игр"`, `"game|games"`), `MESSAGES` (texts produced by
+views: form errors, the vote reply, the login email; keyed, one dict per language).
 
 The English site is the same code and database started with a different env file:
 
@@ -75,7 +82,10 @@ With `SHOW_COMMENTS=0`, no comments are rendered (game page, "latest comments") 
 
 **Content translation.** Game titles and descriptions live in `game_translations`
 (`game_id, language, name, description, source_hash, status, error`). Genre names live in
-`theme_translations`; the `en.json` catalog is only a fallback for them.
+`theme_translations` (`theme_id, language, name`) and are entered by hand on the admin
+**Themes** page (one "Name (en)" column per extra language; clearing it deletes the row).
+`translate` never touches genres. On a non-Russian site a genre without a name there is hidden:
+not in the menu or the upload form, and `/theme/<slug>/` returns 404.
 - `python -m app translate --lang en [--limit N] [--ids 1,2] [--force] [--dry-run]` translates
   through `adtr_client` (`ADTR_USER_ID`, `ADTR_API_KEY`, `TRANSLATE_CONCURRENCY`). It goes most
   viewed first, processes all games including inactive ones, and is idempotent: only new games,
@@ -146,7 +156,7 @@ app/
   web.py             session cookie, CSRF, client IP, auth decorators
 scripts/fetch_ruffle.sh  downloads the pinned Ruffle build
 app/migrations/          tortoise built-in migrations (0001_initial.py, 0002_search.py with RunSQL …)
-templates/xxxflash/  templates/flashsex/
+templates/xxxflash/  templates/xxxflash-en/  templates/flashsex/   (+ _shared/: admin, player, fallbacks)
 static/xxxflash/  static/flashsex/     served at /static/ (legacy CSS uses absolute /static/images/…)
 static/vendor/                         served at /vendor/: jquery.min.js, site.js, site.css, player.js,
                                        ruffle/ (VERSION committed, build fetched by the script)

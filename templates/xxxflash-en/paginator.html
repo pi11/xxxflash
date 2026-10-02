@@ -1,0 +1,18 @@
+{% if flashes.num_pages > 1 %}
+<nav class="pager" aria-label="Pages">
+  <span class="pages-info">Page {{ flashes.number }} of {{ flashes.num_pages }}.</span>
+  {% if flashes.has_previous %}
+  <a href="?p={{ flashes.previous_page_number }}" rel="prev" aria-label="Previous">‹</a>
+  {% endif %}
+  {% for page in pages %}
+    {% if page != page_id %}
+    <a href="?p={{ page }}">{{ page }}</a>
+    {% else %}
+    <span class="current" aria-current="page">{{ page }}</span>
+    {% endif %}
+  {% endfor %}
+  {% if flashes.has_next %}
+  <a href="?p={{ flashes.next_page_number }}" rel="next" aria-label="Next">›</a>
+  {% endif %}
+</nav>
+{% endif %}

@@ -11,7 +11,7 @@ from tortoise.expressions import RawSQL
 from tortoise.queryset import QuerySet
 
 from app.config import Settings
-from app.models import Comment, Game, Theme, TranslationStatus, User
+from app.models import Comment, Game, Theme, ThemeTranslation, TranslationStatus, User
 
 INDEX_ORDER = ("-published_at", "-rate", "-views", "-id")
 PUBLISHED = [TranslationStatus.MACHINE.value, TranslationStatus.EDITED.value]
@@ -58,6 +58,14 @@ _TRANSLATED_THEME_COUNTS = """
 """
 
 
+async def site_themes(cfg: Settings) -> QuerySet[Theme]:
+    """Genres usable on this site: all on the Russian one, otherwise those the admin named."""
+    if cfg.language == "ru":
+        return Theme.all()
+    named = await ThemeTranslation.filter(language=cfg.language).values_list("theme_id", flat=True)
+    return Theme.filter(id__in=list(named))
+
+
 async def menu_themes(cfg: Settings) -> list[Theme]:
     if cfg.language == "ru":
         return await Theme.filter(active=True, game_count__gt=0)
@@ -65,7 +73,7 @@ async def menu_themes(cfg: Settings) -> list[Theme]:
         _TRANSLATED_THEME_COUNTS, [cfg.language, PUBLISHED, list(cfg.hide_compat)]
     )
     counts = {r["theme_id"]: r["n"] for r in rows}
-    themes = await Theme.filter(active=True, id__in=list(counts))
+    themes = await (await site_themes(cfg)).filter(active=True, id__in=list(counts))
     for t in themes:
         t.game_count = counts[t.id]
     return themes

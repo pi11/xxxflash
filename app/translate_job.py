@@ -12,13 +12,11 @@ from collections import Counter
 from dataclasses import dataclass
 
 from app.config import Settings
-from app.i18n import _catalog
-from app.models import Game, GameTranslation, Theme, ThemeTranslation, TranslationStatus
+from app.models import Game, GameTranslation, TranslationStatus
 from app.services.translate import (
     MachineTranslator,
     TranslationError,
     adtr_backend,
-    needs_translation,
     source_hash,
 )
 
@@ -107,29 +105,6 @@ async def translate_game(
     return TranslationStatus.MACHINE
 
 
-async def translate_themes(translator: MachineTranslator | None, language: str) -> int:
-    """Genre names: the UI catalog (app/locales/<lang>.json) first, machine translation second."""
-    catalog = _catalog(language)
-    done = set(await ThemeTranslation.filter(language=language).values_list("theme_id", flat=True))
-    created = 0
-    for theme in await Theme.all():
-        if theme.id in done:
-            continue
-        name = catalog.get(theme.name)
-        if name is None and not needs_translation(theme.name):
-            name = theme.name
-        if name is None and translator is not None:
-            try:
-                name = await translator.text(theme.name, language)
-            except TranslationError as exc:
-                log.warning("theme %s: %s", theme.id, exc)
-                continue
-        if name:
-            await ThemeTranslation.create(theme=theme, language=language, name=name)
-            created += 1
-    return created
-
-
 async def run(
     settings: Settings,
     language: str,
@@ -155,10 +130,6 @@ async def run(
         return Counter()
 
     translator = translator or make_translator(settings)
-    themes = await translate_themes(translator, language)
-    if themes:
-        print(f"  genres translated: {themes}")
-
     results: Counter = Counter()
     started = time.monotonic()
     # One game at a time per worker; the translator's semaphore bounds API concurrency.

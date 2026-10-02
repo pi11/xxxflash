@@ -72,8 +72,6 @@ async def test_translator_passthrough_retry_and_errors():
 
 async def test_translate_job_end_to_end(database):
     theme = await make_theme("Квесты", slug="quest")
-    await make_theme("3d", slug="3d")
-    await make_theme("Совсем новый жанр", slug="new-genre")
     popular = await make_game(name="Популярная", description="Описание", views=1000, themes=[theme])
     latin = await make_game(name="Bootycall 2", description="Английское описание", views=10)
     long_desc = "Длинное описание игры. " * 30
@@ -93,10 +91,7 @@ async def test_translate_job_end_to_end(database):
     assert rows[broken.id].status == TranslationStatus.FAILED and rows[broken.id].error
     assert rows[inactive.id].status == TranslationStatus.MACHINE  # all games, not only active
 
-    themes = dict(await ThemeTranslation.filter(language="en").values_list("theme_id", "name"))
-    assert themes[theme.id] == "Adventure"  # from app/locales/en.json
-    assert "3d" in themes.values()  # latin -> copied
-    assert "EN[Совсем новый жанр]" in themes.values()  # unknown -> machine translated
+    assert not await ThemeTranslation.exists()  # genre names are entered in the admin
 
     # second run: only the failed one is retried
     backend2 = FakeBackend()

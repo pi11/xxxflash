@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Search: {{ query }} — xxxflash{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Search: “{{ query }}”</h1>
+  <p>{% if flashes.count %}Found {{ num(flashes.count) }} {{ plural(flashes.count, "game|games") }}{% else %}Nothing found. Try another word or pick a genre.{% endif %}</p>
+</div>
+{% if flashes.count %}
+{% include "flash-list.html" %}
+{% include "paginator.html" %}
+{% endif %}
+{% endblock %}

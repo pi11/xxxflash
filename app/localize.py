@@ -6,7 +6,6 @@ translation is missing) those properties fall back to the Russian source fields.
 
 from collections.abc import Iterable
 
-from app.i18n import _catalog
 from app.models import Game, GameTranslation, Theme, ThemeTranslation, TranslationStatus
 from app.services.paging import Page
 
@@ -49,10 +48,9 @@ async def localize(values: Iterable, language: str) -> None:
                 g.tr_name, g.tr_description = tr["name"], tr["description"]
 
     if themes:
-        catalog = _catalog(language)
         rows = await ThemeTranslation.filter(
             theme_id__in={t.id for t in themes}, language=language
         ).values("theme_id", "name")
         by_id = {r["theme_id"]: r["name"] for r in rows}
         for t in themes:
-            t.tr_name = by_id.get(t.id) or catalog.get(t.name)
+            t.tr_name = by_id.get(t.id)

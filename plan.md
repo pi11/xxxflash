@@ -100,7 +100,7 @@ game, voting over POST+CSRF, and "load more comments".
 
 ### Phase 8: Redesign and English site (2026-09-30)
 - [x] xxxflash redesign ("velvet stage" theme, self-hosted Unbounded + Golos Text, no external links)
-- [x] English version of xxxflash via a translation catalog (`SITE_LANGUAGE=en`), comments hidden and disabled (`SHOW_COMMENTS=0`)
+- [x] English version of xxxflash (`SITE_LANGUAGE=en`; since 2026-10-03 its own template set `templates/xxxflash-en/` instead of a JSON catalog), comments hidden and disabled (`SHOW_COMMENTS=0`)
 - [x] English game titles/descriptions: machine translation (Phase 9)
 
 ### Phase 9: Fully translatable content (agreed 2026-09-30)
@@ -114,7 +114,7 @@ now, with a design ready for more languages.
 
 - [x] Models + migration: `game_translations(game_id, language, name, description, source_hash,
       status: machine|edited|failed, error, translated_at)`, unique (game_id, language);
-      `theme_translations(theme_id, language, name)` (genre names move out of `en.json`, seeded from it)
+      `theme_translations(theme_id, language, name)` (entered by hand in the admin Themes page since 2026-10-03; unnamed genres are hidden on that site)
 - [x] English FTS: generated `tsvector` (`english` config) + trigram index on the translated name
 - [x] `app/services/translate.py`: wraps `adtr_client` in a thread pool (`TRANSLATE_CONCURRENCY`,
       default 4), retries with backoff on 429/5xx/timeouts, splits text > 300 chars at sentence

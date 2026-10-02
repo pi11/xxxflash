@@ -2,13 +2,13 @@
 <div class="game-player" data-swf="{{ media(g.swf_path) }}"
      data-width="{{ g.width or 0 }}" data-height="{{ g.height or 0 }}" data-max-width="{{ max_width|default(700) }}">
   <div class="player-fallback" hidden>
-    {{ _("Не удалось запустить игру в браузере.") }}
-    <a href="{{ media(g.swf_path) }}" download>{{ _("Скачать SWF") }}</a>
+    Не удалось запустить игру в браузере.
+    <a href="{{ media(g.swf_path) }}" download>Скачать SWF</a>
   </div>
-  <noscript>{{ _("Для запуска игры включите JavaScript.") }}</noscript>
+  <noscript>Для запуска игры включите JavaScript.</noscript>
 </div>
 {% if g.compat == "as3" %}
-<div class="player-note">{{ _("Игра может работать некорректно.") }}</div>
+<div class="player-note">Игра может работать некорректно.</div>
 {% endif %}
 <script>
   window.RufflePlayer = window.RufflePlayer || {};

@@ -73,7 +73,7 @@ set -a; . ./.env.xxxflash; set +a
 
 `copy-legacy --truncate` **empties the app tables first**, so run it only on the first install or for a deliberate re-import. [data-migration.md](data-migration.md) describes it.
 
-The English site needs translations, otherwise it shows no games. Start with a dry run:
+The English site needs English genre names and game translations, otherwise it shows no genres or games. Enter the genre names on the admin **Themes** page (column "Name (en)"); a genre left empty stays hidden on the English site. Then translate the games, starting with a dry run:
 
 ```bash
 .venv/bin/python -m app translate --lang en --dry-run
@@ -156,7 +156,7 @@ Always restart, even for template, CSS or JS-only changes: each process computes
 
 - `/` and a game page load, and the game starts. Check the browser console for Ruffle errors.
 - `/<ADMIN_PREFIX>/` opens for a staff user, and login emails arrive (check Resend's logs).
-- On the English site, genres and games show English text and comments are absent.
+- On the English site, genres and games show English text and comments are absent. Genres missing from its menu have no English name yet (admin **Themes**).
 - `journalctl -u 'flash@*' --since -10min` shows no tracebacks.
 
 ## Troubleshooting
@@ -168,6 +168,7 @@ Always restart, even for template, CSS or JS-only changes: each process computes
 | `failed to fetch Wasm: 404` | A stale `ruffle.js` cached by the CDN or browser. Purge `/vendor/*`; current builds hash the URLs. |
 | Every visitor has the same IP; one vote blocks all | Cloudflare real IP isn't configured (see above). |
 | English site shows no games | No translations yet. Run `translate --lang en`. |
+| A genre is missing on the English site | It has no English name. Fill "Name (en)" on the admin **Themes** page. |
 | Games list shrinks after `audit-swf` | `HIDE_COMPAT` hides `missing`/`broken`. Check `MEDIA_ROOT` and the dashboard counts. |
 | Login email never arrives | `RESEND_API_KEY` is unset (the log says "email … not sent"), or the sender domain isn't verified in Resend. |
 | Uploads fail with permission errors | `MEDIA_ROOT` isn't writable by the service user. |

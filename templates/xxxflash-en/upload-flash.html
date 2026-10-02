@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Upload a game — xxxflash{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="page-head">
+    <h1>Upload a game</h1>
+    <p>A SWF file up to {{ settings.max_upload_mb }} MB and a screenshot. The game goes live after a moderator checks it.</p>
+  </div>
+
+  {% if done %}
+  <div class="notice">“{{ done.title }}” is uploaded and waiting for moderation. Thanks!</div>
+  {% endif %}
+  {% if errors %}
+  <div class="notice">Fix the errors below.</div>
+  {% endif %}
+
+  <form action="/upload/" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <div class="field">
+      <label for="id_name">Title</label>
+      <input id="id_name" type="text" name="name" maxlength="150" value="{{ values.name }}" required />
+      {% if errors.name %}<div class="form-error">{{ errors.name }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="id_description">Description</label>
+      <textarea id="id_description" name="description" rows="6" maxlength="2000" required>{{ values.description }}</textarea>
+      {% if errors.description %}<div class="form-error">{{ errors.description }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="id_flashfile">Game file (.swf)</label>
+      <input id="id_flashfile" type="file" name="flashfile" accept=".swf,application/x-shockwave-flash" required />
+      {% if errors.flashfile %}<div class="form-error">{{ errors.flashfile }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="id_thumbfile">Screenshot (jpg, png)</label>
+      <input id="id_thumbfile" type="file" name="thumbfile" accept="image/*" required />
+      {% if errors.thumbfile %}<div class="form-error">{{ errors.thumbfile }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="id_theme">Genres</label>
+      <select id="id_theme" name="theme" multiple>
+        {% for t in all_themes %}
+        <option value="{{ t.id }}"{% if t.id in values.themes %} selected{% endif %}>{{ t.title }}</option>
+        {% endfor %}
+      </select>
+      <div class="hint">Hold Ctrl (⌘ on a Mac) to choose several.</div>
+      {% if errors.theme %}<div class="form-error">{{ errors.theme }}</div>{% endif %}
+    </div>
+    <button type="submit" class="btn">Upload a game</button>
+  </form>
+</div>
+{% endblock %}
