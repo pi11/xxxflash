@@ -102,8 +102,13 @@ search_path`), and asyncpg's prepared-statement cache breaks under transaction p
 - `python -m app migrate` stores the search path as the role default:
   `ALTER ROLE CURRENT_USER IN DATABASE <db> SET search_path = "app", ext, public`
   (`public` stays last so anything else on this role still finds its tables).
-- The default applies to **new** server connections only. After the first `migrate`, run
-  `RECONNECT` on the PgBouncer admin console (or restart PgBouncer).
+- The default applies to **new** server connections only, and PgBouncer keeps old ones open.
+  `migrate` connects through PgBouncer itself, so its own first connection is one of them. When
+  `current_schema()` is still stale, `migrate` terminates this role's **idle** backends in this
+  database, plus the stale session it is on (`refresh_pooled_sessions` in `app/db.py`). PgBouncer
+  then opens fresh ones. This is harmless under transaction pooling. Under session pooling, a
+  client holding such a session sees one connection error. If the guard still fails, run
+  `RECONNECT` on the PgBouncer admin console (or restart PgBouncer) and run `migrate` again.
 - A guard checks `current_schema()` before migrating and at app start. It refuses to run
   instead of creating tables in `public`.
 - The copy tool always uses `SET LOCAL search_path` inside its single transaction, so it works

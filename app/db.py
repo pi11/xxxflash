@@ -1,10 +1,16 @@
 """Schema bootstrap, migrations and connection helpers."""
 
+import asyncio
+import contextlib
+import logging
+
 import asyncpg
 from tortoise import Tortoise, connections
 from tortoise.migrations.api import migrate as tortoise_migrate
 
 from app.config import EXT_SCHEMA, Settings, search_path, tortoise_config
+
+log = logging.getLogger("app.db")
 
 
 async def connect(settings: Settings) -> asyncpg.Connection:
@@ -34,6 +40,47 @@ async def ensure_schemas(settings: Settings, schema: str | None = None) -> None:
             )
     finally:
         await conn.close()
+    if settings.db_pgbouncer:
+        await refresh_pooled_sessions(settings, schema)
+
+
+_CONN_ERRORS = (OSError, asyncpg.PostgresError, asyncpg.InterfaceError)
+
+# Idle server sessions of this role in this database; PgBouncer replaces them on demand.
+_TERMINATE_IDLE_SQL = """
+SELECT count(pg_terminate_backend(pid)) FROM pg_stat_activity
+WHERE usename = current_user AND datname = current_database()
+  AND state = 'idle' AND pid <> pg_backend_pid()
+"""
+
+
+async def refresh_pooled_sessions(settings: Settings, schema: str, attempts: int = 10) -> bool:
+    """Make PgBouncer drop server sessions that predate the role's search_path default.
+
+    PgBouncer keeps server connections open, and those still use the old search_path (our own
+    connect in ensure_schemas has just opened one). Terminating idle backends of this role is
+    harmless under transaction pooling: PgBouncer opens fresh ones, which pick up the default.
+    """
+    for _ in range(attempts):
+        try:
+            conn = await connect(settings)
+        except _CONN_ERRORS:
+            await asyncio.sleep(0.3)
+            continue
+        try:
+            if await conn.fetchval("SELECT current_schema()") == schema:
+                return True
+            killed = await conn.fetchval(_TERMINATE_IDLE_SQL)
+            log.warning("search_path is stale on pooled sessions; terminated %s idle", killed)
+            # The session serving this query is stale too: end it as well.
+            await conn.execute("SELECT pg_terminate_backend(pg_backend_pid())")
+        except _CONN_ERRORS:
+            pass  # expected: we just terminated this session
+        finally:
+            with contextlib.suppress(*_CONN_ERRORS):
+                await conn.close()
+        await asyncio.sleep(0.3)
+    return False
 
 
 async def drop_schema(settings: Settings, schema: str) -> None:
@@ -57,9 +104,9 @@ async def check_search_path(settings: Settings, schema: str | None = None) -> No
     current = rows[0]["s"] if rows else None
     if current != schema:
         hint = (
-            "Behind PgBouncer the role default applies to new server connections only: "
-            "run `RECONNECT` on the PgBouncer admin console (or restart it) after "
-            "`python -m app migrate`."
+            "Behind PgBouncer the role default applies to new server connections only. "
+            "`python -m app migrate` replaces idle ones; if this persists, run `RECONNECT` on "
+            "the PgBouncer admin console (or restart PgBouncer) and run migrate again."
             if settings.db_pgbouncer
             else "Check DB_SCHEMA and that `python -m app migrate` has run."
         )

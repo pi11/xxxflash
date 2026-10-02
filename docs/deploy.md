@@ -148,7 +148,7 @@ pg_dump -n app "$DATABASE_URL" > ~/app-$(date +%F).sql   # before migrations; th
 systemctl restart 'flash@*'
 ```
 
-With PgBouncer, a migration that changed the role's `search_path` takes effect only on new server connections. Run `RECONNECT` on the PgBouncer console, or restart PgBouncer, before restarting the app ([architecture.md](architecture.md#behind-pgbouncer-db_pgbouncer1)).
+With PgBouncer, `migrate` sets the role's `search_path` default and replaces stale pooled sessions itself, logging "search_path is stale on pooled sessions" the first time ([architecture.md](architecture.md#behind-pgbouncer-db_pgbouncer1)).
 
 Always restart, even for template, CSS or JS-only changes: each process computes the `/vendor/` cache-busting hashes once, at first use.
 
@@ -163,8 +163,8 @@ Always restart, even for template, CSS or JS-only changes: each process computes
 
 | Symptom | Cause / fix |
 |---------|-------------|
-| `unsupported startup parameter: search_path` | Behind PgBouncer: set `DB_PGBOUNCER=1`, run `migrate`, then `RECONNECT` PgBouncer. |
-| App refuses to start: wrong `current_schema()` | The role's `search_path` default isn't active yet. Run `migrate`, then `RECONNECT` PgBouncer. |
+| `unsupported startup parameter: search_path` | Behind PgBouncer: set `DB_PGBOUNCER=1` and run `migrate`. |
+| `current_schema() is 'public', expected 'app'` | The role's `search_path` default isn't active on pooled sessions. Run `migrate` (it replaces idle ones); if it persists, `RECONNECT` or restart PgBouncer and run `migrate` again. |
 | `failed to fetch Wasm: 404` | A stale `ruffle.js` cached by the CDN or browser. Purge `/vendor/*`; current builds hash the URLs. |
 | Every visitor has the same IP; one vote blocks all | Cloudflare real IP isn't configured (see above). |
 | English site shows no games | No translations yet. Run `translate --lang en`. |
