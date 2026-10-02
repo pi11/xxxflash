@@ -18,6 +18,7 @@ from app.services.translate import (
     TranslationError,
     adtr_backend,
     source_hash,
+    title_problem,
 )
 
 log = logging.getLogger("app.translate")
@@ -105,6 +106,74 @@ async def translate_game(
     return TranslationStatus.MACHINE
 
 
+async def retitle(
+    settings: Settings,
+    language: str,
+    limit: int | None = None,
+    ids: list[int] | None = None,
+    dry_run: bool = False,
+    translator: MachineTranslator | None = None,
+) -> Counter:
+    """Re-translate the titles of all machine translations; descriptions stay as they are.
+
+    For titles translated with the description as context, which sometimes leaked into them.
+    When the new title fails too, a bad old title marks the game failed (the next normal run
+    redoes it, and it is hidden meanwhile); a plausible old one is kept.
+    """
+    qs = GameTranslation.filter(language=language, status=TranslationStatus.MACHINE)
+    if ids:
+        qs = qs.filter(game_id__in=ids)
+    rows = await qs.order_by("-game__views", "game_id").values(
+        "id", "game_id", "name", "game__name"
+    )
+    todo = rows[:limit] if limit else rows
+    bad = sum(1 for r in rows if title_problem(r["game__name"], r["name"] or ""))
+    print(f"{language}: {len(rows)} machine titles ({bad} look broken); this run: {len(todo)}")
+    if dry_run:
+        for r in [r for r in todo if title_problem(r["game__name"], r["name"] or "")][:20]:
+            print(f"  #{r['game_id']} {r['game__name']!r} -> {r['name'][:80]!r}")
+        return Counter()
+
+    translator = translator or make_translator(settings)
+    results: Counter = Counter()
+    started = time.monotonic()
+    queue: asyncio.Queue[dict] = asyncio.Queue()
+    for r in todo:
+        queue.put_nowait(r)
+
+    async def worker():
+        while not queue.empty():
+            r = queue.get_nowait()
+            try:
+                name = await translator.title(r["game__name"], language)
+            except TranslationError as exc:
+                log.warning("game %s: %s", r["game_id"], exc)
+                if title_problem(r["game__name"], r["name"] or ""):
+                    await GameTranslation.filter(id=r["id"]).update(
+                        status=TranslationStatus.FAILED, error=str(exc)[:1000]
+                    )
+                    results["failed"] += 1
+                else:
+                    results["kept"] += 1
+            else:
+                if name != r["name"]:
+                    await GameTranslation.filter(id=r["id"]).update(name=name[:300])
+                    results["changed"] += 1
+                else:
+                    results["same"] += 1
+            n = sum(results.values())
+            if n % 25 == 0 or n == len(todo):
+                print(f"  {n}/{len(todo)} done ({time.monotonic() - started:.0f}s)")
+
+    await asyncio.gather(*(worker() for _ in range(max(1, settings.translate_concurrency))))
+    print(
+        f"done: {results['changed']} changed, {results['same']} unchanged, "
+        f"{results['kept']} kept (new one failed), {results['failed']} marked failed, "
+        f"{translator.calls} API calls, {time.monotonic() - started:.0f}s"
+    )
+    return results
+
+
 async def run(
     settings: Settings,
     language: str,
@@ -113,9 +182,12 @@ async def run(
     force: bool = False,
     dry_run: bool = False,
     translator: MachineTranslator | None = None,
+    titles_only: bool = False,
 ) -> Counter:
     if language == "ru":
         raise SystemExit("Russian is the source language; pick a target such as --lang en")
+    if titles_only:
+        return await retitle(settings, language, limit, ids, dry_run, translator)
     candidates = await find_candidates(language, ids=ids, force=force)
     reasons = Counter(c.reason for c in candidates)
     todo = candidates[:limit] if limit else candidates

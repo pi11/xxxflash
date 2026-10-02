@@ -10,6 +10,7 @@ from app.models import GameTranslation, ThemeTranslation, TranslationStatus
 from app.services.translate import (
     MAX_CHARS,
     MAX_CONTEXT,
+    TITLE_CONTEXT,
     MachineTranslator,
     TranslationError,
     chunk_text,
@@ -106,10 +107,10 @@ async def test_translate_job_end_to_end(database):
     assert rows[popular.id].name == "EN[Популярная]"
     assert rows[latin.id].name == "Bootycall 2"  # copied, not translated
     assert rows[long.id].description == f"EN[{long_desc.strip()}]"  # one call, not chunked
-    # each text is sent with context: titles with their description, descriptions with the title
-    assert "Описание" in backend.contexts["Популярная"]
+    # descriptions get their title as context; titles never get the description (it leaks)
     assert "“Популярная”" in backend.contexts["Описание"]
-    assert len(backend.contexts["Длинная"]) <= MAX_CONTEXT  # long description clipped
+    assert backend.contexts["Популярная"] == TITLE_CONTEXT
+    assert "Описание" not in backend.contexts["Популярная"]
     assert rows[broken.id].status == TranslationStatus.FAILED and rows[broken.id].error
     assert rows[inactive.id].status == TranslationStatus.MACHINE  # all games, not only active
 
@@ -169,3 +170,84 @@ async def test_admin_edit_translation_marks_edited(client):
 
     # saving again without changes keeps it; machine runs skip it
     assert await find_candidates("en", ids=[game.id]) == []
+
+
+class LeakyBackend(FakeBackend):
+    """Mimics the API translating the context along with a title (game 5553)."""
+
+    def __init__(self, replies: dict):
+        super().__init__()
+        self.replies = replies  # (text, has_context) -> reply
+
+    def __call__(self, text, source, target, context=None):
+        super().__call__(text, source, target, context)
+        return self.replies.get((text, context is not None), f"EN[{text}]")
+
+
+async def test_title_guard_drops_leaked_text_and_retries_without_context():
+    leak = "Make Tifa Cum\n\nA sexy, curvy babe named Tifa is waiting for you."
+    backend = LeakyBackend({("Доведи Тифу", True): leak})
+    assert await translator(backend).title("Доведи Тифу", "en") == "Make Tifa Cum"
+
+    long = "Make Tifa Cum: a sexy curvy babe named Tifa is waiting for you to click faster"
+    backend = LeakyBackend({("Тифа", True): long, ("Тифа", False): "Tifa"})
+    assert await translator(backend).title("Тифа", "en") == "Tifa"
+    assert backend.contexts["Тифа"] is None  # the retry went without context
+
+    backend = LeakyBackend({("Тифа", True): long, ("Тифа", False): long})
+    with pytest.raises(TranslationError, match="too long"):
+        await translator(backend).title("Тифа", "en")
+
+    backend = LeakyBackend({("Русалка", True): "“Mermaid”"})
+    assert await translator(backend).title("Русалка", "en") == "Mermaid"  # added quotes dropped
+
+
+async def test_retitle_redoes_machine_titles_only(database):
+    leaked = await make_game(name="Доведи Тифу", description="Описание", views=10)
+    fine = await make_game(name="Русалка", views=5)
+    edited = await make_game(name="Ручная", views=1)
+    hopeless = await make_game(name="Тифа", views=0)
+    rows = [
+        (leaked, "Make Tifa Cum A sexy, curvy babe named Tifa is aching for you, click faster now"),
+        (fine, "Mermaid"),
+        (hopeless, "Tifa\n\nA sexy babe"),
+    ]
+    for game, name in rows:
+        await GameTranslation.create(
+            game=game,
+            language="en",
+            name=name,
+            description="EN desc",
+            status=TranslationStatus.MACHINE,
+            source_hash="h",
+        )
+    await GameTranslation.create(
+        game=edited,
+        language="en",
+        name="Hand-made",
+        description="d",
+        status=TranslationStatus.EDITED,
+        source_hash="h",
+    )
+    long = "Tifa, a sexy curvy babe who is waiting for you to click the mouse much faster"
+    backend = LeakyBackend(
+        {
+            ("Доведи Тифу", True): "Make Tifa Cum\n\nA sexy, curvy babe",
+            ("Русалка", True): "Mermaid",
+            ("Тифа", True): long,
+            ("Тифа", False): long,
+        }
+    )
+    assert (
+        await run(CFG, "en", dry_run=True, titles_only=True, translator=translator(backend)) == {}
+    )
+    assert backend.calls == []
+
+    results = await run(CFG, "en", titles_only=True, translator=translator(backend))
+    assert (results["changed"], results["same"], results["failed"]) == (1, 1, 1)
+    by_game = {t.game_id: t for t in await GameTranslation.all()}
+    assert by_game[leaked.id].name == "Make Tifa Cum"
+    assert by_game[leaked.id].description == "EN desc"  # descriptions untouched
+    assert by_game[edited.id].name == "Hand-made"
+    assert "Ручная" not in backend.calls
+    assert by_game[hopeless.id].status == TranslationStatus.FAILED  # redone by the next run

@@ -91,8 +91,16 @@ not in the menu or the upload form, and `/theme/<slug>/` returns 404.
   viewed first, processes all games including inactive ones, and is idempotent: only new games,
   games whose Russian text changed (`source_hash`) and failed ones are sent. Each text goes in
   one call (`adtr_client` >= 0.0.7 accepts up to 50 000 characters) with a `context` (up to
-  1 000): the site in one sentence, plus the game's description for a title and the title for
-  a description. Texts without Cyrillic are copied as-is.
+  1 000): the site in one sentence, plus "this is a game title, return only the title" for a
+  title and the title for a description. Titles never get the description as context: the API
+  translated it too and returned "Title\n\nDescription…" (game 5553). A guard keeps only the
+  first line of a title, drops quotes the source lacks, retries without context when the result
+  is longer than 60 characters and 3× the Russian title, and otherwise fails the game.
+  Texts without Cyrillic are copied as-is.
+- `translate --lang en --retitle [--limit N] [--ids …] [--dry-run]` re-translates the titles of
+  all `machine` rows (descriptions kept, `edited` rows untouched); `--dry-run` counts and lists
+  titles that look broken. If a new title fails and the old one looks broken, the row becomes
+  `failed` (hidden, redone whole by the next normal run).
   Measured: ~3–5 s per call without context; one title + description pair with context took
   16 s (both calls in parallel). A full run is ~6.9k calls at concurrency 4: several hours.
 - `status`: `machine` (from the job), `edited` (saved from the admin; machine runs never

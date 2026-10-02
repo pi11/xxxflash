@@ -106,6 +106,7 @@ def cmd_translate(args) -> None:
                 ids=ids,
                 force=args.force,
                 dry_run=args.dry_run,
+                titles_only=args.retitle,
             )
         )
     )
@@ -158,12 +159,17 @@ def main(argv=None) -> None:
     p.add_argument("--only-unknown", action="store_true")
     p.set_defaults(func=cmd_audit_swf)
 
-    p = sub.add_parser("translate", help="machine-translate game titles/descriptions and genres")
+    p = sub.add_parser("translate", help="machine-translate game titles and descriptions")
     p.add_argument("--lang", default="en", help="target language (default: en)")
     p.add_argument("--limit", type=int, help="translate at most N games (most viewed first)")
     p.add_argument("--ids", help="comma-separated game ids")
     p.add_argument("--force", action="store_true", help="redo machine translations too")
     p.add_argument("--dry-run", action="store_true", help="only list what would be translated")
+    p.add_argument(
+        "--retitle",
+        action="store_true",
+        help="re-translate the titles of all machine translations (descriptions kept)",
+    )
     p.set_defaults(func=cmd_translate)
 
     p = sub.add_parser("update-counts", help="recompute theme game counts")

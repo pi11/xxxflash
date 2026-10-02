@@ -3,9 +3,12 @@
 adtr_client (>= 0.0.7) is synchronous (requests) and translates one text per call, up to
 50 000 characters, with an optional `context` (up to 1 000 characters) describing what the text
 is. This module adds: a thread-pool bridge for asyncio, retries with backoff on transient errors,
-context for game titles (their description) and descriptions (their title), sentence-aware
-chunking of over-long texts, and passthrough of texts without Cyrillic (brand names / titles
-that are already English).
+context for titles and descriptions, a guard against titles that come back with extra text,
+sentence-aware chunking of over-long texts, and passthrough of texts without Cyrillic (brand
+names / titles that are already English).
+
+Titles never get the description as context: the API then tends to translate the context too
+and returns "Title\n\nA sexy babe named …" (seen on game 5553).
 """
 
 import asyncio
@@ -107,12 +110,31 @@ def clip(text: str, limit: int) -> str:
     return text[: limit - 1].rsplit(" ", 1)[0] + "…"
 
 
-def title_context(description: str) -> str:
-    base = f"{SITE_CONTEXT} The text is the title of a game."
-    if not description.strip():
-        return base
-    lead = f"{base} The game's description: "
-    return lead + clip(description, MAX_CONTEXT - len(lead))
+TITLE_CONTEXT = (
+    f"{SITE_CONTEXT} The text is the title of a game. "
+    "Return only the translated title, nothing else."
+)
+TITLE_MAX = 60  # a title longer than this and 3x the Russian one has picked up extra text
+_QUOTES = {'"': '"', "“": "”", "«": "»", "'": "'"}
+
+
+def title_problem(source: str, result: str) -> str | None:
+    """Why a translated title can't be right, or None."""
+    if "\n" in result.strip():
+        return "line break in title"
+    if len(result) > max(TITLE_MAX, 3 * len(source)):
+        return f"title too long ({len(result)} chars)"
+    return None
+
+
+def _clean_title(source: str, result: str) -> str:
+    """First line only, without quotes the source title doesn't have."""
+    lines = [line.strip() for line in result.strip().splitlines() if line.strip()]
+    title = lines[0] if lines else ""
+    close = _QUOTES.get(title[:1])
+    if close and title.endswith(close) and len(title) > 2 and not source.startswith(title[0]):
+        title = title[1:-1].strip()
+    return title
 
 
 def description_context(name: str) -> str:
@@ -193,9 +215,23 @@ class MachineTranslator:
         parts = await asyncio.gather(*(self._one(c, target, context) for c in chunks))
         return " ".join(parts)
 
+    async def title(self, name: str, target: str) -> str:
+        """A game title; extra text after it is dropped, an over-long result retried without
+        context, and if it is still too long the game fails (and is retried on the next run)."""
+        name = (name or "").strip()
+        if not needs_translation(name):
+            return name
+        title = ""
+        for context in (TITLE_CONTEXT, None):
+            title = _clean_title(name, await self.text(name, target, context))
+            if title and title_problem(name, title) is None:
+                return title
+            log.warning("title %r came back as %r", name, title[:80])
+        raise TranslationError(f"{title_problem(name, title) or 'empty title'}: {title[:100]!r}")
+
     async def game(self, name: str, description: str, target: str) -> tuple[str, str]:
-        """Title and description, each translated with the other as context."""
+        """Title and description; the description gets the title as context."""
         return await asyncio.gather(
-            self.text(name, target, title_context(description)),
+            self.title(name, target),
             self.text(description, target, description_context(name)),
         )

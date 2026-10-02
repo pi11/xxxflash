@@ -170,6 +170,7 @@ Always restart, even for template, CSS or JS-only changes: each process computes
 | `… is already in use, probably by another site instance` | Two env files share a `PORT`. Each instance needs its own (with several workers Sanic shares ports, so without this check the sites would mix). |
 | A site shows the wrong language or site | Check the instance's first log line: `journalctl -u flash@xxxflash-en \| grep site=` prints `site=… language=… templates=… listen=…`. |
 | English site shows no games | No translations yet. Run `translate --lang en`. |
+| An English title carries extra text (e.g. part of the description) | Run `translate --lang en --retitle --dry-run`, then without `--dry-run` (re-translates all machine titles, keeps descriptions). |
 | A genre is missing on the English site | It has no English name. Fill "Name (en)" on the admin **Themes** page. |
 | Games list shrinks after `audit-swf` | `HIDE_COMPAT` hides `missing`/`broken`. Check `MEDIA_ROOT` and the dashboard counts. |
 | Login email never arrives | `RESEND_API_KEY` is unset (the log says "email … not sent"), or the sender domain isn't verified in Resend. |
