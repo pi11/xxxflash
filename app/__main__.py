@@ -2,20 +2,50 @@
 
 import argparse
 import asyncio
+import socket
 import sys
 
 from app.config import settings
 
 
+def port_in_use(host: str, port: int) -> bool:
+    """True if something already listens there.
+
+    With several workers Sanic binds with SO_REUSEPORT, so a second instance on the same port
+    would start silently and the kernel would split requests between the two sites.
+    """
+    with socket.socket(socket.AF_INET6 if ":" in host else socket.AF_INET) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # ignore TIME_WAIT leftovers
+        try:
+            sock.bind((host, port))
+        except OSError:
+            return True
+    return False
+
+
+def startup_line(host: str, port: int, workers: int) -> str:
+    return (
+        f"site={settings.site} language={settings.language} templates={settings.template_dir} "
+        f"schema={settings.db_schema} listen={host}:{port} workers={workers}"
+    )
+
+
 def cmd_serve(args) -> None:
     from sanic import Sanic
+    from sanic.log import logger
     from sanic.worker.loader import AppLoader
 
     from app.server import create_app
 
+    if port_in_use(args.host, args.port):
+        sys.exit(
+            f"{args.host}:{args.port} is already in use, probably by another site instance. "
+            "Give each env file its own PORT."
+        )
     # Workers are separate processes; they rebuild the app through the loader's factory.
     loader = AppLoader(factory=create_app)
     app = loader.load()
+    logger.info(startup_line(args.host, args.port, args.workers))
     app.prepare(
         host=args.host,
         port=args.port,

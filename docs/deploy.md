@@ -167,6 +167,8 @@ Always restart, even for template, CSS or JS-only changes: each process computes
 | `current_schema() is 'public', expected 'app'` | The role's `search_path` default isn't active on pooled sessions. Run `migrate` (it replaces idle ones); if it persists, `RECONNECT` or restart PgBouncer and run `migrate` again. |
 | `failed to fetch Wasm: 404` | A stale `ruffle.js` cached by the CDN or browser. Purge `/vendor/*`; current builds hash the URLs. |
 | Every visitor has the same IP; one vote blocks all | Cloudflare real IP isn't configured (see above). |
+| `… is already in use, probably by another site instance` | Two env files share a `PORT`. Each instance needs its own (with several workers Sanic shares ports, so without this check the sites would mix). |
+| A site shows the wrong language or site | Check the instance's first log line: `journalctl -u flash@xxxflash-en \| grep site=` prints `site=… language=… templates=… listen=…`. |
 | English site shows no games | No translations yet. Run `translate --lang en`. |
 | A genre is missing on the English site | It has no English name. Fill "Name (en)" on the admin **Themes** page. |
 | Games list shrinks after `audit-swf` | `HIDE_COMPAT` hides `missing`/`broken`. Check `MEDIA_ROOT` and the dashboard counts. |

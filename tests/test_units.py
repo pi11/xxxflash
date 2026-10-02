@@ -116,3 +116,18 @@ def test_thumbnail_flattens_transparency_onto_white(tmp_path):
     rel = store_thumbnail(tmp_path, buf.getvalue())
     with Image.open(tmp_path / rel) as img:
         assert img.mode == "RGB" and img.getpixel((10, 10)) > (240, 240, 240)
+
+
+def test_serve_refuses_a_port_another_instance_holds():
+    import socket
+
+    from app.__main__ import port_in_use, startup_line
+
+    with socket.socket() as other:
+        other.bind(("127.0.0.1", 0))
+        other.listen()
+        port = other.getsockname()[1]
+        assert port_in_use("127.0.0.1", port)
+    assert not port_in_use("127.0.0.1", port)
+    line = startup_line("127.0.0.1", port, 2)
+    assert "language=" in line and f"listen=127.0.0.1:{port}" in line and "templates=" in line
