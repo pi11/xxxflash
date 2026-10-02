@@ -6,7 +6,7 @@ import pytest
 
 from app.config import BASE_DIR, settings
 from app.i18n import MESSAGES, Locale
-from app.models import Comment, ThemeTranslation, TranslationStatus
+from app.models import Comment, Theme, ThemeTranslation, TranslationStatus
 from tests.factories import CSRF, headers, make_game, make_theme, make_user, translate
 
 CYRILLIC = re.compile(r"[Ѐ-ӿ]")
@@ -221,3 +221,40 @@ async def test_english_vote_message(en_client):
         "/mark/", data={"pk": str(game.id), "vote": "up"}, headers=headers()
     )
     assert resp.json == {"success": "You've already voted"}
+
+
+async def test_admin_theme_row_saves_without_reload(client):
+    """admin.js posts a row with Accept: application/json and gets JSON instead of a redirect."""
+    staff = await make_user("mod", is_staff=True)
+    theme = await make_theme("Квесты", slug="quest", en="Adventure")
+    other = await make_theme("Роботы", slug="robots")
+    await make_game(themes=[theme])
+    ajax = headers(staff, Accept="application/json")
+    url = f"/admin-test/themes/{theme.id}/"
+    form = {"csrf_token": CSRF, "name": "Квесты 2", "slug": "quest", "sort_order": "3"}
+    form |= {"active": "on", "name_en": "Quests"}
+
+    _, resp = await client.post(url, data=form, headers=ajax)
+    assert resp.json == {"ok": True, "game_count": 1}
+    theme = await Theme.get(id=theme.id)
+    assert (theme.name, theme.sort_order) == ("Квесты 2", 3)
+    assert (await ThemeTranslation.get(theme=theme)).name == "Quests"
+
+    _, resp = await client.post(url, data=form | {"slug": "robots"}, headers=ajax)
+    assert resp.status == 400
+    assert resp.json == {"ok": False, "error": "slug already exists"}
+    _, resp = await client.post(url, data=form | {"name": " "}, headers=ajax)
+    assert resp.json["error"] == "name and slug are required"
+    assert (await Theme.get(id=theme.id)).name == "Квесты 2"  # nothing saved
+
+    _, resp = await client.post(url, data=form, headers=headers(staff))  # no JS: redirect
+    assert resp.status == 302
+
+    _, resp = await client.post(
+        f"/admin-test/themes/{other.id}/", data={"csrf_token": CSRF, "delete": "1"}, headers=ajax
+    )
+    assert resp.json == {"ok": True, "deleted": True}
+    assert not await Theme.exists(id=other.id)
+
+    _, resp = await client.get("/admin-test/themes/", headers=headers(staff))
+    assert "data-ajax-row" in resp.text and "admin.js" in resp.text

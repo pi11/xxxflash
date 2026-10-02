@@ -1,4 +1,89 @@
-/* Admin game edit: "Now" for the publication date, paste a thumbnail from the clipboard. */
+/* Admin helpers.
+   Table rows (themes): forms marked data-ajax-row save in place, without reloading the page.
+   Game edit: "Now" for the publication date, paste a thumbnail from the clipboard. */
+(function () {
+  "use strict";
+
+  function setStatus(el, text, isError) {
+    if (!el) return;
+    clearTimeout(el._timer);
+    el.textContent = text;
+    el.style.color = isError ? "#b00" : "#070";
+    if (!isError && text === "Saved") {
+      el._timer = setTimeout(function () { el.textContent = ""; }, 2500);
+    }
+  }
+
+  function formData(form, submitter) {
+    try {
+      return new FormData(form, submitter);
+    } catch (e) { // browsers without the submitter argument
+      var data = new FormData(form);
+      if (submitter && submitter.name) data.append(submitter.name, submitter.value);
+      return data;
+    }
+  }
+
+  // Typing in a row's field marks it unsaved (fields join the row's form via form="…").
+  document.addEventListener("input", function (e) {
+    var form = e.target.form;
+    if (form && form.hasAttribute("data-ajax-row")) {
+      setStatus(form.querySelector(".row-status"), "Unsaved", false);
+    }
+  });
+
+  document.addEventListener("submit", function (e) {
+    var form = e.target;
+    if (!form.hasAttribute("data-ajax-row") || !window.fetch) return;
+    e.preventDefault();
+    var status = form.querySelector(".row-status");
+    var row = form.closest("tr");
+    var buttons = form.querySelectorAll("button");
+    buttons.forEach(function (b) { b.disabled = true; });
+    setStatus(status, "Saving…", false);
+
+    fetch(form.action, {
+      method: "POST",
+      body: formData(form, e.submitter),
+      headers: { Accept: "application/json" },
+      credentials: "same-origin",
+    })
+      .then(function (resp) {
+        return resp.json().catch(function () {
+          return { ok: false, error: "HTTP " + resp.status };
+        });
+      })
+      .then(function (data) {
+        if (!data.ok) {
+          setStatus(status, data.error || "Save failed", true);
+          return;
+        }
+        if (data.deleted) {
+          if (row) row.remove();
+          return;
+        }
+        if (row && data.game_count !== undefined) {
+          var cell = row.querySelector("[data-game-count]");
+          if (cell) cell.textContent = data.game_count;
+        }
+        Array.prototype.forEach.call(form.elements, function (el) {
+          if (/^name_/.test(el.name)) {
+            var empty = !el.value.trim();
+            el.classList.toggle("missing", empty);
+            el.placeholder = empty ? "missing: hidden" : "";
+          }
+        });
+        setStatus(status, "Saved", false);
+      })
+      .catch(function () {
+        setStatus(status, "Save failed: network error", true);
+      })
+      .then(function () {
+        buttons.forEach(function (b) { b.disabled = false; });
+      });
+  });
+})();
+
 (function () {
   "use strict";
 

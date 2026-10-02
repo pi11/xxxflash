@@ -16,11 +16,12 @@
     <td><input form="t{{ t.id }}" type="text" name="slug" value="{{ t.slug }}" /></td>
     <td><input form="t{{ t.id }}" type="text" name="sort_order" value="{{ t.sort_order }}" size="4" /></td>
     <td><input form="t{{ t.id }}" type="checkbox" name="active"{% if t.active %} checked{% endif %} /></td>
-    <td>{{ t.game_count }}</td>
+    <td data-game-count>{{ t.game_count }}</td>
     <td>
-      <form id="t{{ t.id }}" method="post" action="{{ prefix }}/themes/{{ t.id }}/" class="inline-action">
+      <form id="t{{ t.id }}" method="post" action="{{ prefix }}/themes/{{ t.id }}/" class="inline-action" data-ajax-row>
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
         <button>Save</button> <button name="delete" value="1" onclick="return confirm('Delete theme?');">Delete</button>
+        <span class="row-status" role="status"></span>
       </form>
     </td>
   </tr>
@@ -36,4 +37,5 @@
   <input type="text" name="sort_order" placeholder="order" size="4" />
   <button>Add</button>
 </form>
+<script src="{{ vendor('admin.js') }}" defer></script>
 {% endblock %}

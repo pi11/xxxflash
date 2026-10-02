@@ -5,7 +5,7 @@ from urllib.parse import quote
 
 from sanic import Blueprint, Request
 from sanic.exceptions import NotFound
-from sanic.response import redirect
+from sanic.response import json, redirect
 from tortoise.expressions import Q
 
 from app.config import Settings
@@ -249,20 +249,40 @@ def create_blueprint(settings: Settings) -> Blueprint:
     @staff_required
     @csrf_protect
     async def theme_edit(request: Request, theme_id: int):
+        """Save one row: admin.js posts with fetch and gets JSON; without JS it redirects."""
+        wants_json = "application/json" in request.headers.get("accept", "")
         theme = await Theme.get_or_none(id=theme_id)
         if theme is None:
             raise NotFound("theme")
         form = request.form or {}
-        if form.get("delete"):
+        error = ""
+        deleted = bool(form.get("delete"))
+        if deleted:
             await theme.delete()
         else:
-            theme.name = (form.get("name") or theme.name).strip()
-            theme.slug = (form.get("slug") or theme.slug).strip()
-            theme.sort_order = int(form.get("sort_order") or 0)
-            theme.active = form.get("active") == "on"
-            await theme.save()
-            await save_theme_names(theme, form)
-        await update_theme_counts()
+            name = (form.get("name") or "").strip()
+            slug = (form.get("slug") or "").strip()
+            order = (form.get("sort_order") or "0").strip()
+            if not name or not slug:
+                error = "name and slug are required"
+            elif await Theme.filter(slug=slug).exclude(id=theme.id).exists():
+                error = "slug already exists"
+            elif not order.lstrip("-").isdigit():
+                error = "order must be a number"
+            else:
+                theme.name, theme.slug, theme.sort_order = name, slug, int(order)
+                theme.active = form.get("active") == "on"
+                await theme.save()
+                await save_theme_names(theme, form)
+        if not error:
+            await update_theme_counts()
+        if wants_json:
+            if error:
+                return json({"ok": False, "error": error}, status=400)
+            if deleted:
+                return json({"ok": True, "deleted": True})
+            await theme.refresh_from_db()
+            return json({"ok": True, "game_count": theme.game_count})
         return redirect(f"{prefix}/themes/")
 
     # --- comments ------------------------------------------------------------
