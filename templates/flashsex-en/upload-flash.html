@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Upload a game: nsfwgames{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="page-head">
+    <h1>Upload a game</h1>
+    <p>Send a .swf file up to {{ settings.max_upload_mb }} MB and a screenshot. A moderator checks every game before it goes live.</p>
+  </div>
+
+  {% if done %}
+  <div class="notice notice--ok">“{{ done.title }}” is uploaded and waiting for moderation. Thanks!</div>
+  {% endif %}
+  {% if errors %}
+  <div class="notice">Some fields need fixing. See the notes below.</div>
+  {% endif %}
+
+  <form class="form" action="/upload/" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <div class="field">
+      <label for="id_name">Title</label>
+      <input id="id_name" type="text" name="name" maxlength="150" value="{{ values.name }}" required />
+      {% if errors.name %}<div class="form-error">{{ errors.name }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="id_description">Description</label>
+      <textarea id="id_description" name="description" rows="6" maxlength="2000" required>{{ values.description }}</textarea>
+      {% if errors.description %}<div class="form-error">{{ errors.description }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="id_flashfile">Game file (.swf)</label>
+      <input id="id_flashfile" type="file" name="flashfile" accept=".swf,application/x-shockwave-flash" required />
+      {% if errors.flashfile %}<div class="form-error">{{ errors.flashfile }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="id_thumbfile">Screenshot (JPG or PNG)</label>
+      <input id="id_thumbfile" type="file" name="thumbfile" accept="image/*" required />
+      {% if errors.thumbfile %}<div class="form-error">{{ errors.thumbfile }}</div>{% endif %}
+    </div>
+    <fieldset class="field">
+      <legend>Genres</legend>
+      <div class="checks">
+        {% for t in all_themes|by_label %}
+        <label><input type="checkbox" name="theme" value="{{ t.id }}"{% if t.id in values.themes %} checked{% endif %} /> {{ t.title }}</label>
+        {% endfor %}
+      </div>
+      {% if errors.theme %}<div class="form-error">{{ errors.theme }}</div>{% endif %}
+    </fieldset>
+    <button type="submit" class="btn">Upload game</button>
+  </form>
+</div>
+{% endblock %}

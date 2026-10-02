@@ -1,0 +1,23 @@
+{# Pages drawn as a Flash timeline: each page is a frame, the current one carries the playhead. #}
+{% if flashes.num_pages > 1 %}
+<nav class="timeline" aria-label="Pages">
+  {% if flashes.has_previous %}
+  <a class="step" href="?p={{ flashes.previous_page_number }}" rel="prev">Previous</a>
+  {% endif %}
+  <ol class="frames">
+    {% for page in pages %}
+    <li>
+      {% if page != page_id %}
+      <a href="?p={{ page }}">{{ page }}</a>
+      {% else %}
+      <span class="playhead" aria-current="page">{{ page }}</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+  {% if flashes.has_next %}
+  <a class="step" href="?p={{ flashes.next_page_number }}" rel="next">Next</a>
+  {% endif %}
+  <span class="pages-info">Page {{ flashes.number }} of {{ num(flashes.num_pages) }}</span>
+</nav>
+{% endif %}

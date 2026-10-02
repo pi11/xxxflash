@@ -1,0 +1,14 @@
+<div id="comments_list">
+  {% for comment in comments.object_list %}
+  {% include "comment-item.html" %}
+  {% endfor %}
+
+  {% if comments.has_next %}
+  <div id="comments-more-{{ comments.next_page_number }}">
+    <button type="button" class="more-comments btn btn--quiet"
+            onclick="$('#comments-more-{{ comments.next_page_number }}').load('/get_comments/{{ g.id }}/{{ comments.next_page_number }}/');">
+      Show more comments
+    </button>
+  </div>
+  {% endif %}
+</div>

@@ -1,0 +1,70 @@
+{% set path = request.path %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}nsfwgames: adult Flash games you can play again{% endblock %}</title>
+  <meta name="description" content="{% block description %}Adult Flash games from the 2000s, running in your browser again. No plugin, no download. 18+ only.{% endblock %}" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#dcd8e3" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#17141f" media="(prefers-color-scheme: dark)" />
+  <link rel="preload" href="{{ static('fonts/martian-mono-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="{{ static('fonts/instrument-sans-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+  <link href="{{ vendor('site.css') }}" rel="stylesheet" />
+  <link href="{{ static('css/site.css') }}" rel="stylesheet" />
+  <link href="{{ static('images/favicon.svg') }}" rel="icon" type="image/svg+xml" />
+  <link href="{{ static('images/favicon.png') }}" rel="icon" type="image/png" sizes="64x64" />
+  <script src="{{ vendor('jquery.min.js') }}" defer></script>
+  <script src="{{ vendor('site.js') }}" defer></script>
+  {% block add_headers %}{% endblock %}
+</head>
+<body{% if index_page and first_page %} class="home"{% endif %}>
+  <a class="skip" href="#main">Skip to games</a>
+  <header class="top">
+    <div class="top-inner">
+      {% include "logo.html" %}
+
+      <form class="search" action="/search/" method="get" role="search">
+        <label class="visually-hidden" for="q">Search games</label>
+        <input id="q" type="search" name="q" value="{{ query|default('') }}" placeholder="Search games" />
+        <button type="submit">Search</button>
+      </form>
+
+      <div class="account">
+        <a class="upload" href="/upload/">Upload a game</a>
+        <span id="user_panel">{% include "user/panel.html" %}</span>
+      </div>
+
+      <nav class="sections" aria-label="Sections">
+        <a href="/"{% if path == '/' %} aria-current="page"{% endif %}>New</a>
+        <a href="/best2/"{% if path.startswith('/best2') %} aria-current="page"{% endif %}>Top</a>
+        <a href="/best/"{% if path.rstrip('/') == '/best' %} aria-current="page"{% endif %}>Best rated</a>
+        <a href="/popular/"{% if path.startswith('/popular') %} aria-current="page"{% endif %}>Most played</a>
+        <a href="/random/"{% if path.startswith('/random') %} aria-current="page"{% endif %}>Random</a>
+      </nav>
+    </div>
+  </header>
+
+  {% block frame %}
+  <div class="frame">
+    <aside class="genres" aria-label="Genres">
+      {% include "menu.html" %}
+    </aside>
+    <main id="main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  {% endblock %}
+
+  <footer class="foot">
+    <div class="foot-inner">
+      <a class="foot-logo" href="/">nsfw<span>games</span>.top</a>
+      <p>Adults only. By using this site you confirm that you are 18 or older.</p>
+      <p>The games run on <a href="https://ruffle.rs/" rel="noopener">Ruffle</a>, an open-source Flash Player emulator.</p>
+      <p>&copy; {{ now().year }} nsfwgames.top. Contact: <a href="mailto:webii@protonmail.ch">webii@protonmail.ch</a></p>
+    </div>
+  </footer>
+  {% include "counters.html" %}
+</body>
+</html>

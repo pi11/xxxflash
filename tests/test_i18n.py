@@ -17,6 +17,20 @@ def _names(directory):
     return {p.relative_to(directory).as_posix() for p in directory.rglob("*.html")}
 
 
+# Templates the views render; each language set must have them (it may name partials freely).
+VIEW_TEMPLATES = (
+    "index.html", "best_and_popular.html", "theme.html", "search.html", "game.html",
+    "comments_list.html", "upload-flash.html", "404.html", "403.html", "500.html",
+    "user/login.html", "user/auth.html", "user/panel.html",
+)  # fmt: skip
+
+
+@pytest.mark.parametrize("name", ["xxxflash-en", "flashsex-en"])
+def test_english_sets_have_every_page(name):
+    missing = [t for t in VIEW_TEMPLATES if not (TEMPLATES / name / t).is_file()]
+    assert not missing, (name, missing)
+
+
 def test_english_templates_mirror_russian():
     """Every xxxflash template has an English copy; shared ones with text are overridden."""
     ru, en = TEMPLATES / "xxxflash", TEMPLATES / "xxxflash-en"
@@ -26,8 +40,9 @@ def test_english_templates_mirror_russian():
         assert (en / name).is_file(), name
 
 
-def test_english_templates_have_no_russian():
-    for path in (TEMPLATES / "xxxflash-en").rglob("*.html"):
+@pytest.mark.parametrize("name", ["xxxflash-en", "flashsex-en"])
+def test_english_templates_have_no_russian(name):
+    for path in (TEMPLATES / name).rglob("*.html"):
         found = CYRILLIC.findall(path.read_text(encoding="utf-8"))
         assert not found, (path.name, "".join(found)[:40])
 
@@ -75,15 +90,24 @@ def test_site_name_accepts_language_suffix():
 def test_missing_language_templates_rejected():
     from app.templating import create_env
 
-    with pytest.raises(ValueError, match="flashsex-en"):
-        create_env(dataclasses.replace(settings, site="flashsex", language="en"))
+    with pytest.raises(ValueError, match="nosuchsite-en"):
+        create_env(dataclasses.replace(settings, site="nosuchsite", language="en"))
 
 
-@pytest.fixture
-def en_client():
+def test_language_static_dir():
+    """flashsex-en is its own design with its own static files; xxxflash-en reuses xxxflash's."""
+    en = dataclasses.replace(settings, site="flashsex", language="en")
+    assert en.static_dir == BASE_DIR / "static" / "flashsex-en"
+    assert dataclasses.replace(en, language="ru").static_dir == BASE_DIR / "static" / "flashsex"
+    assert dataclasses.replace(en, site="xxxflash").static_dir == BASE_DIR / "static" / "xxxflash"
+
+
+@pytest.fixture(params=["xxxflash", "flashsex"])
+def en_client(request):
+    """Both English sites: xxxflash-en and flashsex-en (nsfwgames.top)."""
     from app.server import create_app
 
-    en = dataclasses.replace(settings, language="en", show_comments=False)
+    en = dataclasses.replace(settings, site=request.param, language="en", show_comments=False)
     return create_app(en, name=f"en_{secrets.token_hex(3)}", init_orm=False).asgi_client
 
 
@@ -107,7 +131,7 @@ async def test_english_site_has_no_russian_ui(en_client):
         assert resp.status in (200, 404), url
         assert '<html lang="en">' in resp.text, url
         # every UI string is translated; only game data may be Russian (none here)
-        assert not CYRILLIC.search(resp.text.split("<body>", 1)[1]), (
+        assert not CYRILLIC.search(resp.text.split("<body", 1)[1]), (
             url,
             CYRILLIC.findall(resp.text)[:5],
         )

@@ -9,6 +9,7 @@ Each site is its own app process with its own env file:
 | `xxxflash`        | `.env.xxxflash`     | Russian xxxflash                                    |
 | `xxxflash-en`     | `.env.xxxflash-en`  | English xxxflash: same DB schema and media, `SITE_LANGUAGE=en`, `SHOW_COMMENTS=0` |
 | `flashsex`        | `.env.flashsex`     | flashsex.ru: its **own** `DB_SCHEMA` and `MEDIA_ROOT` |
+| `flashsex-en`     | `.env.flashsex-en`  | nsfwgames.top: flashsex's schema and media, `SITE=flashsex SITE_LANGUAGE=en SHOW_COMMENTS=0`, its own design and static files |
 
 Paths below assume the checkout lives in `/srv/xxxflash` and media in `/srv/media/<site>`. Adjust them to your layout, for example `/var/www/...`. The same paths appear in `deploy/flash@.service`, `deploy/nginx.conf.example` and `deploy/flash-counts.cron.example`.
 
@@ -105,6 +106,8 @@ Start from `deploy/nginx.conf.example`, using one `server` block per site:
 
 The English site is a second `server` block. Its `server_name` and `upstream` point to the `xxxflash-en` port; the `static`, `vendor` and `media` paths are the same as for xxxflash.
 
+nsfwgames.top (`flashsex-en`) is the exception: its `/static/` is `static/flashsex-en/` (own CSS, fonts and icons); `/media/` is flashsex's `MEDIA_ROOT`. The first log line prints the `static=` directory the instance uses.
+
 ```nginx
 upstream flash_xxxflash_en { server 127.0.0.1:8002; }
 server {
@@ -170,6 +173,7 @@ Always restart, even for template, CSS or JS-only changes: each process computes
 | `… is already in use, probably by another site instance` | Two env files share a `PORT`. Each instance needs its own (with several workers Sanic shares ports, so without this check the sites would mix). |
 | A site shows the wrong language or site | Check the instance's first log line: `journalctl -u flash@xxxflash-en \| grep site=` prints `site=… language=… templates=… listen=…`. |
 | English site shows no games | No translations yet. Run `translate --lang en`. |
+| nsfwgames.top looks unstyled (404 on `/static/css/site.css` or fonts) | nginx `/static/` points at `static/flashsex/`; it must be `static/flashsex-en/`. |
 | An English title carries extra text (e.g. part of the description) | Run `translate --lang en --retitle --dry-run`, then without `--dry-run` (re-translates all machine titles, keeps descriptions). |
 | A genre is missing on the English site | It has no English name. Fill "Name (en)" on the admin **Themes** page. |
 | Games list shrinks after `audit-swf` | `HIDE_COMPAT` hides `missing`/`broken`. Check `MEDIA_ROOT` and the dashboard counts. |

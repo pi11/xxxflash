@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#cdc8d6"/>
+  <g transform="translate(164 98)">
+    <path d="M0 0h50l22 22v82H0z" fill="#fbfafd"/>
+    <path d="M50 0v22h22z" fill="#a9a2b6"/>
+    <text x="36" y="76" text-anchor="middle" font-family="monospace" font-weight="700" font-size="17" fill="#6c6580">.swf</text>
+  </g>
+</svg>

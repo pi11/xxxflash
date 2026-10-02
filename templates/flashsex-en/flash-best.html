@@ -1,0 +1,16 @@
+{% if best %}
+<section class="podium" aria-labelledby="podium-title">
+  <h2 id="podium-title">Highest rated</h2>
+  <ol>
+    {% for g in best %}
+    <li>
+      <a href="/game/{{ g.id }}/">
+        <span class="rank">{{ loop.index }}</span>
+        <img src="{{ thumb(g) }}" alt="" loading="lazy" />
+        <span class="name">{{ g.title }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}

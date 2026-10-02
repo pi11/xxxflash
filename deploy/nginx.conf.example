@@ -17,6 +17,7 @@ server {
     add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://mc.yandex.ru; img-src 'self' data: blob: https://mc.yandex.ru; media-src 'self' blob:; connect-src 'self' https://mc.yandex.ru; style-src 'self' 'unsafe-inline'" always;
 
     location /static/ { alias /srv/xxxflash/static/xxxflash/; expires 7d; }
+    # nsfwgames.top (flashsex-en) has its own design: alias /srv/xxxflash/static/flashsex-en/;
     location /vendor/ { alias /srv/xxxflash/static/vendor/; expires 30d; }
 
     # Extensionless SWFs requested by loader games as "parts/<name>".

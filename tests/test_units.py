@@ -131,3 +131,4 @@ def test_serve_refuses_a_port_another_instance_holds():
     assert not port_in_use("127.0.0.1", port)
     line = startup_line("127.0.0.1", port, 2)
     assert "language=" in line and f"listen=127.0.0.1:{port}" in line and "templates=" in line
+    assert "static=" in line

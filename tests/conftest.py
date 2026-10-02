@@ -18,6 +18,8 @@ os.environ.update(
     HIDE_COMPAT="missing,broken",
     RESEND_API_KEY="",
     SITE="xxxflash",
+    SITE_LANGUAGE="ru",  # a dev .env may run the English site
+    SHOW_COMMENTS="1",
     SITE_URL="http://testserver",
     SECRET_KEY="test-secret",
     ADMIN_PREFIX="admin-test",

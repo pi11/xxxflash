@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if first_page %}
+<section class="intro">
+  <h1>Adult Flash games, playable again</h1>
+  <p>{{ num(flashes.count) }} .swf games from the Flash era, running right in your browser. No plugin, no download.</p>
+</section>
+{% include "flash-best.html" %}
+{% endif %}
+
+<div class="page-head">
+  {% if random_page %}
+  <h1>Random games</h1>
+  <p>Reload the page for a new selection.</p>
+  {% elif first_page %}
+  <h2>New games</h2>
+  {% else %}
+  <h1>New games</h1>
+  {% endif %}
+</div>
+
+{% include "flash-list.html" %}
+
+{% if not random_page %}
+{% include "paginator.html" %}
+{% endif %}
+
+{% if first_page and (comments or top_profiles) %}
+<div class="lower">
+  {% if comments %}
+  <section aria-labelledby="discussion-title">
+    <h2 id="discussion-title">Latest comments</h2>
+    {% set show_game = true %}
+    {% for comment in comments %}
+    {% include "comment-item.html" %}
+    {% endfor %}
+  </section>
+  {% endif %}
+  {% set players = top_profiles|selectattr("score", "gt", 0)|list %}
+  {% if players %}
+  <section class="players" aria-labelledby="players-title">
+    <h2 id="players-title">Top players</h2>
+    <ol>
+      {% for p in players %}
+      <li><span>{{ p.username }}</span><span class="score">{{ num(p.score) }}</span></li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+</div>
+{% endif %}
+
+{% include "flash-random.html" %}
+{% endblock %}

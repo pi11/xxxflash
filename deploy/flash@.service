@@ -1,6 +1,7 @@
 # systemd template unit: one instance per site, e.g.
 #   systemctl enable --now flash@xxxflash      (reads /srv/xxxflash/.env.xxxflash)
 #   systemctl enable --now flash@xxxflash-en   (.env.xxxflash-en: SITE_LANGUAGE=en SHOW_COMMENTS=0)
+#   systemctl enable --now flash@flashsex-en   (nsfwgames.top: SITE=flashsex SITE_LANGUAGE=en SHOW_COMMENTS=0)
 [Unit]
 Description=Flash games site %i (Sanic)
 After=network.target postgresql.service

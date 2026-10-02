@@ -65,6 +65,14 @@ Static files (`static/xxxflash/`) are shared. A change to an xxxflash template g
 copies; `tests/test_i18n.py` fails if a template has no English copy or the English set contains
 Cyrillic.
 
+`templates/flashsex-en/` is different: it is **nsfwgames.top**, a new design rather than a
+translation of flashsex (the logo "n.swf games" is NSFW with the Flash file extension swapped
+in; pages, genres and the pager are styled after the Flash authoring tool's stage and
+timeline). It has its own static set, `static/flashsex-en/` (CSS, self-hosted Martian Mono and
+Instrument Sans, icons): `static_dir` is `static/<SITE>-<lang>` when that directory exists, else
+`static/<SITE>`. It still renders the same views and context, so `tests/test_i18n.py` runs the
+English-site tests against both sets; flashsex markup changes don't need porting to it.
+
 Helpers left in `app/i18n.py`: `num(n)` (`1 234` / `1,234`), `plural(n, forms)` with forms in
 the template's own language (`"игра|игры|игр"`, `"game|games"`), `MESSAGES` (texts produced by
 views: form errors, the vote reply, the login email; keyed, one dict per language).
@@ -167,8 +175,8 @@ app/
   web.py             session cookie, CSRF, client IP, auth decorators
 scripts/fetch_ruffle.sh  downloads the pinned Ruffle build
 app/migrations/          tortoise built-in migrations (0001_initial.py, 0002_search.py with RunSQL …)
-templates/xxxflash/  templates/xxxflash-en/  templates/flashsex/   (+ _shared/: admin, player, fallbacks)
-static/xxxflash/  static/flashsex/     served at /static/ (legacy CSS uses absolute /static/images/…)
+templates/xxxflash/  templates/xxxflash-en/  templates/flashsex/  templates/flashsex-en/  (+ _shared/)
+static/xxxflash/  static/flashsex/  static/flashsex-en/   served at /static/ (legacy CSS uses absolute /static/images/…)
 static/vendor/                         served at /vendor/: jquery.min.js, site.js, site.css, player.js,
                                        ruffle/ (VERSION committed, build fetched by the script)
 deploy/                                nginx, systemd and cron examples

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Log in: nsfwgames{% endblock %}
+{% block content %}
+<div class="panel">
+  {% if user.is_authenticated %}
+  <h1>You're logged in as {{ user.username }}</h1>
+  <p><a href="/">Browse games</a></p>
+  {% elif sended %}
+  <h1>Check your email</h1>
+  <div class="notice">We've emailed you a login link. It works once and expires in 24 hours.</div>
+  {% else %}
+  <div class="page-head">
+    <h1>Log in or sign up</h1>
+    <p>Enter your email and we'll send you a login link. No password needed; new accounts are created automatically.</p>
+  </div>
+  <form class="form" action="/login/" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <div class="field">
+      <label for="login-email">Email</label>
+      <input id="login-email" type="email" name="email" value="{{ email }}" maxlength="254" required autocomplete="email" />
+      {% if error %}<div class="form-error">{{ error }}</div>{% endif %}
+    </div>
+    <button type="submit" class="btn">Email me a login link</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

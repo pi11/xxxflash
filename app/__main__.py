@@ -26,7 +26,8 @@ def port_in_use(host: str, port: int) -> bool:
 def startup_line(host: str, port: int, workers: int) -> str:
     return (
         f"site={settings.site} language={settings.language} templates={settings.template_dir} "
-        f"schema={settings.db_schema} listen={host}:{port} workers={workers}"
+        f"static={settings.static_dir} schema={settings.db_schema} "
+        f"listen={host}:{port} workers={workers}"
     )
 
 

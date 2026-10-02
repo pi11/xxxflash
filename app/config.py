@@ -66,7 +66,9 @@ class Settings:
 
     @property
     def static_dir(self) -> Path:
-        return BASE_DIR / "static" / self.site
+        """`static/<site>`, or `static/<site>-<lang>` when that language has its own design."""
+        own = BASE_DIR / "static" / f"{self.site}-{self.language}"
+        return own if self.language != "ru" and own.is_dir() else BASE_DIR / "static" / self.site
 
     @property
     def vendor_dir(self) -> Path:
