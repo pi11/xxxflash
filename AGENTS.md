@@ -8,6 +8,7 @@ Read these first:
 - `docs/architecture.md`: stack, `.env` keys, models and DB layout.
 - `docs/data-migration.md`: the legacy → new copy tool.
 - `docs/ruffle.md`: player integration and SWF compatibility audit.
+- `docs/deploy.md`: production install, nginx/Cloudflare, systemd, cron, updates and troubleshooting.
 
 ## Ground rules
 

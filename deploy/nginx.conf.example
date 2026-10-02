@@ -2,6 +2,12 @@
 # Paths assume the repo lives in /srv/xxxflash and MEDIA_ROOT=/srv/media/xxxflash.
 upstream flash_xxxflash { server 127.0.0.1:8001; }
 
+# Behind Cloudflare: restore the visitor IP, or votes/bans/comment checks see Cloudflare's IPs.
+# /etc/nginx/cloudflare-realip.conf holds `set_real_ip_from <range>;` for every range in
+# https://www.cloudflare.com/ips-v4 and /ips-v6 (see docs/deploy.md), plus:
+#   real_ip_header CF-Connecting-IP;
+# include /etc/nginx/cloudflare-realip.conf;
+
 server {
     listen 80;
     server_name _;                      # set the real host name
@@ -28,7 +34,8 @@ server {
     location / {
         proxy_pass http://flash_xxxflash;
         proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # $remote_addr is the visitor (after real_ip above); the app trusts it from TRUSTED_PROXIES.
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }

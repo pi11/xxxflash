@@ -138,6 +138,7 @@ now, with a design ready for more languages.
 ### Phase 7: Ops
 - [x] `deploy/nginx.conf.example` (static/media, `parts/` MIME type, CSP with `wasm-unsafe-eval`)
 - [x] `deploy/flash@.service` (one instance per site / env file) and `deploy/flash-counts.cron.example`
+- [x] `docs/deploy.md` (install, env files, nginx + Cloudflare real IP, cron, updates, troubleshooting)
 
 ## Resolved defaults (change if needed)
 - AS3 games stay visible with a warning.
