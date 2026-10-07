@@ -447,6 +447,15 @@ h3 { font-size: var(--step-1); }
   gap: 12px;
 }
 .footer p { margin: 0; max-width: 70ch; }
+.footer-friends {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.footer-friends span { color: var(--mist); font-weight: 700; }
 
 /* ---- small screens ------------------------------------------------------- */
 

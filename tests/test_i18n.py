@@ -139,6 +139,43 @@ async def test_english_site_has_no_russian_ui(en_client):
     assert "<h1>Adventure</h1>" in resp.text
 
 
+@pytest.mark.parametrize(
+    ("language", "labels"),
+    [
+        (
+            "ru",
+            (
+                "GMP Watch — короткие порно ролики",
+                "Spree Tube — любительское и домашнее порно",
+                "xfg0 — порно флеш-игры",
+            ),
+        ),
+        (
+            "en",
+            (
+                "GMP Watch — short adult videos",
+                "Spree Tube — amateur and homemade porn",
+                "xfg0 — porn Flash games",
+            ),
+        ),
+    ],
+)
+async def test_partner_links_in_xxxflash_footer(language, labels):
+    from app.server import create_app
+
+    site_settings = dataclasses.replace(settings, site="xxxflash", language=language)
+    app = create_app(site_settings, name=f"footer_{secrets.token_hex(3)}", init_orm=False)
+    _, resp = await app.asgi_client.get("/")
+    assert resp.status == 200
+    footer = resp.text.split("<footer", 1)[1].split("</footer>", 1)[0]
+    for url, label in zip(
+        ("https://gmp.watch/", "https://gg.spree.tube/", "https://xfg0.com/"),
+        labels,
+        strict=True,
+    ):
+        assert footer.count(f'<a href="{url}">{label}</a>') == 1
+
+
 async def test_english_site_hides_comments(en_client):
     user = await make_user()
     game = await make_game()
