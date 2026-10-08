@@ -1,0 +1,25 @@
+{# Pager as the device's controls: the page number on the LCD, red keys to step. #}
+{% import "lcd.html" as lcd %}
+{% if flashes.num_pages > 1 %}
+<nav class="pager" aria-label="Страницы">
+  {% if flashes.has_previous %}
+  <a class="key key--step" href="?p={{ flashes.previous_page_number }}" rel="prev" aria-label="Предыдущая страница">◀</a>
+  {% else %}
+  <span class="key key--step" aria-hidden="true">◀</span>
+  {% endif %}
+  <span class="pager-display" title="Страница {{ flashes.number }} из {{ flashes.num_pages }}">
+    {{ lcd.readout(flashes.number, (flashes.num_pages|string)|length, size="l") }}
+    <span class="of">из {{ num(flashes.num_pages) }}</span>
+  </span>
+  {% if flashes.has_next %}
+  <a class="key key--step" href="?p={{ flashes.next_page_number }}" rel="next" aria-label="Следующая страница">▶</a>
+  {% else %}
+  <span class="key key--step" aria-hidden="true">▶</span>
+  {% endif %}
+  <ol class="pages">
+    {% for page in pages %}
+    <li>{% if page != page_id %}<a href="?p={{ page }}">{{ page }}</a>{% else %}<span aria-current="page">{{ page }}</span>{% endif %}</li>
+    {% endfor %}
+  </ol>
+</nav>
+{% endif %}

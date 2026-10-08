@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Вход — xfg0{% endblock %}
+{% block content %}
+<div class="panel">
+  {% if user.is_authenticated %}
+  <h1>Вы вошли как {{ user.username }}</h1>
+  <p><a href="/">К играм</a></p>
+  {% elif sended %}
+  <h1>Проверьте почту</h1>
+  <div class="notice">Мы отправили ссылку для входа. Она одноразовая и действует 24 часа.</div>
+  {% else %}
+  <div class="page-head">
+    <h1>Вход и регистрация</h1>
+    <p>Укажите почту, и мы пришлём ссылку для входа. Пароль не нужен, новый аккаунт создаётся сам.</p>
+  </div>
+  <form class="form" action="/login/" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <div class="field">
+      <label for="login-email">Электронная почта</label>
+      <input id="login-email" type="email" name="email" value="{{ email }}" maxlength="254" required autocomplete="email" />
+      {% if error %}<div class="form-error">{{ error }}</div>{% endif %}
+    </div>
+    <button type="submit" class="btn">Прислать ссылку</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

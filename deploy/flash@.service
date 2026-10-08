@@ -2,6 +2,7 @@
 #   systemctl enable --now flash@xxxflash      (reads /srv/xxxflash/.env.xxxflash)
 #   systemctl enable --now flash@xxxflash-en   (.env.xxxflash-en: SITE_LANGUAGE=en SHOW_COMMENTS=0)
 #   systemctl enable --now flash@flashsex-en   (nsfwgames.top: SITE=flashsex SITE_LANGUAGE=en SHOW_COMMENTS=0)
+#   systemctl enable --now flash@xfg0          (xfg0.com: SITE=xfg0, xxxflash's DB_SCHEMA and MEDIA_ROOT)
 [Unit]
 Description=Flash games site %i (Sanic)
 After=network.target postgresql.service

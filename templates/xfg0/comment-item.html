@@ -1,0 +1,15 @@
+<article class="comment" id="c{{ comment.id }}">
+  <header>
+    {% if comment.user.avatar %}<img src="{{ media(comment.user.avatar) }}" alt="" loading="lazy" />{% endif %}
+    <span class="author">{{ comment.user.username }}</span>
+    <span class="author-score" title="Рейтинг пользователя">{{ num(comment.user.score) }}</span>
+    <time datetime="{{ comment.created_at.isoformat() }}">{{ comment.created_at|date }}</time>
+    {% if show_game and comment.game %}
+    <a class="on-game" href="/game/{{ comment.game_id }}/#c{{ comment.id }}">{{ comment.game.title }}</a>
+    {% endif %}
+    {% if user.is_staff %}
+    <span class="staff">{% include "staff_comment_actions.html" %}</span>
+    {% endif %}
+  </header>
+  <p>{{ comment.text }}</p>
+</article>

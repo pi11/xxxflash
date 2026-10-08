@@ -103,6 +103,8 @@ game, voting over POST+CSRF, and "load more comments".
 - [x] English version of xxxflash (`SITE_LANGUAGE=en`; since 2026-10-03 its own template set `templates/xxxflash-en/` instead of a JSON catalog), comments hidden and disabled (`SHOW_COMMENTS=0`)
 - [x] English game titles/descriptions: machine translation (Phase 9)
 - [x] English flashsex as a new site, **nsfwgames.top** (2026-10-03): `templates/flashsex-en/` + `static/flashsex-en/`, a fresh design (Flash-IDE pasteboard/stage, timeline pager, "n.swf games" logo that rearranges "nsfw" on the home page, light + dark), not a port of the legacy flashsex markup
+- [x] **xfg0.com** (2026-10-08): Russian site over xxxflash's data, `SITE=xfg0`, own design in `templates/xfg0/` + `static/xfg0/` (Soviet pocket LCD game: LCD readouts, red keys, amber night mode)
+- [ ] xfg0.com in production: `.env.xfg0`, systemd instance, nginx `server` block with `/static/` → `static/xfg0/`
 - [ ] nsfwgames.top in production: needs the flashsex DB (see "Waiting on the user"), English genre names and `translate --lang en` against the flashsex schema
 
 ### Phase 9: Fully translatable content (agreed 2026-09-30)

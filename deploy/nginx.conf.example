@@ -18,6 +18,7 @@ server {
 
     location /static/ { alias /srv/xxxflash/static/xxxflash/; expires 7d; }
     # nsfwgames.top (flashsex-en) has its own design: alias /srv/xxxflash/static/flashsex-en/;
+    # xfg0.com (xfg0) too: alias /srv/xxxflash/static/xfg0/;
     location /vendor/ { alias /srv/xxxflash/static/vendor/; expires 30d; }
 
     # Extensionless SWFs requested by loader games as "parts/<name>".

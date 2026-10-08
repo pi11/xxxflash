@@ -144,6 +144,43 @@ async def test_flashsex_templates_render(database):
     assert await Game.filter(id=game.id).exists()
 
 
+async def test_xfg0_templates_render(database):
+    """xfg0.com: its own Russian design over the same views; every page renders."""
+    import dataclasses
+    import secrets
+
+    from app.config import BASE_DIR, settings
+    from app.models import Comment
+    from app.server import create_app
+    from tests.factories import headers, make_user
+    from tests.test_i18n import VIEW_TEMPLATES
+
+    missing = [t for t in VIEW_TEMPLATES if not (BASE_DIR / "templates" / "xfg0" / t).is_file()]
+    assert not missing
+    xfg0 = dataclasses.replace(settings, site="xfg0")
+    assert xfg0.static_dir == BASE_DIR / "static" / "xfg0"
+    app = create_app(xfg0, name=f"xfg_{secrets.token_hex(3)}", init_orm=False)
+    theme = await make_theme("Квесты", slug="xfg-quest")
+    game = await make_game(name="Игра для xfg0", themes=[theme], rate=7, views=1234)
+    user = await make_user()
+    await Comment.create(game=game, user=user, text="Отличная игра", ip="10.0.0.1")
+    for url in (
+        "/", "/?p=2", "/best/", "/best2/", "/popular/", "/random/", "/theme/xfg-quest/",
+        "/search/игра/", f"/game/{game.id}/", f"/get_comments/{game.id}/1/", "/login/",
+    ):  # fmt: skip
+        _, resp = await app.asgi_client.get(url, headers=headers(user))
+        assert resp.status == 200, url
+        if "<html" in resp.text:
+            assert '<html lang="ru">' in resp.text and "logo-lcd" in resp.text, url
+    _, resp = await app.asgi_client.get(f"/game/{game.id}/", headers=headers(user))
+    assert 'id="mark1">7</span>' in resp.text  # vote() rewrites just the number
+    assert "Отличная игра" in resp.text and 'action="/add-comment"' in resp.text
+    _, resp = await app.asgi_client.get("/upload/", headers=headers(user))
+    assert resp.status == 200 and "Загрузить игру" in resp.text
+    _, resp = await app.asgi_client.get("/no-such-page/")
+    assert resp.status == 404 and "Такой страницы нет" in resp.text
+
+
 async def test_theme_counts_skip_hidden_games(database):
     from app.maintenance import update_theme_counts
     from app.models import Theme

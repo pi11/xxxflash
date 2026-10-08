@@ -1,0 +1,12 @@
+{# Rating keys and play counter for game `g`. `mark_id` overrides the rating element id. #}
+{% import "lcd.html" as lcd %}
+{% set mid = mark_id|default('mark-' ~ g.id) %}
+{% set n_views = views if views is defined and views is not none else g.views %}
+<div class="stats">
+  <span class="rating" title="Рейтинг">
+    <button type="button" class="key" onclick="vote('down', {{ g.id }}, '#{{ mid }}')" aria-label="Не нравится">−</button>
+    {{ lcd.readout(g.rate, 3, inner_id=mid) }}
+    <button type="button" class="key" onclick="vote('up', {{ g.id }}, '#{{ mid }}')" aria-label="Нравится">+</button>
+  </span>
+  <span class="plays">{{ lcd.readout(n_views, 5, size="s") }} {{ plural(n_views, "запуск|запуска|запусков") }}</span>
+</div>

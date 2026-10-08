@@ -10,6 +10,7 @@ Each site is its own app process with its own env file:
 | `xxxflash-en`     | `.env.xxxflash-en`  | English xxxflash: same DB schema and media, `SITE_LANGUAGE=en`, `SHOW_COMMENTS=0` |
 | `flashsex`        | `.env.flashsex`     | flashsex.ru: its **own** `DB_SCHEMA` and `MEDIA_ROOT` |
 | `flashsex-en`     | `.env.flashsex-en`  | nsfwgames.top: flashsex's schema and media, `SITE=flashsex SITE_LANGUAGE=en SHOW_COMMENTS=0`, its own design and static files |
+| `xfg0`            | `.env.xfg0`         | xfg0.com: Russian, `SITE=xfg0`, xxxflash's schema (`app`) and media, its own design and static files |
 
 Paths below assume the checkout lives in `/srv/xxxflash` and media in `/srv/media/<site>`. Adjust them to your layout, for example `/var/www/...`. The same paths appear in `deploy/flash@.service`, `deploy/nginx.conf.example` and `deploy/flash-counts.cron.example`.
 
@@ -37,10 +38,10 @@ Copy `.env.example` once per instance (`cp .env.example .env.xxxflash`, and so o
 | Key | Notes |
 |-----|-------|
 | `PORT` | Used only by systemd. Give each instance its own port, e.g. 8001 / 8002 / 8003. |
-| `SITE` | `xxxflash` or `flashsex`: the base set, also for the English site (`xxxflash-en` is accepted too). |
+| `SITE` | `xxxflash`, `flashsex` or `xfg0`: the base set, also for the English site (`xxxflash-en` is accepted too). |
 | `SITE_LANGUAGE`, `SHOW_COMMENTS` | `ru`/`1` normally; `en`/`0` for the English site. |
 | `DATABASE_URL` | The production DSN. Point it at PgBouncer (e.g. `:6432`) and set `DB_PGBOUNCER=1` if you use it; see [architecture.md](architecture.md#behind-pgbouncer-db_pgbouncer1). |
-| `DB_SCHEMA` | `app` for xxxflash **and** xxxflash-en, which share the same data; use another schema for flashsex. |
+| `DB_SCHEMA` | `app` for xxxflash, xxxflash-en **and** xfg0, which share the same data; use another schema for flashsex. |
 | `MEDIA_ROOT`, `MEDIA_URL` | Absolute path, e.g. `/srv/media/xxxflash`, and `/media/`. |
 | `SITE_URL` | Public `https://` URL, used in magic-link emails. |
 | `SECRET_KEY` | Long and random (`python3 -c "import secrets; print(secrets.token_urlsafe(48))"`). Keep it stable, because changing it logs everyone out. The EN and RU instances may differ. |
@@ -108,6 +109,8 @@ The English site is a second `server` block. Its `server_name` and `upstream` po
 
 nsfwgames.top (`flashsex-en`) is the exception: its `/static/` is `static/flashsex-en/` (own CSS, fonts and icons); `/media/` is flashsex's `MEDIA_ROOT`. The first log line prints the `static=` directory the instance uses.
 
+xfg0.com (`xfg0`) is a separate site over xxxflash's data: `/static/` is `static/xfg0/`, `/media/` is xxxflash's `MEDIA_ROOT`.
+
 ```nginx
 upstream flash_xxxflash_en { server 127.0.0.1:8002; }
 server {
@@ -174,6 +177,7 @@ Always restart, even for template, CSS or JS-only changes: each process computes
 | A site shows the wrong language or site | Check the instance's first log line: `journalctl -u flash@xxxflash-en \| grep site=` prints `site=… language=… templates=… listen=…`. |
 | English site shows no games | No translations yet. Run `translate --lang en`. |
 | nsfwgames.top looks unstyled (404 on `/static/css/site.css` or fonts) | nginx `/static/` points at `static/flashsex/`; it must be `static/flashsex-en/`. |
+| xfg0.com looks unstyled | nginx `/static/` must be `static/xfg0/`. |
 | An English title carries extra text (e.g. part of the description) | Run `translate --lang en --retitle --dry-run`, then without `--dry-run` (re-translates all machine titles, keeps descriptions). |
 | A genre is missing on the English site | It has no English name. Fill "Name (en)" on the admin **Themes** page. |
 | Games list shrinks after `audit-swf` | `HIDE_COMPAT` hides `missing`/`broken`. Check `MEDIA_ROOT` and the dashboard counts. |

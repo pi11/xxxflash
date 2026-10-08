@@ -1,0 +1,15 @@
+{% if best %}
+<section class="best" aria-labelledby="best-title">
+  <h2 id="best-title">Лучшие по оценкам игроков</h2>
+  <ol>
+    {% for g in best %}
+    <li>
+      <a href="/game/{{ g.id }}/">
+        <span class="screen"><img src="{{ thumb(g) }}" alt="" loading="lazy" /></span>
+        <span class="name">{{ g.title }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Нет скриншота">
+  <rect width="400" height="300" fill="#a9b48f"/>
+  <g fill="#1f2a17" fill-opacity=".14">
+    <path d="M150 90h100l-14 14h-72z"/><path d="M150 210h100l-14-14h-72z"/>
+    <path d="M143 97l14 14v28l-14 7z"/><path d="M257 97l-14 14v28l14 7z"/>
+    <path d="M143 203l14-14v-28l-14-7z"/><path d="M257 203l-14-14v-28l14-7z"/>
+    <path d="M160 150l10-8h60l10 8-10 8h-60z"/>
+  </g>
+</svg>

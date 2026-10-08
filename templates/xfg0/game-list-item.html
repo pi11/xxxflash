@@ -1,0 +1,6 @@
+<article class="tile">
+  <a class="screen" href="/game/{{ g.id }}/" tabindex="-1" aria-hidden="true"><img src="{{ thumb(g) }}" alt="" loading="lazy" /></a>
+  <h3><a href="/game/{{ g.id }}/">{{ g.title }}</a></h3>
+  {% if g.text %}<p>{{ g.text|truncatewords(18) }}</p>{% endif %}
+  {% include "rating.html" %}
+</article>

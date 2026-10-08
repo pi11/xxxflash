@@ -1,0 +1,7 @@
+<div id="flashes" class="grid">
+  {% for g in flashes.object_list %}
+  {% include "game-list-item.html" %}
+  {% else %}
+  <p class="empty">Здесь пока нет игр. <a href="/best2/">Посмотрите топ</a></p>
+  {% endfor %}
+</div>

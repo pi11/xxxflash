@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Вход — xfg0{% endblock %}
+{% block content %}
+<div class="panel">
+  {% if user.is_authenticated %}
+  <h1>Добро пожаловать, {{ user.username }}!</h1>
+  <p><a href="/">Перейти к играм</a></p>
+  {% else %}
+  <h1>Не удалось войти</h1>
+  <p>Ссылка устарела или уже использована. <a href="/login/">Получить новую</a></p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -19,12 +19,12 @@
 
 ## Sites and config
 
-There are two template sets: **`xxxflash`** and **`flashsex`**. Each running process serves **one** site, selected by `SITE` in `.env`. This mirrors the old `_PROJECT` setting. To run both sites, start two processes with different env files (`--env .env.flashsex`). There is no host-based routing and no domain handling in the app.
+There are three template sets: **`xxxflash`**, **`flashsex`** and **`xfg0`**. Each running process serves **one** site, selected by `SITE` in `.env`. This mirrors the old `_PROJECT` setting. To run both sites, start two processes with different env files (`--env .env.flashsex`). There is no host-based routing and no domain handling in the app.
 
 `.env` keys:
 
 ```dotenv
-SITE=xxxflash                       # template/static set: xxxflash | flashsex
+SITE=xxxflash                       # template/static set: xxxflash | flashsex | xfg0
 DATABASE_URL=postgres://flashxxx:123123@localhost:5432/flashxxx
 DB_SCHEMA=app                       # new app tables live here
 LEGACY_SCHEMA=public                # legacy Django tables (copy-tool source)
@@ -72,6 +72,14 @@ timeline). It has its own static set, `static/flashsex-en/` (CSS, self-hosted Ma
 Instrument Sans, icons): `static_dir` is `static/<SITE>-<lang>` when that directory exists, else
 `static/<SITE>`. It still renders the same views and context, so `tests/test_i18n.py` runs the
 English-site tests against both sets; flashsex markup changes don't need porting to it.
+
+`templates/xfg0/` + `static/xfg0/` is **xfg0.com**, a Russian site with its own design over
+xxxflash's data (same `DB_SCHEMA` and media). The look is a Soviet pocket LCD game: an
+aluminium faceplate, numbers on an LCD with the unlit "8" segments showing (`lcd.html`
+macro), round red keys for voting and paging, an amber backlight in dark mode. Fonts are
+self-hosted PT Sans / PT Sans Narrow and DSEG7/DSEG14 (all SIL OFL). It is not a copy of
+`xxxflash/`, so xxxflash markup changes don't need porting; `test_xfg0_templates_render` checks
+it has every view template and renders the pages.
 
 Helpers left in `app/i18n.py`: `num(n)` (`1 234` / `1,234`), `plural(n, forms)` with forms in
 the template's own language (`"игра|игры|игр"`, `"game|games"`), `MESSAGES` (texts produced by
@@ -175,8 +183,8 @@ app/
   web.py             session cookie, CSRF, client IP, auth decorators
 scripts/fetch_ruffle.sh  downloads the pinned Ruffle build
 app/migrations/          tortoise built-in migrations (0001_initial.py, 0002_search.py with RunSQL …)
-templates/xxxflash/  templates/xxxflash-en/  templates/flashsex/  templates/flashsex-en/  (+ _shared/)
-static/xxxflash/  static/flashsex/  static/flashsex-en/   served at /static/ (legacy CSS uses absolute /static/images/…)
+templates/xxxflash/  templates/xxxflash-en/  templates/flashsex/  templates/flashsex-en/  templates/xfg0/  (+ _shared/)
+static/xxxflash/  static/flashsex/  static/flashsex-en/  static/xfg0/   served at /static/ (legacy CSS uses absolute /static/images/…)
 static/vendor/                         served at /vendor/: jquery.min.js, site.js, site.css, player.js,
                                        ruffle/ (VERSION committed, build fetched by the script)
 deploy/                                nginx, systemd and cron examples

@@ -1,0 +1,13 @@
+{% import "lcd.html" as lcd %}
+{% if themes %}
+<h2>Жанры</h2>
+<ul>
+  {% for t in themes|by_label %}
+  <li>
+    <a href="/theme/{{ t.slug }}/"{% if theme is defined and theme and theme.id == t.id %} aria-current="page"{% endif %}>
+      <span class="name">{{ t.title }}</span>{{ lcd.readout(t.game_count, 3, size="s") }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}

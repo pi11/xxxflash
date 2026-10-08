@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{{ g.title }} — играть онлайн — xfg0{% endblock %}
+{% block description %}{{ g.text|truncatewords(30) }}{% endblock %}
+
+{% block frame %}
+<main id="main" class="frame frame--game">
+  <nav class="crumbs" aria-label="Путь">
+    <a href="/">Все игры</a>
+    {% if gt %}<span aria-hidden="true">/</span><a href="/theme/{{ gt[0].slug }}/">{{ gt[0].title }}</a>{% endif %}
+  </nav>
+
+  <div class="console">
+    <div class="console-label"><span class="led" aria-hidden="true"></span>Игра № {{ g.id }}</div>
+    <div class="stage">
+      {% set max_width = 960 %}
+      {% include "player.html" %}
+    </div>
+  </div>
+
+  <div class="game-info">
+    <div class="game-about">
+      <h1>{{ g.title }}</h1>
+      {% if g.text %}<p class="description">{{ g.text }}</p>{% endif %}
+      {% if gt %}
+      <ul class="chips" aria-label="Жанры">
+        {% for t in gt %}<li><a href="/theme/{{ t.slug }}/">{{ t.title }}</a></li>{% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    <div class="game-side">
+      {% set mark_id = "mark1" %}
+      {% include "rating.html" %}
+      <p class="uploader">Загрузил {{ g.user.username }}</p>
+      {% if user.is_staff %}<a class="edit-link" href="/{{ settings.admin_prefix }}/games/{{ g.id }}/">Редактировать</a>{% endif %}
+    </div>
+  </div>
+
+  {% if settings.show_comments %}
+  <section class="discussion" aria-labelledby="comments-title">
+    <h2 id="comments-title">Комментарии</h2>
+    {% if user.is_authenticated %}
+    <form class="comment-form" action="/add-comment" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <input type="hidden" name="flash_id" value="{{ g.id }}" />
+      <label class="visually-hidden" for="comment-text">Ваш комментарий</label>
+      <textarea id="comment-text" name="text" maxlength="1000" required placeholder="Что думаете об игре?"></textarea>
+      <span class="honeypot" aria-hidden="true"><input type="text" name="email" value="" tabindex="-1" autocomplete="off" /></span>
+      <button type="submit" class="btn">Отправить комментарий</button>
+    </form>
+    {% else %}
+    <p><a href="/login/">Войдите, чтобы оставить комментарий.</a></p>
+    {% endif %}
+    {% include "comments.html" %}
+  </section>
+  {% endif %}
+
+  {% include "flash-random.html" %}
+</main>
+{% endblock %}

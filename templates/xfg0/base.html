@@ -1,0 +1,79 @@
+{% set path = request.path %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}xfg0 — порно флеш-игры онлайн, без Flash Player{% endblock %}</title>
+  <meta name="description" content="{% block description %}Эротические и порно флеш-игры из нулевых. Запускаются прямо в браузере, без плагинов и установки. Только для взрослых.{% endblock %}" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#b9bcb4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#191b18" media="(prefers-color-scheme: dark)" />
+  <link rel="preload" href="{{ static('fonts/dseg14-classic-bold.woff2') }}" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="{{ static('fonts/pt-sans-400-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin />
+  <link href="{{ vendor('site.css') }}" rel="stylesheet" />
+  <link href="{{ static('css/site.css') }}?v=1" rel="stylesheet" />
+  <link href="{{ static('images/favicon.svg') }}" rel="icon" type="image/svg+xml" />
+  <link href="{{ static('images/favicon.png') }}" rel="icon" type="image/png" sizes="64x64" />
+  <script src="{{ vendor('jquery.min.js') }}" defer></script>
+  <script src="{{ vendor('site.js') }}" defer></script>
+  {% block add_headers %}{% endblock %}
+</head>
+<body{% if index_page and first_page %} class="home"{% endif %}>
+  <a class="skip" href="#main">К играм</a>
+  <header class="faceplate">
+    <div class="faceplate-inner">
+      <a class="logo" href="/" aria-label="xfg0 — на главную">
+        <span class="logo-lcd" aria-hidden="true"><span class="ghost">~~~~</span><span class="lit">xfg0</span></span>
+        <span class="logo-caption" aria-hidden="true">порно флеш-игры</span>
+      </a>
+
+      <form class="search" action="/search/" method="get" role="search">
+        <label class="visually-hidden" for="q">Поиск игр</label>
+        <input id="q" type="search" name="q" value="{{ query|default('') }}" placeholder="Название игры" />
+        <button type="submit">Найти</button>
+      </form>
+
+      <div class="account">
+        <a class="upload" href="/upload/">Загрузить игру</a>
+        <span id="user_panel">{% include "user/panel.html" %}</span>
+      </div>
+
+      <nav class="modes" aria-label="Разделы">
+        <a href="/"{% if path == '/' %} aria-current="page"{% endif %}>Новые</a>
+        <a href="/best2/"{% if path.startswith('/best2') %} aria-current="page"{% endif %}>Топ</a>
+        <a href="/best/"{% if path.rstrip('/') == '/best' %} aria-current="page"{% endif %}>Лучшие</a>
+        <a href="/popular/"{% if path.startswith('/popular') %} aria-current="page"{% endif %}>Популярные</a>
+        <a href="/random/"{% if path.startswith('/random') %} aria-current="page"{% endif %}>Наугад</a>
+      </nav>
+    </div>
+  </header>
+
+  {% block frame %}
+  <div class="frame">
+    <main id="main">
+      {% block content %}{% endblock %}
+    </main>
+    {% if themes %}
+    <aside class="genres" aria-label="Жанры">
+      {% include "menu.html" %}
+    </aside>
+    {% endif %}
+  </div>
+  {% endblock %}
+
+  <footer class="foot">
+    <div class="foot-inner">
+      <p class="adults"><span class="badge">18+</span> Сайт только для взрослых. Заходя на сайт, вы подтверждаете, что вам исполнилось 18 лет.</p>
+      <p>Игры запускаются в <a href="https://ruffle.rs/" rel="noopener">Ruffle</a> — открытом эмуляторе Flash Player.</p>
+      <nav class="friends" aria-label="Друзья сайта">
+        <span>Друзья сайта:</span>
+        <a href="https://gmp.watch/">GMP Watch — короткие порно ролики</a>
+        <a href="https://gg.spree.tube/">Spree Tube — любительское и домашнее порно</a>
+      </nav>
+      <p>&copy; {{ now().year }} xfg0.com · <a href="mailto:mzxdomains@pm.me">mzxdomains@pm.me</a></p>
+    </div>
+  </footer>
+  {% include "counters.html" %}
+</body>
+</html>

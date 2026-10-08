@@ -1,0 +1,6 @@
+{# LCD readout: the number over its unlit "8" segments, like a pocket game's display.
+   `inner_id` lets /mark/ voting replace just the number (site.js sets its text). #}
+{% macro readout(value, digits=3, inner_id=none, size="") -%}
+{% set text = value|string %}
+<span class="lcd{% if size %} lcd--{{ size }}{% endif %}"><span class="ghost" aria-hidden="true">{{ "8" * ([digits, text|length]|max) }}</span><span class="lit"{% if inner_id %} id="{{ inner_id }}"{% endif %}>{{ text }}</span></span>
+{%- endmacro %}
